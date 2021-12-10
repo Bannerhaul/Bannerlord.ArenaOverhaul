@@ -12,3 +12,5 @@
         </br>
         <img src="https://staticdelivery.nexusmods.com/mods/3174/images/3477/3477-1639152436-25254109.png" width="1400">         
 </p>
+
+A variety of tweaks and gameplay changes to make arena and tournament experience more enjoyable and rewarding on all stages of the game.
