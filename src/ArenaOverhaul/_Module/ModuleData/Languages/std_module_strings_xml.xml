@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+	<tags>
+		<tag language="English" />
+	</tags>
+	<strings>
+		<string id="n3lrq7FfM" text="Arena Overhaul" />
+		<!--
+		|||||||||||||||||||||| Load and initialization ||||||||||||||||||||||
+		-->
+		<string id="miUO4w1hn" text="Loaded Arena Overhaul!" />
+		<string id="5KIeqRJJX" text="Arena Overhaul failed to load! See details in the mod log." />
+		<string id="LRhyA9mqB" text="Error initialising Arena Overhaul! See details in the mod log. Error text: &quot;{EXCEPTION_MESSAGE}&quot;" />
+		<!--
+		||||||||||||||||||||| Game menus and dialogues ||||||||||||||||||||||
+		-->
+		<string id="a3uuVmMKR" text="Expansive practice fight" />
+		<string id="aiDNBFQ4U" text="Nearby Tournaments" />
+		<string id="uBC62Jdh1" text="Next page..." />
+		<string id="De0boqLm0" text="Previous page..." />
+		<string id="fakGolQMf" text="Back to arena" />
+		<string id="ForHVzTkJ" text="Also, from time to time, so-called extensive practice fights are held. Basically, it's the same thing, but longer and much more intense. I would advise you to bring some of your men with you, it might be good practice for them. Just do not forget - no teams in there, otherwise you will be disqualified.[ib:closed][if:convo_bared_teeth]" />
+		<string id="nZVbLJnVn" text="And what about these expansive practice fights, are they rewarded too? How much are the prizes?" />
+		<string id="MqTDJG0uG" text="I'd like to choose my gear." />
+		<string id="iDGR9F0Gn" text="Alright{?WEAPON_CHOICE_HAS_PRICE}, but it will cost you {WEAPON_CHOICE_PRICE}{GOLD_ICON}{?}{\\?}! Which weapon set are you taking?[ib:closed][if:convo_bared_teeth]" />
+		<string id="DGsGeb4LA" text="I'd like to get better gear." />
+		<string id="lIBwkFipY" text="Actually, nevermind." />
+		<string id="7f21TSn5W" text="I'd like to participate in an expansive practice fight..." />
+		<string id="MnhLtl9Nn" text="Well, gather your men and go to it! Don't forget to grab a practice weapon on your way down.[if:convo_approving]" />
+		<string id="WRO1rFtQm" text="I'll do that with standard gear." />
+		<string id="uLNYivCXl" text="Sure. Although I'd like to take a new loadout." />
+		<string id="zvb5PZ5OA" text="Tournaments are currently being held in {TOURNAMENTS} {?TOURNAMENTS.PLURAL_FORM}towns{?}town{\\?}.{NEW_LINE}{TORNAMENT_LIST.START}{?TORNAMENT_LIST.IS_PLURAL}{NEW_LINE}{?}{\\?}{TORNAMENT_LIST.END}" />
+		<string id="sotK7sewA" text="nearby" />
+		<string id="J5jTiUvt8" text="reasonably close from here" />
+		<string id="ULKHRKsSV" text="reasonably far from here" />
+		<string id="2JXPNLOm3" text="very far from here" />
+		<string id="UOpsoG57t" text="tier {TIER} {TYPE}, {NAME}, worth {GOLD}{GOLD_ICON}" />
+		<!--
+		|||||||||||||||||||||||||| Item categories ||||||||||||||||||||||||||
+		-->
+		<string id="HxdMLgPrk" text="invalid item" />
+		<string id="ZMHaMWEhM" text="horse" />
+		<string id="8G7OMyMbp" text="one-handed weapon" />
+		<string id="XuZG0Aoio" text="two-handed weapon" />
+		<string id="CqFjTkLpa" text="polearm" />
+		<string id="a0BgoRSGt" text="arrows" />
+		<string id="cGVcwzcts" text="bolts" />
+		<string id="1w2htuOn2" text="shield" />
+		<string id="KsH4vdaKZ" text="bow" />
+		<string id="wXthM7Mmt" text="crossbow" />
+		<string id="t3EkeJDz6" text="thrown weapon" />
+		<string id="FjujPkPsk" text="goods" />
+		<string id="6p4MDI4FN" text="head armor" />
+		<string id="JH2tZrJmd" text="body armor" />
+		<string id="aMMn9E0nk" text="leg armor" />
+		<string id="3LtYT36O8" text="hand armor" />
+		<string id="OBZsswRvq" text="pistol" />
+		<string id="mwmowr3Pl" text="musket" />
+		<string id="RnZzjAmRe" text="bullets" />
+		<string id="5PmQkkEOf" text="animal" />
+		<string id="IA8SfaiLs" text="book" />
+		<string id="zWPK2mgHx" text="chest armor" />
+		<string id="z3x97kWhJ" text="cape" />
+		<string id="PxZJzp7zk" text="horse harness" />
+		<string id="G5Tk9ZJwy" text="banner" />
+		<string id="hWj4T9N6e" text="item" />
+		<!--
+		|||||||||||||||||||||||||||| Game Texts |||||||||||||||||||||||||||||
+		-->
+		<string id="gaJDVkvHa" text="{VALOR_PRIZES_DESCRIPTION}{CHAMPION_PRIZE_DESCRIPTION} Sounds good, eh?[if:convo_nonchalant]" />
+		<string id="hsDqRWEYr" text="If you can beat {OPPONENT_COUNT_1} opponents before going down, you'll earn {PRIZE_1}{GOLD_ICON}. " />
+		<string id="8qZeWlW2A" text="If you can beat {OPPONENT_COUNT_1} opponents before going down, you'll earn {PRIZE_1}{GOLD_ICON}. And you'll get {PRIZE_2}{GOLD_ICON} for striking down at least {OPPONENT_COUNT_2} opponents. " />
+		<string id="pBCjfH33W" text="If you can beat {OPPONENT_COUNT_1} opponents before going down, you'll earn {PRIZE_1}{GOLD_ICON}. You'll get {PRIZE_2}{GOLD_ICON} for striking down at least {OPPONENT_COUNT_2} opponents and {PRIZE_3}{GOLD_ICON} if you can defeat {OPPONENT_COUNT_3} opponents. " />
+		<string id="S0uBAbZiF" text="If you can beat {OPPONENT_COUNT_1} opponents before going down, you'll earn {PRIZE_1}{GOLD_ICON}. You'll get {PRIZE_2}{GOLD_ICON} for striking down at least {OPPONENT_COUNT_2} opponents, {PRIZE_3}{GOLD_ICON} if you can defeat {OPPONENT_COUNT_3} opponents, and {PRIZE_4}{GOLD_ICON} if you can survive long enough to beat {OPPONENT_COUNT_4} opponents. " />
+		<string id="jhJZqz0OL" text="If you can beat {OPPONENT_COUNT_1} opponents before going down, you'll earn {PRIZE_1}{GOLD_ICON}. You'll get {PRIZE_2}{GOLD_ICON} for striking down at least {OPPONENT_COUNT_2} opponents, {PRIZE_3}{GOLD_ICON} if you can defeat {OPPONENT_COUNT_3} opponents, {PRIZE_4}{GOLD_ICON} if you can survive long enough to beat {OPPONENT_COUNT_4} opponents, and {PRIZE_5}{GOLD_ICON} if you somehow manage to defeat {OPPONENT_COUNT_5} opponents - no small feat for sure. " />
+		<string id="nwnxJV2rZ" text="If you can manage to be the last fighter standing, you'll earn the great prize of the fights, {PRIZE_CHAMP}{GOLD_ICON}. " />
+		<string id="AAPfCIEuZ" text="If you can manage to be the last fighter standing, on top of that you'll earn the great prize of the fights, {PRIZE_CHAMP}{GOLD_ICON}. " />
+		<string id="3UtRes0Un" text="But if you can manage to be the last fighter standing, you'll earn the great prize of the fights, {PRIZE_CHAMP}{GOLD_ICON}. Maybe even several times more if you show a really good fight and personally defeat many opponents. " />
+		<string id="aDC8zdCmt" text="Now let me take a closer look at you, {PLAYER.LINK}. So someday I will be able to tell my children what a real grandmaster looks like! You were able to beat {OPPONENT_COUNT} in one sitting! Incredible! Oh, and of course you've earned yourself a prize of {PRIZE}{GOLD_ICON}." />
+		<string id="nZ1Ar0MOd" text="Congratulations, champion! Your fight there was something to remember! As the last one standing, you of course win the top prize: {PRIZE}{GOLD_ICON}, including {VALOR_PRIZE}{GOLD_ICON} for knocking down {OPPONENT_COUNT} opponents." />
+		<string id="oYDKCzkid" text="Congratulations, champion! Your fight there was something to remember! As the last one standing, you of course win the top prize: {PRIZE}{GOLD_ICON}, including {VALOR_PRIZE}{GOLD_ICON} for knocking down {OPPONENT_COUNT} opponents. I have to say, it was a great fight and the crowd really loved it, so you earned every coin here, my friend." />
+		<string id="dKdBMUgOL" text="Congratulations, champion! Your fight there was something to remember! Not only you were the last man standing, but you also fought like a beast and thus won double the standard top prize: {PRIZE}{GOLD_ICON}." />
+		<string id="BtSwRTvu9" text="Congratulations, champion! Your fight there was something to remember! Not only you were the last man standing, but you also fought like a true hero and thus won triple the standard top prize: {PRIZE}{GOLD_ICON}." />
+		<string id="I2A8Heq2r" text="Congratulations, champion! Your fight there was something to remember! You have personally dealt with a good half of the participants and thus earned four times more than the usual champion prize! Here you go, {PRIZE}{GOLD_ICON}.[if:convo_merry]" />
+		<string id="3yLYLKZYW" text="Congratulations, grandmaster! I am honored to host a fighter like you here. For this outstanding performance you have earned a magestic prize of {PRIZE}{GOLD_ICON}.[if:convo_merry]" />
+		<string id="PrOqJwABn" text="{INDEX}. {TOWN_LINK}. It's {DISTANCE_ESTIMATE} and the tournament started only {TOURNAMENT_AGE} {?TOURNAMENT_AGE.PLURAL_FORM}days{?}day{\?} ago, so you should be able to get there without any problems. The prize is currently a {ITEM_PRIZE}{?GOLD_PRIZES_ENABLED} and a monetary reward of {GOLD_PRIZE}{GOLD_ICON}{?}{\?}." />
+		<string id="4zJGmMNg6" text="{INDEX}. {TOWN_LINK}. It's {DISTANCE_ESTIMATE} and the tournament started {TOURNAMENT_AGE} {?TOURNAMENT_AGE.PLURAL_FORM}days{?}day{\?} ago, so you should be able to get there if you move quickly enough. The prize is currently a {ITEM_PRIZE}{?GOLD_PRIZES_ENABLED} and a monetary reward of {GOLD_PRIZE}{GOLD_ICON}{?}{\?}." />
+		<string id="w6WHaUt1z" text="{INDEX}. {TOWN_LINK}. It's {DISTANCE_ESTIMATE}, but the tournament started {TOURNAMENT_AGE} {?TOURNAMENT_AGE.PLURAL_FORM}days{?}day{\?} ago, so if you want to catch it you should hurry up. The prize is currently a {ITEM_PRIZE}{?GOLD_PRIZES_ENABLED} and a monetary reward of {GOLD_PRIZE}{GOLD_ICON}{?}{\?}." />
+		<string id="pOakl989V" text="{INDEX}. {TOWN_LINK}. It's {DISTANCE_ESTIMATE}, but the tournament started only {TOURNAMENT_AGE} {?TOURNAMENT_AGE.PLURAL_FORM}days{?}day{\?} ago, so you should be able to get there in time. The prize is currently a {ITEM_PRIZE}{?GOLD_PRIZES_ENABLED} and a monetary reward of {GOLD_PRIZE}{GOLD_ICON}{?}{\?}." />
+		<string id="yVJzJ9ZJQ" text="{INDEX}. {TOWN_LINK}. It's {DISTANCE_ESTIMATE} and the tournament started {TOURNAMENT_AGE} {?TOURNAMENT_AGE.PLURAL_FORM}days{?}day{\?} ago, but you should be able to get there if you move quickly enough. The prize is currently a {ITEM_PRIZE}{?GOLD_PRIZES_ENABLED} and a monetary reward of {GOLD_PRIZE}{GOLD_ICON}{?}{\?}." />
+		<string id="a7DI176cs" text="{INDEX}. {TOWN_LINK}. It's {DISTANCE_ESTIMATE} and the tournament started {TOURNAMENT_AGE} {?TOURNAMENT_AGE.PLURAL_FORM}days{?}day{\?} ago, so your chances of seeing it are slim. The prize is currently a {ITEM_PRIZE}{?GOLD_PRIZES_ENABLED} and a monetary reward of {GOLD_PRIZE}{GOLD_ICON}{?}{\?}." />
+		<string id="aGr4Lb6I2" text="You've defeated some esteamed contenders and thus gained renown: {RENOWN_TAKEDOWN_REWARD}" />
+		<string id="3ZgMoK2dU" text="You still get a reward for rounds won: {PER_ROUND_REWARD}" />
+		<string id="83tebCrzc" text="And you get a reward for rounds won: {PER_ROUND_REWARD}" />
+		<string id="aV0PTEzbW" text="Your reward for rounds won: {PER_ROUND_REWARD}" />
+		<string id="16t7gwMmW" text="Your monetary reward as a champion: {TOTAL_GOLD_REWARD}" />
+		<!--
+		|||||||||||||||||||||||||||| Mod Options ||||||||||||||||||||||||||||
+		-->
+		<!-- Main or reused headings -->
+		<string id="pJ3cqM8RV" text="Arena Practice settings" />
+		<string id="bPkF9slVr" text="Expansive Arena Practice settings" />
+		<string id="RRmGS7t6x" text="Tournament settings" />
+		<string id="C5nJgxepr" text="Rewards" />
+		<string id="oywDR1MSm" text="Experience" />
+		<string id="ZlvTL5D4T" text="Material rewards" />
+		<string id="BCzO2WGq9" text="Intangible rewards" />		
+		<!-- Dropdown values - practice prize calculation -->
+		<string id="gknaSzMr6" text="Standard" />
+		<string id="aBVrVSioz" text="Additive" />
+		<string id="TY9SqFLBs" text="Multiplicative" />	
+		<!-- Arena Practice settings -->
+		<string id="wtKB2udZJ" text="Total participants" />
+		<string id="gaGpV2GcX" text="Active participants" />
+		<string id="0IOg4Ureb" text="Active participants minimum" />
+		<string id="dAhEzcAlx" text="Initial participants" />
+		<string id="BVhryIKKF" text="Enable loadout choice" />
+		<string id="L73kYZTnf" text="Price for picking weapons" />
+		<string id="v7NfMok7L" text="Valor reward class I" />
+		<string id="AFzr1BhC4" text="Valor reward class II" />
+		<string id="wjlHVn6cG" text="Valor reward class III" />
+		<string id="1JAQ3hGAk" text="Valor reward class IV" />
+		<string id="MHzw7JXgh" text="Valor reward class V" />
+		<string id="rQHQBnmZL" text="Champion prize calculation" />
+		<string id="oTOFfuU2c" text="Champion prize" />
+		<string id="zDfS2JtnA" text="Enable experience gain for viewers" />
+		<string id="9dP3VJpOG" text="Experience gain rate" />
+		<!-- Arena Practice hints -->
+		<string id="89f5zrS7i" text="The total number of participants in the Arena Practice. It is recommended to be a multiple of 3. Default = 30." />
+		<string id="oqpocFdUs" text="Еstimated number of the active participants in the Arena Practice. It is recommended to be a multiple of 3. Default = 6." />
+		<string id="iFjrzKw9e" text="The minimum number of active participants in the Arena Practice. It is recommended to be a multiple of 2. Default = 2." />
+		<string id="UuSkcTQSd" text="Initial number of the active participants in the Arena Practice. Any number greater than 7 will result in multiple fighters spawning together. Default = 6." />
+		<string id="zGQrZqevv" text="When this option is enabled, you are alowed to choose weapons for the Arena Practice." />
+		<string id="rZH6qYOrT" text="You will have to pay this sum per a wepon stage (tier) when picking a weapon for the Arena Practice. Default = 10." />
+		<string id="GrjIc6hKr" text="Prize for defeating at least 3 fighters in the Arena Practice. Default = 5." />
+		<string id="j86zigBV7" text="Prize for defeating at least 6 fighters in the Arena Practice. Default = 10." />
+		<string id="0q32VAkkg" text="Prize for defeating at least 10 fighters in the Arena Practice. Default = 25." />
+		<string id="VjGDrAK3N" text="Prize for defeating at least 20 fighters in the Arena Practice. Default = 60." />
+		<string id="ws4xpzph6" text="Prize for defeating at least 35 fighters in the Arena Practice. Can't be achieved with a standard number of participants. Default = 150." />
+		<string id="8mGYZd0fL" text="Specify how last man standing in the Arena Practice should be rewarded. Standard - with a special prize. Additive - with a special prize and any valor reward earned. Multiplicative - with a special prize for each valor class earned. Native is [Standard]. Default is [Additive]." />
+		<string id="2ovQejh10" text="Base prize for being the last man standing in the Arena Practice. Default = 250." />
+		<string id="gGEXaGsKV" text="Experience gain rate in the Arena Practice fights. Native = 6%. Default = 16.5%." />
+		<!-- Expansive Arena Practice hints -->
+		<string id="65Ny4vNEE" text="The total number of participants in the Expansive Arena Practice. It is recommended to be a multiple of 3. Default = 90." />
+		<string id="sIQdRBwg9" text="Еstimated number of the active participants in the Expansive Arena Practice. It is recommended to be a multiple of 3. Default = 9." />
+		<string id="ZaLfvG7eX" text="The minimum number of active participants in the Expansive Arena Practice. It is recommended to be a multiple of 2. Default = 4." />
+		<string id="XwzmSDpAr" text="Initial number of the active participants in the Expansive Arena Practice. Any number greater than 7 will result in multiple fighters spawning together. Default = 7." />
+		<string id="9otxYlTUa" text="When this option is enabled, you are alowed to choose weapons for the Expansive Arena Practice." />
+		<string id="B9xXCFneS" text="You will have to pay this sum per a wepon stage (tier) when picking a weapon for the Expansive Arena Practice. Default = 10." />
+		<string id="M7utBJV6O" text="Prize for defeating at least 3 fighters in the Expansive Arena Practice. Default = 10." />
+		<string id="5Zkk4IRnM" text="Prize for defeating at least 6 fighters in the Expansive Arena Practice. Default = 20." />
+		<string id="ivrbCerwG" text="Prize for defeating at least 10 fighters in the Expansive Arena Practice. Default = 50." />
+		<string id="41COOOrtk" text="Prize for defeating at least 20 fighters in the Expansive Arena Practice. Default = 120." />
+		<string id="aPjrww0Yz" text="Prize for defeating at least 35 fighters in the Expansive Arena Practice. Default = 300." />
+		<string id="aUEgf6bh5" text="Specify how last man standing in the Expansive Arena Practice should be rewarded. Standard - with a special prize. Additive - with a special prize and any valor reward earned. Multiplicative - with a special prize for each valor class earned. Default is [Additive]." />
+		<string id="FP34ZZ1b0" text="Base prize for being the last man standing in the Expansive Arena Practice. Default = 500." />
+		<string id="YyniNTgz5" text="Only heroes and troops of rank 3 and up are allowed to enter Expansive Arena Practice. When this option is enabled, lower-ranking troops will gain some experience when their comrades successfully land hits and make takedowns in the arena." />
+		<string id="hTHzr3Q9U" text="Experience gain rate in the Expansive Arena Practice fights. Native = 6%. Default = 33.3%." />
+		<!-- Tournament settings and hints-->
+		<string id="hS7XbrLGG" text="Maximum bet" />
+		<string id="gQvJ8Vvsk" text="The maximum amount of gold that is usually allowed to be wagered in each round of a tournament. Native = 150. Default = 500." />
+		<string id="IfsaDqygk" text="Enable gold prizes" />
+		<string id="yVAG4f83d" text="When this option is enabled, there are also gold prizes in tournaments. This is in addition to the usual prize items and bet wins." />
+		<string id="fH4Ev0UoC" text="Enable prize scaling" />
+		<string id="1THMacQwa" text="When this option is enabled, tournament prizes are scaling with player's renown. Slightly unconventional, but helps keep tournaments useful in the mid and late game." />
+		<string id="DXiVYMIUL" text="Enable unobtainable prizes" />
+		<string id="YxVkSN8sn" text="When this option is enabled, elite tournament prizes can include otherwize unobtainable items and animals. Only works with prize scaling and at player clan tier 5 or 6." />
+		<string id="DyNe9qH4v" text="Reward for the won round" />
+		<string id="aAquVsgYJ" text="The amount of gold that participants receive for each round of the tournament they won. Native = 0. Default = 0." />
+		<string id="lkgaScPft" text="Renown reward for the champion" />
+		<string id="GWmYOkfOs" text="The amount of renown that tournament campion receives. Native = 3. Default = 3." />
+		<string id="1AR1Jq493" text="Renown reward for defeated heroes" />
+		<string id="Fbt8Iewl4" text="Whenever a tournament participant strikes down a hero who has a comparable or higher renown or a higher overall tournament win record, he gets the specified amount of renown. Can't exceed double the champion renown reward over the course of tournament. Native = 0. Default = 1." />
+		<string id="eLKi8Ptgm" text="Influence reward for the champion" />
+		<string id="uYmFPwO8z" text="The amount of influence that tournament campion receives, if he is a noble lord of any kingdom. Native = 1. Default = 10." />
+		<string id="C5fcetmfG" text="Experience gain rate in the tournament fights. Native = 33%. Default = 66.6%." />
+	</strings>
+</base>
