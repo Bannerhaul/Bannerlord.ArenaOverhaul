@@ -138,7 +138,7 @@ namespace ArenaOverhaul.CampaignBehaviors
             {
                 FieldAccessHelper.FTGPossibleRegularRewardItemObjectsCacheByRef(fightTournamentGame)?.Clear();
                 FieldAccessHelper.FTGPossibleEliteRewardItemObjectsCacheByRef(fightTournamentGame)?.Clear();
-                if (!Settlement.CurrentSettlement.IsTown || fightTournamentGame.Town != Settlement.CurrentSettlement.Town)
+                if (Settlement.CurrentSettlement is null || !Settlement.CurrentSettlement.IsTown || fightTournamentGame.Town != Settlement.CurrentSettlement.Town)
                 {
                     fightTournamentGame.UpdateTournamentPrize(true);
                 }
@@ -408,7 +408,6 @@ namespace ArenaOverhaul.CampaignBehaviors
             PlayerEncounter.LocationEncounter.CreateAndOpenMissionController(LocationComplex.Current.GetLocationWithId("arena"), null, null, null);
             _enteredPracticeFightFromMenu = true;
         }
-
 
         private bool game_menu_enter_expansive_practice_fight_on_condition(MenuCallbackArgs args)
         {

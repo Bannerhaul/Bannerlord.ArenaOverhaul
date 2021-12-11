@@ -178,6 +178,11 @@ namespace ArenaOverhaul.Patches
         /* service methods */
         internal static void AddPlayerParyToParticipantCharacters(FightTournamentGame instance, List<CharacterObject> participantCharacters)
         {
+            if (Hero.MainHero.PartyBelongedTo?.Party?.MemberRoster is null)
+            {
+                return;
+            }
+
             foreach (TroopRosterElement troopRosterElement in Hero.MainHero.PartyBelongedTo.Party.MemberRoster.GetTroopRoster())
             {
                 if (troopRosterElement.Character.IsHero)

@@ -1,10 +1,13 @@
 ﻿using ArenaOverhaul.CampaignBehaviors;
 
+using SandBox;
+
 using System;
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
+using TaleWorlds.MountAndBlade;
 
 namespace ArenaOverhaul
 {
@@ -107,6 +110,6 @@ namespace ArenaOverhaul
                 _ => 0
             };
 
-        private static bool IsExpansivePractice() => Campaign.Current.CampaignBehaviorManager.GetBehavior<AOArenaBehavior>()!.InExpansivePractice;
+        private static bool IsExpansivePractice() => (Mission.Current?.GetMissionBehavior<ArenaPracticeFightMissionController>().IsPlayerPracticing ?? false) && (Campaign.Current.CampaignBehaviorManager.GetBehavior<AOArenaBehavior>()?.InExpansivePractice ?? false);
     }
 }

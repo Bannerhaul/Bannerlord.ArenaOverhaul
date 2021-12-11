@@ -246,7 +246,7 @@ namespace ArenaOverhaul.Patches
         [HarmonyPatch("EnemyHitReward")]
         public static void EnemyHitRewardPostfix(Agent affectedAgent, Agent affectorAgent, float lastSpeedBonus, float lastShotDifficulty, WeaponComponentData? attackerWeapon, float hitpointRatio, float damageAmount, ArenaPracticeFightMissionController __instance)
         {
-            if (affectedAgent.Origin == null || affectorAgent == null || affectorAgent.Origin == null || !IsExpansivePractice() || !Settings.Instance!.EnableViewerExperienceGain)
+            if (affectedAgent.Origin == null || affectorAgent == null || affectorAgent.Origin == null || !IsExpansivePractice(__instance) || !Settings.Instance!.EnableViewerExperienceGain)
             {
                 return;
             }
@@ -313,7 +313,7 @@ namespace ArenaOverhaul.Patches
 
         internal static void SpawnArenaAgents(ArenaPracticeFightMissionController instance)
         {
-            if (Campaign.Current.CampaignBehaviorManager.GetBehavior<AOArenaBehavior>()!.InExpansivePractice && IsUndercrowded())
+            if (IsExpansivePractice(instance) && IsUndercrowded())
             {
                 int count = FieldAccessHelper.APFMCAIParticipantTeamsByRef(instance).Count;
                 int num = 0;
@@ -406,6 +406,8 @@ namespace ArenaOverhaul.Patches
             return codes.AsEnumerable();
         }
 
-        private static bool IsExpansivePractice() => Campaign.Current.CampaignBehaviorManager.GetBehavior<AOArenaBehavior>()!.InExpansivePractice;
+        private static bool IsExpansivePractice(ArenaPracticeFightMissionController instance) => (instance?.IsPlayerPracticing ?? false) && (Campaign.Current.CampaignBehaviorManager.GetBehavior<AOArenaBehavior>()?.InExpansivePractice ?? false);
+
+        private static bool IsExpansivePractice() => (Mission.Current?.GetMissionBehavior<ArenaPracticeFightMissionController>().IsPlayerPracticing ?? false) && (Campaign.Current.CampaignBehaviorManager.GetBehavior<AOArenaBehavior>()?.InExpansivePractice ?? false);
     }
 }
