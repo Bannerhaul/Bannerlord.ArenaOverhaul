@@ -1,53 +1,56 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <AssemblyName>$(ModuleName).$(GameVersion)</AssemblyName>
-	<Configurations>Stable_Debug;Stable_Release;Beta_Debug;Beta_Release;Debug;Release</Configurations>
-  </PropertyGroup>  
+	<PropertyGroup>
+		<AssemblyName>$(ModuleName).$(GameVersion)</AssemblyName>
+		<Configurations>Stable_Debug;Stable_Release;Beta_Debug;Beta_Release;Debug;Release</Configurations>
+	</PropertyGroup>
 
-  <!-- STABLE, BETA, and e.g., e157 / e158 Constants Defined in Code -->
-  <PropertyGroup>
-    <GameVersionFlat>$([System.String]::Copy('$(GameVersion)').Replace('.',''))</GameVersionFlat>
-    <GameVersionConstant>e$(GameVersionFlat)</GameVersionConstant>
-    <DefineConstants>$(DefineConstants);$(GameVersionConstant)</DefineConstants>
-  </PropertyGroup>
+	<!-- STABLE, BETA, and e.g., e157 / e158 Constants Defined in Code -->
+	<PropertyGroup>
+		<GameVersionFlat>$([System.String]::Copy('$(GameVersion)').Replace('.',''))</GameVersionFlat>
+		<GameVersionConstant>e$(GameVersionFlat)</GameVersionConstant>
+		<DefineConstants>$(DefineConstants);$(GameVersionConstant)</DefineConstants>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Bannerlord.BuildResources" Version="$(BuildResourcesVersion)">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Bannerlord.BUTR.Shared" Version="$(BUTRSharedVersion)">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Nullable" Version="1.3.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="IsExternalInit" Version="1.0.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Lib.Harmony" Version="$(HarmonyVersion)" IncludeAssets="compile" />
-    <PackageReference Include="Harmony.Extensions" Version="2.0.0.50">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Bannerlord.ButterLib" Version="$(ButterLibVersion)" IncludeAssets="compile" />
-    <PackageReference Include="Bannerlord.MCM" Version="$(MCMVersion)" IncludeAssets="compile" />
-    <PackageReference Include="Bannerlord.ReferenceAssemblies.Core.EarlyAccess" Version="$(GameVersion).*" PrivateAssets="All" />
-    <PackageReference Include="Bannerlord.ReferenceAssemblies.Native.EarlyAccess" Version="$(GameVersion).*" PrivateAssets="All" />
-    <PackageReference Include="Bannerlord.ReferenceAssemblies.StoryMode.EarlyAccess" Version="$(GameVersion).*" PrivateAssets="All" />
-    <PackageReference Include="Bannerlord.ReferenceAssemblies.SandBox.EarlyAccess" Version="$(GameVersion).*" PrivateAssets="All" />
-    <PackageReference Include="Bannerlord.ReferenceAssemblies.CustomBattle.EarlyAccess" Version="$(GameVersion).*" PrivateAssets="All" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>compile</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Bannerlord.BuildResources" Version="$(BuildResourcesVersion)">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Bannerlord.BUTR.Shared" Version="$(BUTRSharedVersion)">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Nullable" Version="1.3.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="IsExternalInit" Version="1.0.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Lib.Harmony" Version="$(HarmonyVersion)" IncludeAssets="compile" />
+		<PackageReference Include="Harmony.Extensions" Version="2.0.0.50">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Bannerlord.ButterLib" Version="$(ButterLibVersion)" IncludeAssets="compile" />
+		<PackageReference Include="Bannerlord.MCM" Version="$(MCMVersion)" IncludeAssets="compile" />
+		<PackageReference Include="Bannerlord.ReferenceAssemblies.Core.EarlyAccess" Version="$(GameVersion).*" PrivateAssets="All" />
+		<PackageReference Include="Bannerlord.ReferenceAssemblies.Native.EarlyAccess" Version="$(GameVersion).*" PrivateAssets="All" />
+		<PackageReference Include="Bannerlord.ReferenceAssemblies.StoryMode.EarlyAccess" Version="$(GameVersion).*" PrivateAssets="All" />
+		<PackageReference Include="Bannerlord.ReferenceAssemblies.SandBox.EarlyAccess" Version="$(GameVersion).*" PrivateAssets="All" />
+		<PackageReference Include="Bannerlord.ReferenceAssemblies.CustomBattle.EarlyAccess" Version="$(GameVersion).*" PrivateAssets="All" />
+		<PackageReference Include="Newtonsoft.Json" Version="11.0.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>compile</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ArenaOverhaul.ImplementationLoader\ArenaOverhaul.ImplementationLoader.csproj" />
-  </ItemGroup>	
+	<ItemGroup>
+		<Folder Include="_Module\ModuleData\" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\ArenaOverhaul.ImplementationLoader\ArenaOverhaul.ImplementationLoader.csproj" />
+	</ItemGroup>
 </Project>
