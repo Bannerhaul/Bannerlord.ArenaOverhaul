@@ -55,7 +55,7 @@ namespace ArenaOverhaul
                 yield break;
             }
 
-            var implementations = assemblyDirectory.GetFiles("Bannerlord.ArenaOverhaul.*.dll");
+            var implementations = assemblyDirectory.GetFiles("ArenaOverhaul.*.dll");
             if (implementations.Length == 0)
             {
                 logger?.LogError("No implementations found.");

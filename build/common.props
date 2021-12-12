@@ -27,7 +27,7 @@
     <Platforms>x64</Platforms>
     <LangVersion>9.0</LangVersion>
     <Nullable>enable</Nullable>
-    <ModuleName>$(MSBuildProjectName)</ModuleName>
+    <ModuleName>ArenaOverhaul</ModuleName>
     <DisplayName>Arena Overhaul</DisplayName>
 	<RootNamespace>$(ModuleName)</RootNamespace>
   </PropertyGroup>

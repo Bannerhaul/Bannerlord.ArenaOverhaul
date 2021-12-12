@@ -16,7 +16,7 @@ env:
 jobs:
 
   build:
-    name: Build for NexusMods (Stable)
+    name: Build for NexusMods
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repository
@@ -27,18 +27,19 @@ jobs:
       with:
         dotnet-version: 5.0.x
 
-    - name: Build Diplomacy Module
+    - name: Build Arena Overhaul
       run: |
         $impl = $PWD.Path + '/bannerlord-implementations';
         $path = $PWD.Path + '/bannerlord';
-        $final = $path + '/Modules/Bannerlord.Diplomacy/bin/Win64_Shipping_Client/';
-        $proj = 'src/Bannerlord.Diplomacy.csproj';
-        $pdll = $path + '/Modules/Bannerlord.Diplomacy/bin/Win64_Shipping_Client/Bannerlord.Diplomacy*.dll';
-        $ppdb = $path + '/Modules/Bannerlord.Diplomacy/bin/Win64_Shipping_Client/Bannerlord.Diplomacy*.pdb';
+        $final = $path + '/Modules/ArenaOverhaul/bin/Win64_Shipping_Client/';
+        $proj = 'src/ArenaOverhaul.csproj';
+        $pdll = $path + '/Modules/ArenaOverhaul/bin/Win64_Shipping_Client/ArenaOverhaul*.dll';
+        $ppdb = $path + '/Modules/ArenaOverhaul/bin/Win64_Shipping_Client/ArenaOverhaul*.pdb';
         # The folders are required to be created before executing the script
         New-Item -ItemType directory -Force -Path $impl;
         New-Item -ItemType directory -Force -Path $path;
         $gameversions = Get-Content -Path supported-game-versions.txt;
+        # Process all implementations
         For ($i = 0; $i -le $gameversions.Length - 1; $i++)
         {
             $gameversion = $gameversions[$i];
@@ -62,7 +63,7 @@ jobs:
     - name: Upload bannerlord folder
       uses: actions/upload-artifact@v2
       with:
-        name: Bannerlord.Diplomacy
+        name: ArenaOverhaul
         path: ./bannerlord/Modules/
         
 ###########################
@@ -81,11 +82,11 @@ jobs:
     - name: Download stable bannerlord folder
       uses: actions/download-artifact@v2
       with:
-        name: Bannerlord.Diplomacy
+        name: ArenaOverhaul
         path: ./bannerlord/Modules/
 
-    - name: Zip Bannerlord.Diplomacy
-      run: 7z a -t7z Bannerlord.Diplomacy.7z ./bannerlord/* -mx9
+    - name: Zip ArenaOverhaul
+      run: 7z a -t7z ArenaOverhaul.7z ./bannerlord/* -mx9
       #shell: pwsh
       # pwsh casues it to include the root folder
 
@@ -124,8 +125,8 @@ jobs:
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{steps.create_release.outputs.upload_url}}
-        asset_path: ./Bannerlord.Diplomacy.7z
-        asset_name: Bannerlord.Diplomacy.7z
+        asset_path: ./ArenaOverhaul.7z
+        asset_name: ArenaOverhaul.7z
         asset_content_type: application/x-7z-compressed
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}        
