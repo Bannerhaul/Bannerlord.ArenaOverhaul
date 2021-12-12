@@ -32,7 +32,7 @@ jobs:
         $impl = $PWD.Path + '/bannerlord-implementations';
         $path = $PWD.Path + '/bannerlord';
         $final = $path + '/Modules/ArenaOverhaul/bin/Win64_Shipping_Client/';
-        $proj = 'src/ArenaOverhaul.csproj';
+        $proj = 'src/ArenaOverhaul/ArenaOverhaul.csproj';
         $pdll = $path + '/Modules/ArenaOverhaul/bin/Win64_Shipping_Client/ArenaOverhaul*.dll';
         $ppdb = $path + '/Modules/ArenaOverhaul/bin/Win64_Shipping_Client/ArenaOverhaul*.pdb';
         # The folders are required to be created before executing the script
