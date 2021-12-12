@@ -27,14 +27,14 @@ jobs:
       with:
         dotnet-version: 5.0.x
 
-    - name: Build Diplomacy Module
+    - name: Build Arena Overhaul for test
       run: |
         $impl = $PWD.Path + '/bannerlord-implementations';
         $path = $PWD.Path + '/bannerlord';
         $final = $path + '/Modules/ArenaOverhaul/bin/Win64_Shipping_Client/';
-        $proj = 'src/ArenaOverhaul.csproj';
-        $pdll = $path + '/Modules/ArenaOverhaul/bin/Win64_Shipping_Client/Bannerlord.Diplomacy*.dll';
-        $ppdb = $path + '/Modules/ArenaOverhaul/bin/Win64_Shipping_Client/Bannerlord.Diplomacy*.pdb';
+        $proj = 'src/ArenaOverhaul/ArenaOverhaul.csproj';
+        $pdll = $path + '/Modules/ArenaOverhaul/bin/Win64_Shipping_Client/ArenaOverhaul*.dll';
+        $ppdb = $path + '/Modules/ArenaOverhaul/bin/Win64_Shipping_Client/ArenaOverhaul*.pdb';
         # The folders are required to be created before executing the script
         New-Item -ItemType directory -Force -Path $impl;
         New-Item -ItemType directory -Force -Path $path;
@@ -54,7 +54,7 @@ jobs:
             Copy-Item $ppdb $impl/;
             echo "::endgroup::"
         }
-        # Copy Implementations to the Module
+        # Copy Implementations and Loader to the Module
         Copy-Item $impl/* $final;
         # Delete Implementations folder
         Remove-Item -Recurse $impl;
