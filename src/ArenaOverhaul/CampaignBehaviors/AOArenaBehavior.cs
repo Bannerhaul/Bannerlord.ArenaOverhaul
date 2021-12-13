@@ -25,7 +25,7 @@ namespace ArenaOverhaul.CampaignBehaviors
 {
     public class AOArenaBehavior : CampaignBehaviorBase
     {
-        private bool _inExpansivePractice;        
+        private bool _inExpansivePractice;
         private bool _enteredPracticeFightFromMenu;
         private ArenaMaster? _arenaMasterBehavior;
 
@@ -78,7 +78,7 @@ namespace ArenaOverhaul.CampaignBehaviors
 #else
             campaignGameStarter.AddGameMenu("nearby_tournaments_list", "{=!}{MENU_TEXT}", new OnInitDelegate(game_menu_nearby_tournaments_list_on_init), GameOverlays.MenuOverlayType.SettlementWithBoth, GameMenu.MenuFlags.None, null);
 #endif
-            campaignGameStarter.AddGameMenuOption("nearby_tournaments_list", "nearby_tournaments_list_nextpage", "{=uBC62Jdh1}Next page...", args => { args.optionLeaveType = GameMenuOption.LeaveType.Continue; return _tournamentListOffset* _tournamentListEntriesPerPage +_tournamentListEntriesPerPage < _tournamentListTotalCount; }, x => { ++_tournamentListOffset; GameMenu.SwitchToMenu("nearby_tournaments_list"); }, false, 30, false);
+            campaignGameStarter.AddGameMenuOption("nearby_tournaments_list", "nearby_tournaments_list_nextpage", "{=uBC62Jdh1}Next page...", args => { args.optionLeaveType = GameMenuOption.LeaveType.Continue; return _tournamentListOffset * _tournamentListEntriesPerPage + _tournamentListEntriesPerPage < _tournamentListTotalCount; }, x => { ++_tournamentListOffset; GameMenu.SwitchToMenu("nearby_tournaments_list"); }, false, 30, false);
             campaignGameStarter.AddGameMenuOption("nearby_tournaments_list", "nearby_tournaments_list_previouspage", "{=De0boqLm0}Previous page...", args => { args.optionLeaveType = GameMenuOption.LeaveType.LeaveTroopsAndFlee; return _tournamentListOffset > 0; }, x => { --_tournamentListOffset; GameMenu.SwitchToMenu("nearby_tournaments_list"); }, false, 20, false);
             campaignGameStarter.AddGameMenuOption("nearby_tournaments_list", "nearby_tournaments_list_leave", "{=fakGolQMf}Back to arena", args => { args.optionLeaveType = GameMenuOption.LeaveType.Leave; return true; }, x => GameMenu.SwitchToMenu("town_arena"), true, 10, false);
         }
@@ -137,7 +137,7 @@ namespace ArenaOverhaul.CampaignBehaviors
 
         private void UpdateTournamentPrizes()
         {
-            var fightTournamentGames = Town.AllTowns.Where(x => Campaign.Current.TournamentManager.GetTournamentGame(x) is FightTournamentGame).Select(x => (FightTournamentGame)Campaign.Current.TournamentManager.GetTournamentGame(x)).ToList();
+            var fightTournamentGames = Town.AllTowns.Where(x => Campaign.Current.TournamentManager.GetTournamentGame(x) is FightTournamentGame).Select(x => (FightTournamentGame) Campaign.Current.TournamentManager.GetTournamentGame(x)).ToList();
             foreach (FightTournamentGame fightTournamentGame in fightTournamentGames)
             {
                 FieldAccessHelper.FTGPossibleRegularRewardItemObjectsCacheByRef(fightTournamentGame)?.Clear();
@@ -171,7 +171,7 @@ namespace ArenaOverhaul.CampaignBehaviors
 
                         for (int x = 0; x < 4; x++)
                         {
-                            EquipmentElement equipmentFromSlot = characterObject.BattleEquipments.ToList<Equipment>()[i].GetEquipmentFromSlot((EquipmentIndex)x);
+                            EquipmentElement equipmentFromSlot = characterObject.BattleEquipments.ToList<Equipment>()[i].GetEquipmentFromSlot((EquipmentIndex) x);
                             if (equipmentFromSlot.Item != null)
                             {
                                 dialogueIdArr[x] = equipmentFromSlot.Item.StringId;
@@ -180,7 +180,7 @@ namespace ArenaOverhaul.CampaignBehaviors
                         }
                         dialogueID = string.Join("_", dialogueIdArr.Where(s => !string.IsNullOrEmpty(s)));
                         dialogueText = string.Join(", ", dialogueTextArr.Where(s => !string.IsNullOrEmpty(s)));
-                        
+
                         var equipmentEntry = (equipmentStage, dialogueText);
                         if (!listOfExistingLoadouts.Contains(equipmentEntry))
                         {
@@ -351,12 +351,12 @@ namespace ArenaOverhaul.CampaignBehaviors
                     Town town = nearbyTournamentTowns[i];
 
                     string distanceEstimate = GetDistanceEstimate(town, nearbyTownDistances, out bool isCloseBy);
-                    int tournamentAge = (int)Campaign.Current.TournamentManager.GetTournamentGame(town).CreationTime.ElapsedDaysUntilNow;
+                    int tournamentAge = (int) Campaign.Current.TournamentManager.GetTournamentGame(town).CreationTime.ElapsedDaysUntilNow;
                     int textVariation = (isCloseBy ? 0 : 3) + (tournamentAge <= 4 ? 0 : tournamentAge > 12 ? 2 : 1);
 
                     ItemObject prizeItemObject = Campaign.Current.TournamentManager.GetTournamentGame(town).Prize;
                     TextObject prizeTextObject = new("{=UOpsoG57t}tier {TIER} {TYPE}, {NAME}, worth {GOLD}{GOLD_ICON}");
-                    prizeTextObject.SetTextVariable("TIER", (int)prizeItemObject.Tier + 1);
+                    prizeTextObject.SetTextVariable("TIER", (int) prizeItemObject.Tier + 1);
                     prizeTextObject.SetTextVariable("TYPE", GetItemTypeName(prizeItemObject.Type));
                     prizeTextObject.SetTextVariable("NAME", prizeItemObject.Name);
                     prizeTextObject.SetTextVariable("GOLD", prizeItemObject.Value);
@@ -458,7 +458,7 @@ namespace ArenaOverhaul.CampaignBehaviors
 #pragma warning restore IDE1006 // Naming Styles
 
         public override void SyncData(IDataStore dataStore)
-        {         
+        {
         }
     }
 }

@@ -98,7 +98,7 @@ namespace ArenaOverhaul.Patches
             int renownAndInfluenceEndIndex = 0;
             for (int i = 0; i < codes.Count; ++i)
             {
-                if (numberOfEdits == 0 && codes[i].Calls(miGetMainHero) && codes[i- 1].opcode == OpCodes.Ret)
+                if (numberOfEdits == 0 && codes[i].Calls(miGetMainHero) && codes[i - 1].opcode == OpCodes.Ret)
                 {
                     codes[i].operand = null;
                     codes[i].opcode = OpCodes.Nop;

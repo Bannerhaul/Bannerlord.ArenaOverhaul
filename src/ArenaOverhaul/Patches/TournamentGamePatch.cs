@@ -37,7 +37,7 @@ namespace ArenaOverhaul.Patches
                     initializeNobleCountIndexNew = i;
                     ++numberOfEdits;
                 }
-                else if(numberOfEdits == 1 && codes[i].opcode == OpCodes.Ldc_I4_0 && codes[i + 1].opcode == OpCodes.Ldarg_0 && codes[i + 2].opcode == OpCodes.Ldfld && (FieldInfo)codes[i + 2].operand == fiLastRecordedNobleCountForTournamentPrize)
+                else if (numberOfEdits == 1 && codes[i].opcode == OpCodes.Ldc_I4_0 && codes[i + 1].opcode == OpCodes.Ldarg_0 && codes[i + 2].opcode == OpCodes.Ldfld && (FieldInfo) codes[i + 2].operand == fiLastRecordedNobleCountForTournamentPrize)
                 {
                     codes[i].opcode = OpCodes.Ldc_I4_1;
                     ++numberOfEdits;

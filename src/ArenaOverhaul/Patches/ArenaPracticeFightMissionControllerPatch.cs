@@ -65,7 +65,7 @@ namespace ArenaOverhaul.Patches
                     codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetActiveOpponentCount);
                     ++numberOfEdits;
                 }
-                else if (numberOfEdits == 1 && codes[i].opcode == OpCodes.Ldc_I4_S && (sbyte)codes[i].operand == 30)
+                else if (numberOfEdits == 1 && codes[i].opcode == OpCodes.Ldc_I4_S && (sbyte) codes[i].operand == 30)
                 {
                     codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetTotalParticipantsCount);
                     ++numberOfEdits;
@@ -84,7 +84,7 @@ namespace ArenaOverhaul.Patches
                     spawnEndIndex = i;
                     ++numberOfEdits;
                 }
-                else if (numberOfEdits == 4 && codes[i].opcode == OpCodes.Ldc_I4_S && (sbyte)codes[i].operand == 30)
+                else if (numberOfEdits == 4 && codes[i].opcode == OpCodes.Ldc_I4_S && (sbyte) codes[i].operand == 30)
                 {
                     codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetTotalParticipantsCount);
                     ++numberOfEdits;
@@ -252,7 +252,7 @@ namespace ArenaOverhaul.Patches
             }
 
             PartyBase party = Hero.MainHero.PartyBelongedTo.Party;
-            CharacterObject affectorCharacter = (CharacterObject)affectorAgent.Character;
+            CharacterObject affectorCharacter = (CharacterObject) affectorAgent.Character;
 
             bool affectorIsAliedHero = affectorCharacter.IsPlayerCharacter || (affectorCharacter.IsHero && party.MemberRoster.Contains(affectorCharacter));
             if (!affectorIsAliedHero)
@@ -266,7 +266,7 @@ namespace ArenaOverhaul.Patches
             {
                 if (!troopRosterElement.Character.IsHero && !troopRosterElement.Character.IsPlayerCharacter)
                 {
-                    party.MemberRoster.AddXpToTroop((int)xpAmount, troopRosterElement.Character);
+                    party.MemberRoster.AddXpToTroop((int) xpAmount, troopRosterElement.Character);
                 }
                 else if (relevantSkill is not null && troopRosterElement.Character.IsHero && !troopRosterElement.Character.IsPlayerCharacter && !FieldAccessHelper.APFMCParticipantAgentsByRef(__instance).Select(a => a.Character).Contains(troopRosterElement.Character))
                 {
@@ -327,7 +327,7 @@ namespace ArenaOverhaul.Patches
             {
                 FieldAccessHelper.APFMCParticipantAgentsByRef(instance).Add(deSpawnArenaAgent!(instance, deSelectRandomAiTeam!(instance), deGetSpawnFrame!(instance, true, false)));
             }
-            FieldAccessHelper.APFMCNextSpawnTimeByRef(instance) = (float)(instance.Mission.CurrentTime + 12.0 - Math.Min(FieldAccessHelper.APFMCSpawnedOpponentAgentCountByRef(instance) / (GetTotalParticipantsCount() / 10), 11.0));
+            FieldAccessHelper.APFMCNextSpawnTimeByRef(instance) = (float) (instance.Mission.CurrentTime + 12.0 - Math.Min(FieldAccessHelper.APFMCSpawnedOpponentAgentCountByRef(instance) / (GetTotalParticipantsCount() / 10), 11.0));
 
             bool IsUndercrowded() => FieldAccessHelper.APFMCNextSpawnTimeByRef(instance) > instance.Mission.CurrentTime;
         }
@@ -392,12 +392,12 @@ namespace ArenaOverhaul.Patches
             int num = 0;
             for (int i = 0; i < codes.Count; ++i)
             {
-                if (num < numberOfOccureneces - 1 && codes[i].opcode == OpCodes.Ldc_I4_S && (sbyte)codes[i].operand == 30)
+                if (num < numberOfOccureneces - 1 && codes[i].opcode == OpCodes.Ldc_I4_S && (sbyte) codes[i].operand == 30)
                 {
                     codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetTotalParticipantsCount);
                     ++num;
                 }
-                else if (num == numberOfOccureneces - 1 && codes[i].opcode == OpCodes.Ldc_I4_S && (sbyte)codes[i].operand == 30)
+                else if (num == numberOfOccureneces - 1 && codes[i].opcode == OpCodes.Ldc_I4_S && (sbyte) codes[i].operand == 30)
                 {
                     codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetTotalParticipantsCount);
                     break;

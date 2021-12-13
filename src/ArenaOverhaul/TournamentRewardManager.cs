@@ -46,15 +46,15 @@ namespace ArenaOverhaul
 
         internal static void UpdateRoundWinnings(TournamentBehavior instance)
         {
-            _roundWinners[instance.TournamentGame.Town].AddRange(instance.LastMatch.Winners.Where(x => x.Character.IsHero).Select(x => (Round: instance.CurrentRoundIndex, Winner: x.Character)).ToList());            
+            _roundWinners[instance.TournamentGame.Town].AddRange(instance.LastMatch.Winners.Where(x => x.Character.IsHero).Select(x => (Round: instance.CurrentRoundIndex, Winner: x.Character)).ToList());
         }
 
         internal static void UpdateNoticableTakedowns(Agent affectorAgent, Agent affectedAgent)
         {
             if (affectorAgent.Character.IsHero && affectedAgent.Character.IsHero && affectedAgent.Health < 1.0)
             {
-                Hero affectorHero = ((CharacterObject)affectorAgent.Character).HeroObject;
-                Hero affectedHero = ((CharacterObject)affectedAgent.Character).HeroObject;
+                Hero affectorHero = ((CharacterObject) affectorAgent.Character).HeroObject;
+                Hero affectedHero = ((CharacterObject) affectedAgent.Character).HeroObject;
                 UpdateNoticableTakedowns(affectorHero, affectedHero);
             }
         }
@@ -88,7 +88,7 @@ namespace ArenaOverhaul
 
         public static int GetTournamentGoldPrize(Town tournamentTown)
         {
-            return (int)(Math.Floor((Settings.Instance!.EnableTournamentGoldPrizes ? tournamentTown.Settlement.Prosperity + (Settings.Instance!.EnableTournamentPrizeScaling ? Clan.PlayerClan.Renown : 0.0) : 0.0) / 50.0) * 50.0);
+            return (int) (Math.Floor((Settings.Instance!.EnableTournamentGoldPrizes ? tournamentTown.Settlement.Prosperity + (Settings.Instance!.EnableTournamentPrizeScaling ? Clan.PlayerClan.Renown : 0.0) : 0.0) / 50.0) * 50.0);
         }
 
         public static void ResolveTournament(CharacterObject winner, MBReadOnlyList<CharacterObject> participants, Town town)
@@ -131,7 +131,7 @@ namespace ArenaOverhaul
 
         private static void GiveConsolationPrizes(CharacterObject winner, MBReadOnlyList<CharacterObject> participants, Town town)
         {
-            foreach(Hero participantHero in participants.Where(participant => participant.IsHero && participant != winner).Select(characterObject => characterObject.HeroObject).ToList())
+            foreach (Hero participantHero in participants.Where(participant => participant.IsHero && participant != winner).Select(characterObject => characterObject.HeroObject).ToList())
             {
                 int goldPrize = RoundPrizeWinners[town].FirstOrDefault(x => x.Participant == participantHero).Winnings;
                 if (goldPrize > 0)

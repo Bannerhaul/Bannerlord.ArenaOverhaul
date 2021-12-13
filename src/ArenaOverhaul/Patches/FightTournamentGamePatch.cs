@@ -65,7 +65,7 @@ namespace ArenaOverhaul.Patches
             }
             if (includePlayerStartIndex > 0 && includePlayerEndIndex > 0)
             {
-                codes.RemoveRange(includePlayerStartIndex, includePlayerEndIndex - includePlayerStartIndex + 1);                
+                codes.RemoveRange(includePlayerStartIndex, includePlayerEndIndex - includePlayerStartIndex + 1);
                 codes.InsertRange(includePlayerStartIndex, new CodeInstruction[] { new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(OpCodes.Ldloc_0), new CodeInstruction(opcode: OpCodes.Call, operand: miAddPlayerParyToParticipantCharacters) });
             }
             else
@@ -145,7 +145,7 @@ namespace ArenaOverhaul.Patches
                 }
                 else
                 {
-                    var itemObjectCandidates = Items.All.Where(itemObject => (int)itemObject.Tier == Clan.PlayerClan.Tier && !itemObject.NotMerchandise && (itemObject.IsCraftedWeapon || itemObject.IsMountable || itemObject.ArmorComponent != null) && !itemObject.IsCraftedByPlayer).ToList();
+                    var itemObjectCandidates = Items.All.Where(itemObject => (int) itemObject.Tier == Clan.PlayerClan.Tier && !itemObject.NotMerchandise && (itemObject.IsCraftedWeapon || itemObject.IsMountable || itemObject.ArmorComponent != null) && !itemObject.IsCraftedByPlayer).ToList();
                     itemObjectList.AddRange(itemObjectCandidates);
                 }
             }
@@ -207,7 +207,7 @@ namespace ArenaOverhaul.Patches
 
         private static int GetRenownRegularRewardItemValueIncrease(bool isForMinValue = false)
         {
-            int playerRenown = (int)Clan.PlayerClan.Renown;
+            int playerRenown = (int) Clan.PlayerClan.Renown;
             return Clan.PlayerClan.Tier switch
             {
                 0 => isForMinValue ? 0 : 0,
