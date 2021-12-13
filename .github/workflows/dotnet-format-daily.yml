@@ -12,5 +12,5 @@ jobs:
       - name: Code Formatting
         uses: butr/actions-code-format-setup@v1.5
         with:
-          workspace: "src/Bannerlord.ButterLib.sln"
+          workspace: "src/ArenaOverhaul.sln"
           github-token: ${{ secrets.GITHUB_TOKEN }}
