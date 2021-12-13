@@ -22,14 +22,14 @@
 		<string id="ForHVzTkJ" text="Also, from time to time, so-called extensive practice fights are held. Basically, it's the same thing, but longer and much more intense. I would advise you to bring some of your men with you, it might be good practice for them. Just do not forget - no teams in there, otherwise you will be disqualified.[ib:closed][if:convo_bared_teeth]" />
 		<string id="nZVbLJnVn" text="And what about these expansive practice fights, are they rewarded too? How much are the prizes?" />
 		<string id="MqTDJG0uG" text="I'd like to choose my gear." />
-		<string id="iDGR9F0Gn" text="Alright{?WEAPON_CHOICE_HAS_PRICE}, but it will cost you {WEAPON_CHOICE_PRICE}{GOLD_ICON}{?}{\\?}! Which weapon set are you taking?[ib:closed][if:convo_bared_teeth]" />
+		<string id="iDGR9F0Gn" text="Alright{?WEAPON_CHOICE_HAS_PRICE}, but it will cost you {WEAPON_CHOICE_PRICE}{GOLD_ICON}{?}{\?}! Which weapon set are you taking?[ib:closed][if:convo_bared_teeth]" />
 		<string id="DGsGeb4LA" text="I'd like to get better gear." />
 		<string id="lIBwkFipY" text="Actually, nevermind." />
 		<string id="7f21TSn5W" text="I'd like to participate in an expansive practice fight..." />
 		<string id="MnhLtl9Nn" text="Well, gather your men and go to it! Don't forget to grab a practice weapon on your way down.[if:convo_approving]" />
 		<string id="WRO1rFtQm" text="I'll do that with standard gear." />
 		<string id="uLNYivCXl" text="Sure. Although I'd like to take a new loadout." />
-		<string id="zvb5PZ5OA" text="Tournaments are currently being held in {TOURNAMENTS} {?TOURNAMENTS.PLURAL_FORM}towns{?}town{\\?}.{NEW_LINE}{TORNAMENT_LIST.START}{?TORNAMENT_LIST.IS_PLURAL}{NEW_LINE}{?}{\\?}{TORNAMENT_LIST.END}" />
+		<string id="zvb5PZ5OA" text="Tournaments are currently being held in {TOURNAMENTS} {?TOURNAMENTS.PLURAL_FORM}towns{?}town{\?}.{NEW_LINE}{TORNAMENT_LIST.START}{?TORNAMENT_LIST.IS_PLURAL}{NEW_LINE}{?}{\?}{TORNAMENT_LIST.END}" />
 		<string id="sotK7sewA" text="nearby" />
 		<string id="J5jTiUvt8" text="reasonably close from here" />
 		<string id="ULKHRKsSV" text="reasonably far from here" />
