@@ -138,7 +138,7 @@ namespace ArenaOverhaul.Patches
                     MessageHelper.ErrorMessage("Harmony transpiler for ArenaMaster. AddDialogs was not able to make all required changes!");
                 }
             }
-            if (indexToSetStandardPracticeMode > 0 && indexOfNewobjOperand > 0 )
+            if (indexToSetStandardPracticeMode > 0 && indexOfNewobjOperand > 0)
             {
                 codes.InsertRange(indexToSetStandardPracticeMode, new CodeInstruction[] { new CodeInstruction(opcode: OpCodes.Ldftn, operand: miSetStandardPracticeMode), new CodeInstruction(opcode: OpCodes.Newobj, operand: codes[indexOfNewobjOperand].operand) });
             }

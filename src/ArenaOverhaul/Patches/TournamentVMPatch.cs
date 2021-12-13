@@ -16,7 +16,7 @@ namespace ArenaOverhaul.Patches
         [HarmonyPostfix]
         [HarmonyPatch("OnTournamentEnd")]
         public static void OnTournamentEndPostfix(TournamentVM __instance)
-        {            
+        {
             bool winnerIsPlayer = __instance.Tournament.Winner.IsPlayer;
             Town tournamentTown = __instance.Tournament.TournamentGame.Town;
 
