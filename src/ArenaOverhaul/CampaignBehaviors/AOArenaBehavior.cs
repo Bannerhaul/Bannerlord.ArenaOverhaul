@@ -159,6 +159,7 @@ namespace ArenaOverhaul.CampaignBehaviors
                         Game.Current.ObjectManager.GetObject<CharacterObject>("weapon_practice_stage_" + practiceStage.ToString() + "_" + settlement.MapFaction.Culture.StringId)
                         ?? Game.Current.ObjectManager.GetObject<CharacterObject>("weapon_practice_stage_" + practiceStage.ToString() + "_empire");
 
+                    List<(int EquipmentStage, string Loadout)> listOfExistingLoadouts = new();
                     for (int i = 0; i < characterObject.BattleEquipments.Count(); i++)
                     {
                         string[] dialogueIdArr = new string[4];
@@ -179,8 +180,13 @@ namespace ArenaOverhaul.CampaignBehaviors
                         }
                         dialogueID = string.Join("_", dialogueIdArr.Where(s => !string.IsNullOrEmpty(s)));
                         dialogueText = string.Join(", ", dialogueTextArr.Where(s => !string.IsNullOrEmpty(s)));
-
-                        campaignGameStarter.AddPlayerLine(dialogueID, "arena_master_practice_weapons_list", "close_window", dialogueText, new ConversationSentence.OnConditionDelegate(() => conversation_town_arena_culture_match_on_condition(settlement.MapFaction.Culture, equipmentStage)), new ConversationSentence.OnConsequenceDelegate(() => conversation_arena_join_fight_with_selected_loadout_on_consequence(loadout)), 100, null, null);
+                        
+                        var equipmentEntry = (equipmentStage, dialogueText);
+                        if (!listOfExistingLoadouts.Contains(equipmentEntry))
+                        {
+                            listOfExistingLoadouts.Add(equipmentEntry);
+                            campaignGameStarter.AddPlayerLine(dialogueID, "arena_master_practice_weapons_list", "close_window", dialogueText, new ConversationSentence.OnConditionDelegate(() => conversation_town_arena_culture_match_on_condition(settlement.MapFaction.Culture, equipmentStage)), new ConversationSentence.OnConsequenceDelegate(() => conversation_arena_join_fight_with_selected_loadout_on_consequence(loadout)), 100, null, null);
+                        }
                     }
                 }
                 _visitedCultures.Add(settlement.MapFaction.Culture);

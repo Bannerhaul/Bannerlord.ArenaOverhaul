@@ -110,6 +110,6 @@ namespace ArenaOverhaul
                 _ => 0
             };
 
-        private static bool IsExpansivePractice() => (Mission.Current?.GetMissionBehavior<ArenaPracticeFightMissionController>().IsPlayerPracticing ?? false) && (Campaign.Current.CampaignBehaviorManager.GetBehavior<AOArenaBehavior>()?.InExpansivePractice ?? false);
+        private static bool IsExpansivePractice() => Campaign.Current.CampaignBehaviorManager.GetBehavior<AOArenaBehavior>()?.InExpansivePractice ?? false;
     }
 }
