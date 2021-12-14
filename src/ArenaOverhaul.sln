@@ -20,10 +20,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{CB20C6C8
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{AE56FFC8-0129-4E0F-83C0-D00011A2B127}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\dependabot.yml = ..\.github\dependabot.yml
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{8CBC023C-EB40-415D-8A78-B6B7F82523E9}"
 	ProjectSection(SolutionItems) = preProject
 		..\.github\workflows\build.yml = ..\.github\workflows\build.yml
+		..\.github\workflows\dotnet-format-daily.yml = ..\.github\workflows\dotnet-format-daily.yml
 		..\.github\workflows\TestBuild.yml = ..\.github\workflows\TestBuild.yml
 	EndProjectSection
 EndProject
@@ -77,7 +81,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8CBC023C-EB40-415D-8A78-B6B7F82523E9} = {AE56FFC8-0129-4E0F-83C0-D00011A2B127}
-	EndGlobalSection	
+	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FFDD79B4-E385-4670-B133-09FF329511EF}
 	EndGlobalSection
