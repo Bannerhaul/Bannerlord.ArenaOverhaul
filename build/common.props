@@ -17,7 +17,7 @@
         <!--MCM Version-->
         <MCMVersion>4.3.15</MCMVersion>
         <!--BUTRShared Version-->
-        <BUTRSharedVersion>1.6.1.61</BUTRSharedVersion>
+        <BUTRSharedVersion>2.0.0.71</BUTRSharedVersion>
         <!--Harmony Extensions Version-->
         <HarmonyExtensionsVersion>2.0.0.51</HarmonyExtensionsVersion>
     </PropertyGroup>
