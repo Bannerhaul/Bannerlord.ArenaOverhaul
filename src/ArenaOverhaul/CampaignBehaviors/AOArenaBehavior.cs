@@ -1,9 +1,11 @@
 ﻿using ArenaOverhaul.Helpers;
+using ArenaOverhaul.TeamTournament;
 
 using Bannerlord.ButterLib.Common.Helpers;
 
 using SandBox;
 using SandBox.Source.Towns;
+using SandBox.View.Menu;
 
 using System;
 using System.Collections.Generic;
@@ -20,6 +22,8 @@ using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 
 using static TaleWorlds.Core.ItemObject;
+
+using TWHelpers = Helpers;
 
 namespace ArenaOverhaul.CampaignBehaviors
 {
@@ -45,10 +49,16 @@ namespace ArenaOverhaul.CampaignBehaviors
         public override void RegisterEvents()
         {
             CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener(this, OnSessionLaunched);
+            CampaignEvents.OnAfterSessionLaunchedEvent.AddNonSerializedListener(this, OnAfterSessionLaunched);
             CampaignEvents.AfterMissionStarted.AddNonSerializedListener(this, AfterMissionStarted);
             CampaignEvents.TournamentFinished.AddNonSerializedListener(this, OnTournamentFinished);
             CampaignEvents.SettlementEntered.AddNonSerializedListener(this, OnSettlementEntered);
             CampaignEvents.ClanTierIncrease.AddNonSerializedListener(this, OnClanTierChanged);
+        }
+
+        private void OnAfterSessionLaunched(CampaignGameStarter campaignGameStarter)
+        {
+            AddGameMenus(campaignGameStarter);
         }
 
         public void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
@@ -59,7 +69,6 @@ namespace ArenaOverhaul.CampaignBehaviors
             ResetWeaponChoice();
 
             AddDialogs(campaignGameStarter);
-            AddGameMenus(campaignGameStarter);
             TournamentRewardManager.Initialize();
 
             if (Settlement.CurrentSettlement != null)
@@ -81,6 +90,18 @@ namespace ArenaOverhaul.CampaignBehaviors
             campaignGameStarter.AddGameMenuOption("nearby_tournaments_list", "nearby_tournaments_list_nextpage", "{=uBC62Jdh1}Next page...", args => { args.optionLeaveType = GameMenuOption.LeaveType.Continue; return _tournamentListOffset * _tournamentListEntriesPerPage + _tournamentListEntriesPerPage < _tournamentListTotalCount; }, x => { ++_tournamentListOffset; GameMenu.SwitchToMenu("nearby_tournaments_list"); }, false, 30, false);
             campaignGameStarter.AddGameMenuOption("nearby_tournaments_list", "nearby_tournaments_list_previouspage", "{=De0boqLm0}Previous page...", args => { args.optionLeaveType = GameMenuOption.LeaveType.LeaveTroopsAndFlee; return _tournamentListOffset > 0; }, x => { --_tournamentListOffset; GameMenu.SwitchToMenu("nearby_tournaments_list"); }, false, 20, false);
             campaignGameStarter.AddGameMenuOption("nearby_tournaments_list", "nearby_tournaments_list_leave", "{=fakGolQMf}Back to arena", args => { args.optionLeaveType = GameMenuOption.LeaveType.Leave; return true; }, x => GameMenu.SwitchToMenu("town_arena"), true, 10, false);
+
+#if !e164 && !e165
+            if (Settings.Instance!.EnableTeamTournaments)
+            {
+                campaignGameStarter.AddGameMenuOption("menu_town_tournament_join", "participate_as_team", "{=xRkr497KP}Join as a team", new GameMenuOption.OnConditionDelegate(team_game_select_roster_condition), new GameMenuOption.OnConsequenceDelegate(team_game_select_roster_consequence), false, 1, false);
+            }
+#endif
+
+#if DEBUG // only needed when debugging for testing
+            campaignGameStarter.AddGameMenuOption("town_arena", "test_add_tournament_game", "Add Tournament", new GameMenuOption.OnConditionDelegate(AddTournamentCondition), new GameMenuOption.OnConsequenceDelegate(AddTournamentConsequence), false, 3, true);
+            campaignGameStarter.AddGameMenuOption("town_arena", "test_resolve_tournament_game", "Resolve Tournament", new GameMenuOption.OnConditionDelegate(ResolveTournamentCondition), new GameMenuOption.OnConsequenceDelegate(ResolveTournamentConsequence), false, 4, true);
+#endif
         }
 
         protected void AddDialogs(CampaignGameStarter campaignGameStarter)
@@ -101,6 +122,7 @@ namespace ArenaOverhaul.CampaignBehaviors
             campaignGameStarter.AddPlayerLine("arena_master_post_practice_fight_take_default_loadout", "arena_master_post_practice_fight_talk", "close_window", "{=WRO1rFtQm}I'll do that with standard gear.", new ConversationSentence.OnConditionDelegate(conversation_arena_return_to_default_choice_allowed_on_condition), new ConversationSentence.OnConsequenceDelegate(conversation_arena_join_fight_with_default_weapons_on_consequence), 95, null, null);
             campaignGameStarter.AddPlayerLine("arena_master_post_practice_fight_take_new_loadout", "arena_master_post_practice_fight_talk", "arena_master_practice_choose_weapon_request", "{=uLNYivCXl}Sure. Although I'd like to take a new loadout.", new ConversationSentence.OnConditionDelegate(conversation_arena_weapon_choice_allowed_on_condition), new ConversationSentence.OnConsequenceDelegate(ResetWeaponChoice), 90, null, null);
         }
+
         public void AfterMissionStarted(IMission obj)
         {
             if (!_enteredPracticeFightFromMenu)
@@ -455,6 +477,60 @@ namespace ArenaOverhaul.CampaignBehaviors
             args.IsEnabled = false;
             return true;
         }
+
+        public bool team_game_select_roster_condition(MenuCallbackArgs args)
+        {
+            bool canPlayerDo = Campaign.Current.Models.SettlementAccessModel.CanMainHeroDoSettlementAction(
+                Settlement.CurrentSettlement,
+                SettlementAccessModel.SettlementAction.JoinTournament,
+                out bool shouldBeDisabled,
+                out TextObject disabledText
+            );
+
+            args.optionLeaveType = GameMenuOption.LeaveType.TroopSelection;
+
+            // if this town has a tournament, activate
+            shouldBeDisabled &= TeamTournamentHelpers.IsTournamentActive;
+            canPlayerDo &= TeamTournamentHelpers.IsTournamentActive;
+
+            if (shouldBeDisabled || string.IsNullOrEmpty(disabledText.ToString()))
+                disabledText = new TextObject("{=Ams5ccKzh}Roster can only be selected for team tournaments.");
+
+            return TWHelpers.MenuHelper.SetOptionProperties(args, canPlayerDo, shouldBeDisabled, disabledText);
+        }
+
+        public void team_game_select_roster_consequence(MenuCallbackArgs args)
+        {
+            if (args.MenuContext.Handler is MenuViewContext menuViewContext)
+            {
+                if (TeamTournamentInfo.Current != null && !TeamTournamentInfo.Current.IsFinished)
+                    TeamTournamentInfo.Current.OpenSelectionMenu(menuViewContext);
+                else
+                    new TeamTournamentInfo().OpenSelectionMenu(menuViewContext);
+            }
+        }
+
+#if DEBUG // only needed when debugging for testing
+        private bool AddTournamentCondition(MenuCallbackArgs args) => !Settlement.CurrentSettlement.Town.HasTournament;
+        private void AddTournamentConsequence(MenuCallbackArgs args)
+        {
+            Campaign.Current.TournamentManager.AddTournament(new FightTournamentGame(Settlement.CurrentSettlement.Town));
+            GameMenu.SwitchToMenu("town_arena");
+        }
+
+        private bool ResolveTournamentCondition(MenuCallbackArgs args) => Settlement.CurrentSettlement.Town.HasTournament;
+        private void ResolveTournamentConsequence(MenuCallbackArgs args)
+        {
+            var town = Settlement.CurrentSettlement.Town;
+            if (town.HasTournament)
+            {
+                var tournament = Campaign.Current.TournamentManager.GetTournamentGame(town);
+                Campaign.Current.TournamentManager.ResolveTournament(tournament, town);
+            }
+            GameMenu.SwitchToMenu("town_arena");
+        }
+#endif
+
 #pragma warning restore IDE1006 // Naming Styles
 
         public override void SyncData(IDataStore dataStore)
