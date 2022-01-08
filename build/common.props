@@ -15,7 +15,7 @@
         <!--BuildResources Version-->
         <BuildResourcesVersion>1.0.0.39</BuildResourcesVersion>
         <!--MCM Version-->
-        <MCMVersion>4.3.15</MCMVersion>
+        <MCMVersion>4.3.17</MCMVersion>
         <!--BUTRShared Version-->
         <BUTRSharedVersion>1.6.1.61</BUTRSharedVersion>
         <!--Harmony Extensions Version-->
