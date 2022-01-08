@@ -19,7 +19,7 @@
         <!--BUTRShared Version-->
         <BUTRSharedVersion>2.0.0.75</BUTRSharedVersion>
         <!--Harmony Extensions Version-->
-        <HarmonyExtensionsVersion>2.0.0.51</HarmonyExtensionsVersion>
+        <HarmonyExtensionsVersion>2.0.0.53</HarmonyExtensionsVersion>
     </PropertyGroup>
 
     <PropertyGroup>
