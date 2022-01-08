@@ -30,7 +30,7 @@ namespace ArenaOverhaul.TeamTournament.Patches
                     ViewCreator.CreateOptionsUIHandler(),
                     ViewCreator.CreateMissionMainAgentGamepadEquipDropView(mission),
                     ViewCreatorManager.CreateMissionView<MissionGauntletTeamTournamentView>(false, null, Array.Empty<object>()), // this is patched!
-                    new MissionAudienceHandler(0.4f + MBRandom.RandomFloat * 0.6f),
+                    new MissionAudienceHandler(0.4f + (MBRandom.RandomFloat * 0.6f)),
                     ViewCreator.CreateMissionAgentStatusUIHandler(mission),
                     ViewCreator.CreateMissionMainAgentEquipmentController(mission),
                     ViewCreator.CreateMissionMainAgentCheerBarkControllerView(mission),

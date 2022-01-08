@@ -43,7 +43,6 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
             for (int i = 0; i < Tournament.Rounds.Length; i++)
                 _rounds[i].Initialize(Tournament.Rounds[i], GameTexts.FindText("str_tournament_round", i.ToString()));
 
-
             Refresh();
 
             Tournament.TournamentEnd += OnTournamentEnd;
@@ -145,7 +144,6 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
             var secondTeamLeader = new TeamTournamentMemberVM(winnerTeams.ElementAt(1).GetTeamLeader());
             TournamentWinner = firstTeamLeader;
 
-
             if (this.TournamentWinner.Member.Character.IsHero)
             {
                 Hero heroObject = this.TournamentWinner.Member.Character.HeroObject;
@@ -162,7 +160,6 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
             IsWinnerHero = TournamentWinner.Member.Character.IsHero;
             if (IsWinnerHero)
                 WinnerBanner = new ImageIdentifierVM(BannerCode.CreateFrom(TournamentWinner.Member.Character.HeroObject.ClanBanner), true);
-
 
             if (TournamentWinner.IsMainHero)
             {
@@ -249,7 +246,6 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         /// DO NOT REMOVE
         /// </summary>
         private void ExecuteShowPrizeItemTooltip()
-
         {
             if (HasPrizeItem)
             {

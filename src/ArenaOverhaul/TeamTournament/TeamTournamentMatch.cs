@@ -80,6 +80,7 @@ namespace ArenaOverhaul.TeamTournament
                 _teams.ForEach(t => t.ResetScore());
             }
         }
+
         public IEnumerable<TeamTournamentMember> MatchMembers => Teams.SelectMany(x => x.Members);
         public bool IsPlayerParticipating => Teams.Any(x => x.IsPlayerTeam);
         public bool IsPlayerTeamWinner => GetWinners().Any(x => x.IsPlayerTeam);
@@ -99,4 +100,3 @@ namespace ArenaOverhaul.TeamTournament
         private List<TeamTournamentTeam> _teams;
     }
 }
-

@@ -3,7 +3,6 @@ using System.Linq;
 
 using TaleWorlds.Library;
 
-
 namespace ArenaOverhaul.TeamTournament.ViewModels
 {
     public class TeamTournamentTeamVM : ViewModel

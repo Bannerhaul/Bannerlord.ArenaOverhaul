@@ -48,4 +48,3 @@ namespace ArenaOverhaul.TeamTournament
         private List<TeamTournamentMatch> _matches;
     }
 }
-

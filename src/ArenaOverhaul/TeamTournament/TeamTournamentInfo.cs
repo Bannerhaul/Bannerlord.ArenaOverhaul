@@ -30,7 +30,7 @@ namespace ArenaOverhaul.TeamTournament
             Town = Settlement.CurrentSettlement.Town;
             TeamSize = MBRandom.Random.Next(2, 9); // current interface allows up to 8 per team
             TeamsCount = (int) Math.Pow(2, MBRandom.Random.Next(3, 6)); // 8, 16, 32 teams possible -> also 4 but needs more testing and fixing 
-            FirstRoundMatches = TeamsCount == 32 ? 8 : TeamsCount / (MBRandom.Random.Next(2) * 2 + 2); // if full (32) => 8 rounds, else can be 4 or 8
+            FirstRoundMatches = (TeamsCount == 32 ? 8 : TeamsCount) / (MBRandom.Random.Next(2) * 2 + 2); // if full (32) => 8 rounds, else can be 4 or 8
             Rounds = (int) Math.Min(Math.Log(TeamsCount, 2), 4); // simple log2 round progression (members/2 in every round)
             Current = this;
         }
