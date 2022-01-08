@@ -26,6 +26,7 @@ namespace ArenaOverhaul
         private const string HeadingTournamentsMaterialRewards = HeadingTournaments + "/{=ZlvTL5D4T}Material rewards";
         private const string HeadingTournamentsIntangibleRewards = HeadingTournaments + "/{=BCzO2WGq9}Intangible rewards";
         private const string HeadingTournamentsExperience = HeadingTournaments + "/{=oywDR1MSm}Experience";
+        private const string HeadingTournamentsTeamGame = HeadingTournaments + "/{=h6sPrqfax}Team Tournament";
 
         //Reused settings, hints and values
         internal const string DropdownValueStandard = "{=gknaSzMr6}Standard";
@@ -196,5 +197,28 @@ namespace ArenaOverhaul
         [SettingPropertyFloatingInteger("{=9dP3VJpOG}Experience gain rate", 0f, 1f, "#0.0%", Order = 0, RequireRestart = false, HintText = "{=C5fcetmfG}Experience gain rate in the tournament fights. Native = 33%. Default = 66.6%.")]
         [SettingPropertyGroup(HeadingTournamentsExperience, GroupOrder = 2)]
         public float TournamentExperienceRate { get; set; } = 0.666f;
+
+#if !e164 || !e165
+        // team tournament settings
+        [SettingPropertyBool("{=PSnYupZhT}Enable Team Tournaments", RequireRestart = false, HintText = "{=qHyqXp9tK}Adds an option for joining and participating in the tournaments as a team.", Order = 0)]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        public bool EnableTeamTournaments { get; set; } = true;
+
+        [SettingPropertyInteger("{=l2FTrzzXX}Team 1 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 1)]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        public int TeamOneColor { get; set; } = 83;
+
+        [SettingPropertyInteger("{=jWYXBiEZp}Team 2 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 2)]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        public int TeamTwoColor { get; set; } = 119;
+
+        [SettingPropertyInteger("{=iRvUExaRI}Team 3 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 3)]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        public int TeamThreeColor { get; set; } = 88;
+
+        [SettingPropertyInteger("{=F6qBgeAOk}Team 4 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 4)]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        public int TeamFourColor { get; set; } = 84;
+#endif
     }
 }
