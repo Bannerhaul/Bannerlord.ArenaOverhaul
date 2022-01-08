@@ -185,5 +185,9 @@
 		<string id="h6sPrqfax" text="Team Tournament" />
 		<string id="Ams5ccKzh" text="Roster can only be selected for team tournaments." />
 		<string id="xRkr497KP" text="Join as a team" />
+		<string id="Q6qQge312" text="Team Size Max" />
+		<string id="4q3hSTZPZ" text="The maximum number of members in a team. A team consists of at least two members." />
+		<string id="6o45aTuZi" text="Max Teams per Tournament" />
+		<string id="34r9jsdJq" text="The maximum amount of teams in a tournament. A tournament has at least 8 teams." />
 	</strings>
 </base>

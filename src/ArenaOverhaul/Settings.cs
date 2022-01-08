@@ -201,23 +201,36 @@ namespace ArenaOverhaul
 #if !e164 || !e165
         // team tournament settings
         [SettingPropertyBool("{=PSnYupZhT}Enable Team Tournaments", RequireRestart = false, HintText = "{=qHyqXp9tK}Adds an option for joining and participating in the tournaments as a team.", Order = 0)]
-        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 2)]
         public bool EnableTeamTournaments { get; set; } = true;
 
-        [SettingPropertyInteger("{=l2FTrzzXX}Team 1 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 1)]
-        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        [SettingPropertyInteger("{=Q6qQge312}Team Size Max", 2, 16, RequireRestart = false, HintText = "{=4q3hSTZPZ}The maximum number of members in a team. A team consists of at least two members.", Order = 5)]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 2)]
+        public int TeamSizeMax { get; set; } = 8;
+
+        [SettingPropertyDropdown("{=6o45aTuZi}Max Teams per Tournament", RequireRestart = false, HintText = "{=34r9jsdJq}The maximum amount of teams in a tournament. A tournament has at least 8 teams.", Order = 10)]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 2)]
+        public DropdownDefault<int> TeamsCountMax { get; set; } = new DropdownDefault<int>(new int[]
+        {
+            8,
+            16,
+            32
+        }, 1);
+
+        [SettingPropertyInteger("{=l2FTrzzXX}Team 1 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 15)]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 2)]
         public int TeamOneColor { get; set; } = 83;
 
-        [SettingPropertyInteger("{=jWYXBiEZp}Team 2 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 2)]
-        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        [SettingPropertyInteger("{=jWYXBiEZp}Team 2 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 16)]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 2)]
         public int TeamTwoColor { get; set; } = 119;
 
-        [SettingPropertyInteger("{=iRvUExaRI}Team 3 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 3)]
-        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        [SettingPropertyInteger("{=iRvUExaRI}Team 3 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 17)]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 2)]
         public int TeamThreeColor { get; set; } = 88;
 
-        [SettingPropertyInteger("{=F6qBgeAOk}Team 4 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 4)]
-        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        [SettingPropertyInteger("{=F6qBgeAOk}Team 4 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 18)]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 2)]
         public int TeamFourColor { get; set; } = 84;
 #endif
     }
