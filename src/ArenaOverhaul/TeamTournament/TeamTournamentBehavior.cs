@@ -73,8 +73,6 @@ namespace ArenaOverhaul.TeamTournament
 
         private void CreateTournamentTeams()
         {
-            var teamComposition = new List<TournamentParticipant>();
-
             // check out if we can form teams locally from other heroes
             var heroesInSettlement = Settlement
               .GetCombatantHeroesInSettlement()
@@ -156,7 +154,7 @@ namespace ArenaOverhaul.TeamTournament
                     return;
             }
 
-            // well still not done, just add troops to fill it
+            // still not done, just add troops to fill it
             var possibleSimpletons = GetSimpletons(Settlement.Culture).ToList();
             if (possibleSimpletons.Count > 0)
             {
