@@ -265,6 +265,6 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         private int _count = -1;
         private string _name;
         private bool _isValid;
-        private List<TeamTournamentMatchVM> _matchVMs;
+        private readonly List<TeamTournamentMatchVM> _matchVMs;
     }
 }

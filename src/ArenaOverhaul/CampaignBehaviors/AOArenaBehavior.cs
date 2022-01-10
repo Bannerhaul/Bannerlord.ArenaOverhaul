@@ -75,6 +75,9 @@ namespace ArenaOverhaul.CampaignBehaviors
             {
                 AddLoadoutDialogues(_campaignGame, Settlement.CurrentSettlement);
             }
+
+            if (TeamTournamentInfo.Current != null)
+                TeamTournamentInfo.Current.Finish();
         }
 
         private void AddGameMenus(CampaignGameStarter campaignGameStarter)
