@@ -36,7 +36,7 @@ namespace ArenaOverhaul.TeamTournament
         {
             if (!team.IsPlayerTeam)
             {
-                team.TeamColor = BannerManager.GetColor(GetColorIndex((TeamIndex) _teams.Count));
+                team.TeamColor = BannerManager.GetColor(GetColorIndex((TeamIndex) (_teams.Count % 4)));
                 team.TeamBanner = Banner.CreateOneColoredEmptyBanner(_teams.Count);
             }
 

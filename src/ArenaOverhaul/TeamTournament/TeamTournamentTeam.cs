@@ -52,8 +52,8 @@ namespace ArenaOverhaul.TeamTournament
             else
             {
                 return
-                  Members.OrderByDescending(x => x.Character.GetPower()).FirstOrDefault(x => x.Character.IsHero)
-                  ?? Members.OrderByDescending(x => x.Character.GetPower()).First();
+                  Members.Where(x => x.Character.IsHero).OrderByDescending(x => x.Character.GetBattlePower()).FirstOrDefault()
+                  ?? Members.OrderByDescending(x => x.Character.GetBattlePower()).First();
             }
         }
     }
