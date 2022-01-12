@@ -27,11 +27,14 @@
 		<DependedModuleMetadata id="CustomBattle" order="LoadBeforeThis" version="e$gameversion$.*" optional="true" />
 	</DependedModuleMetadatas>
 	<SubModules>
-		<SubModule>
-			<Name value="$modulename$" />
-			<DLLName value="$modulename$.dll" />
-			<SubModuleClassType value="$modulename$.ImplementationLoaderSubModule" />
-			<Tags />
-		</SubModule>
+    <!-- Bannerlord Module Loader. Do not change the name! -->
+    <SubModule>
+      <Name value="Bannerlord Module Loader" />
+      <DLLName value="Bannerlord.ModuleLoader.dll" />
+      <SubModuleClassType value="Bannerlord.ModuleLoader.SubModule" />
+      <Tags>
+        <Tag key="LoaderFilter" value ="ArenaOverhaul.*.dll" />
+      </Tags>
+    </SubModule>
 	</SubModules>
 </Module>

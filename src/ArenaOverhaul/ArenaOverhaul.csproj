@@ -21,6 +21,8 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Bannerlord.ModuleLoader" Version="$(BUTRModuleLoaderVersion)" />
+        <PackageReference Include="Bannerlord.ModuleManager.Source" Version="$(BUTRModuleManagerVersion)" />
         <PackageReference Include="Nullable" Version="1.3.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -47,10 +49,16 @@
         </PackageReference>
     </ItemGroup>
 
+    <!-- Extra Substitution Variables to Use in SubModule.xml -->
     <ItemGroup>
-        <Folder Include="_Module\ModuleData\" />
+      <SubModuleOverrides Include="DisplayName">
+        <Regex>\$displayname\$</Regex>
+        <Replacement>$(DisplayName)</Replacement>
+      </SubModuleOverrides>
+      <SubModuleOverrides Include="MCMVersion">
+        <Regex>\$mcmversion\$</Regex>
+        <Replacement>$(MCMVersion)</Replacement>
+      </SubModuleOverrides>
     </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\ArenaOverhaul.ImplementationLoader\ArenaOverhaul.ImplementationLoader.csproj" />
-    </ItemGroup>
+
 </Project>
