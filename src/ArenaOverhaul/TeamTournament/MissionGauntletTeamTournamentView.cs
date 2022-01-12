@@ -14,14 +14,14 @@ namespace ArenaOverhaul.TeamTournament
     [OverrideView(typeof(TeamTournamentMissionView))]
     public class MissionGauntletTeamTournamentView : MissionView
     {
-        private TeamTournamentBehavior _behavior;
-        private Camera _customCamera;
+        private TeamTournamentBehavior? _behavior;
+        private Camera? _customCamera;
         private bool _viewEnabled = true;
 #pragma warning disable IDE0052 // Remove unread private members
-        private IGauntletMovie _gauntletMovie;
+        private IGauntletMovie? _gauntletMovie;
 #pragma warning restore IDE0052 // Remove unread private members
-        private GauntletLayer _gauntletLayer;
-        private TeamTournamentVM _dataSource;
+        private GauntletLayer? _gauntletLayer;
+        private TeamTournamentVM? _dataSource;
 
         public MissionGauntletTeamTournamentView()
         {
@@ -31,7 +31,7 @@ namespace ArenaOverhaul.TeamTournament
         public override void OnMissionScreenInitialize()
         {
             base.OnMissionScreenInitialize();
-            _dataSource = new TeamTournamentVM(DisableUi, _behavior);
+            _dataSource = new TeamTournamentVM(DisableUi, _behavior!);
             _gauntletLayer = new GauntletLayer(ViewOrderPriority, "GauntletLayer");
             _gauntletMovie = _gauntletLayer.LoadMovie("Tournament", _dataSource);
             MissionScreen.CustomCamera = _customCamera;
@@ -41,18 +41,18 @@ namespace ArenaOverhaul.TeamTournament
 
         public override void OnMissionScreenFinalize()
         {
-            _gauntletLayer.InputRestrictions.ResetInputRestrictions();
+            _gauntletLayer?.InputRestrictions.ResetInputRestrictions();
             _gauntletMovie = null;
             _gauntletLayer = null;
-            _dataSource.OnFinalize();
+            _dataSource?.OnFinalize();
             _dataSource = null;
             base.OnMissionScreenFinalize();
         }
 
         public override void AfterStart()
         {
-            _behavior = base.Mission.GetMissionBehavior<TeamTournamentBehavior>();
-            var gameEntity = base.Mission.Scene.FindEntityWithTag("camera_instance");
+            _behavior = Mission.GetMissionBehavior<TeamTournamentBehavior>();
+            var gameEntity = Mission.Scene.FindEntityWithTag("camera_instance");
             _customCamera = Camera.CreateCamera();
             var vec = default(Vec3);
             gameEntity.GetCameraParamsFromCameraScript(_customCamera, ref vec);
@@ -64,12 +64,12 @@ namespace ArenaOverhaul.TeamTournament
             {
                 return;
             }
-            if (!_viewEnabled && ((_behavior.LastMatch != null && _behavior.CurrentMatch == null) || _behavior.CurrentMatch.IsReady))
+            if (!_viewEnabled && ((_behavior.LastMatch != null && _behavior.CurrentMatch == null) || _behavior.CurrentMatch!.IsReady))
             {
-                _dataSource.Refresh();
+                _dataSource?.Refresh();
                 ShowUi();
             }
-            if (!_viewEnabled && _dataSource.CurrentMatch.IsValid)
+            if (!_viewEnabled && (_dataSource?.CurrentMatch?.IsValid ?? false))
             {
                 var currentMatch = _behavior.CurrentMatch;
                 if (currentMatch != null && currentMatch.State == TournamentMatch.MatchState.Started)
@@ -77,9 +77,9 @@ namespace ArenaOverhaul.TeamTournament
                     _dataSource.CurrentMatch.RefreshActiveMatch();
                 }
             }
-            if (_dataSource.IsOver && _viewEnabled && !base.DebugInput.IsControlDown() && base.DebugInput.IsHotKeyPressed("ShowHighlightsSummary"))
+            if (_dataSource!.IsOver && _viewEnabled && !DebugInput.IsControlDown() && DebugInput.IsHotKeyPressed("ShowHighlightsSummary"))
             {
-                HighlightsController missionBehaviour = base.Mission.GetMissionBehavior<HighlightsController>();
+                HighlightsController missionBehaviour = Mission.GetMissionBehavior<HighlightsController>();
                 if (missionBehaviour == null)
                 {
                     return;
@@ -94,10 +94,10 @@ namespace ArenaOverhaul.TeamTournament
             {
                 return;
             }
-            MissionScreen.UpdateFreeCamera(_customCamera.Frame);
+            MissionScreen.UpdateFreeCamera(_customCamera!.Frame);
             MissionScreen.CustomCamera = null;
             _viewEnabled = false;
-            _gauntletLayer.InputRestrictions.ResetInputRestrictions();
+            _gauntletLayer!.InputRestrictions.ResetInputRestrictions();
         }
 
         private void ShowUi()
@@ -108,25 +108,25 @@ namespace ArenaOverhaul.TeamTournament
             }
             MissionScreen.CustomCamera = _customCamera;
             _viewEnabled = true;
-            _gauntletLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
+            _gauntletLayer!.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
         }
 
         public override void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow killingBlow)
         {
             base.OnAgentRemoved(affectedAgent, affectorAgent, agentState, killingBlow);
-            _dataSource.OnAgentRemoved(affectedAgent);
+            _dataSource!.OnAgentRemoved(affectedAgent);
         }
 
         public override void OnPhotoModeActivated()
         {
             base.OnPhotoModeActivated();
-            _gauntletLayer._gauntletUIContext.ContextAlpha = 0f;
+            _gauntletLayer!._gauntletUIContext.ContextAlpha = 0f;
         }
 
         public override void OnPhotoModeDeactivated()
         {
             base.OnPhotoModeDeactivated();
-            _gauntletLayer._gauntletUIContext.ContextAlpha = 1f;
+            _gauntletLayer!._gauntletUIContext.ContextAlpha = 1f;
         }
     }
 

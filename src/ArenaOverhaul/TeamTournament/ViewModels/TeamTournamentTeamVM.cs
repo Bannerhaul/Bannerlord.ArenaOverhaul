@@ -8,7 +8,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
     public class TeamTournamentTeamVM : ViewModel
     {
         public IEnumerable<TeamTournamentMemberVM> Members { get => _members; }
-        public TeamTournamentTeam Team { get; private set; }
+        public TeamTournamentTeam? Team { get; private set; }
 
         public TeamTournamentTeamVM()
         {
@@ -35,7 +35,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
 
         public IEnumerable<TeamTournamentMemberVM> GetMembers() => Members.Where(x => x.IsValid);
 
-        public TeamTournamentMemberVM GetTeamLeader() => Members.FirstOrDefault(x => x.Member == Team.GetTeamLeader());
+        public TeamTournamentMemberVM GetTeamLeader() => Members.FirstOrDefault(x => x.Member == Team!.GetTeamLeader());
 
         public override void RefreshValues()
         {
@@ -46,7 +46,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         public void Initialize()
         {
             IsValid = Team != null;
-            _members[0].Refresh(Team.GetTeamLeader(), Color.FromUint(Team.TeamColor));
+            _members[0].Refresh(Team!.GetTeamLeader(), Color.FromUint(Team.TeamColor));
         }
 
         public void Initialize(TeamTournamentTeam team)
@@ -99,7 +99,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
         [DataSourceProperty]
-        public TeamTournamentMemberVM Participant1
+        public TeamTournamentMemberVM? Participant1
         {
             get => _participant1;
             set
@@ -113,7 +113,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
         [DataSourceProperty]
-        public TeamTournamentMemberVM Participant2
+        public TeamTournamentMemberVM? Participant2
         {
             get => _participant2;
             set
@@ -127,7 +127,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
         [DataSourceProperty]
-        public TeamTournamentMemberVM Participant3
+        public TeamTournamentMemberVM? Participant3
         {
             get => _participant3;
             set
@@ -141,7 +141,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
         [DataSourceProperty]
-        public TeamTournamentMemberVM Participant4
+        public TeamTournamentMemberVM? Participant4
         {
             get
             {
@@ -158,7 +158,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
         [DataSourceProperty]
-        public TeamTournamentMemberVM Participant5
+        public TeamTournamentMemberVM? Participant5
         {
             get
             {
@@ -175,7 +175,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
         [DataSourceProperty]
-        public TeamTournamentMemberVM Participant6
+        public TeamTournamentMemberVM? Participant6
         {
             get => _participant6;
             set
@@ -189,7 +189,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
         [DataSourceProperty]
-        public TeamTournamentMemberVM Participant7
+        public TeamTournamentMemberVM? Participant7
         {
             get
             {
@@ -206,7 +206,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
         [DataSourceProperty]
-        public TeamTournamentMemberVM Participant8
+        public TeamTournamentMemberVM? Participant8
         {
             get
             {
@@ -238,14 +238,14 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         #endregion
 
         private int _count = -1;
-        private TeamTournamentMemberVM _participant1;
-        private TeamTournamentMemberVM _participant2;
-        private TeamTournamentMemberVM _participant3;
-        private TeamTournamentMemberVM _participant4;
-        private TeamTournamentMemberVM _participant5;
-        private TeamTournamentMemberVM _participant6;
-        private TeamTournamentMemberVM _participant7;
-        private TeamTournamentMemberVM _participant8;
+        private TeamTournamentMemberVM? _participant1;
+        private TeamTournamentMemberVM? _participant2;
+        private TeamTournamentMemberVM? _participant3;
+        private TeamTournamentMemberVM? _participant4;
+        private TeamTournamentMemberVM? _participant5;
+        private TeamTournamentMemberVM? _participant6;
+        private TeamTournamentMemberVM? _participant7;
+        private TeamTournamentMemberVM? _participant8;
         private int _score;
         private bool _isValid;
         private List<TeamTournamentMemberVM> _members;

@@ -8,7 +8,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
 {
     public class TeamTournamentMatchVM : ViewModel
     {
-        public TeamTournamentMatch Match { get; private set; }
+        public TeamTournamentMatch? Match { get; private set; }
         public IEnumerable<TeamTournamentTeamVM> Teams { get => _teams; }
 
         public TeamTournamentMatchVM()
@@ -73,8 +73,8 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
                 for (int j = 0; j < tournamentTeamVM.Count; j++)
                 {
                     var teamMemberVM = tournamentTeamVM.Members.ElementAt(j);
-                    teamMemberVM.Score = teamMemberVM.Member.Score.ToString();
-                    teamMemberVM.IsQualifiedForNextRound = Match.Winners != null && Match.Winners.Any(x => x.Members.Contains(teamMemberVM.Member));
+                    teamMemberVM.Score = teamMemberVM.Member?.Score.ToString() ?? "0";
+                    teamMemberVM.IsQualifiedForNextRound = Match!.Winners != null && Match.Winners.Any(x => x.Members.Contains(teamMemberVM.Member));
                 }
             }
         }
@@ -87,7 +87,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
                 for (int j = 0; j < tournamentTeamVM.Count; j++)
                 {
                     var tournamentParticipantVM = tournamentTeamVM.Members.ElementAt(j);
-                    tournamentParticipantVM.Score = tournamentParticipantVM.Member.Score.ToString();
+                    tournamentParticipantVM.Score = tournamentParticipantVM.Member!.Score.ToString();
                 }
             }
         }
@@ -160,7 +160,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
         [DataSourceProperty]
-        public TeamTournamentTeamVM Team1
+        public TeamTournamentTeamVM? Team1
         {
             get
             {
@@ -177,7 +177,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
         [DataSourceProperty]
-        public TeamTournamentTeamVM Team2
+        public TeamTournamentTeamVM? Team2
         {
             get
             {
@@ -194,7 +194,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
         [DataSourceProperty]
-        public TeamTournamentTeamVM Team3
+        public TeamTournamentTeamVM? Team3
         {
             get
             {
@@ -211,7 +211,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
         [DataSourceProperty]
-        public TeamTournamentTeamVM Team4
+        public TeamTournamentTeamVM? Team4
         {
             get
             {
@@ -228,10 +228,10 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
         #endregion
 
-        private TeamTournamentTeamVM _team1;
-        private TeamTournamentTeamVM _team2;
-        private TeamTournamentTeamVM _team3;
-        private TeamTournamentTeamVM _team4;
+        private TeamTournamentTeamVM? _team1;
+        private TeamTournamentTeamVM? _team2;
+        private TeamTournamentTeamVM? _team3;
+        private TeamTournamentTeamVM? _team4;
         private int _count = -1;
         private int _state = -1;
         private bool _isValid;

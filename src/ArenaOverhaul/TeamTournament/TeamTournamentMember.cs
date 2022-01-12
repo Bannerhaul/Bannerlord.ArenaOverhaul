@@ -8,8 +8,8 @@ namespace ArenaOverhaul.TeamTournament
         public int Score { get; private set; }
         public CharacterObject Character { get; private set; }
         public UniqueTroopDescriptor Descriptor { get; private set; }
-        public TeamTournamentTeam Team { get => _team; private set { _team = value; } }
-        public Equipment MatchEquipment { get; set; }
+        public TeamTournamentTeam? Team { get => _team; private set => _team = value; }
+        public Equipment? MatchEquipment { get; set; }
         public bool IsPlayer => Character != null && Character.IsPlayerCharacter;
 
         public TeamTournamentMember(CharacterObject character)
@@ -26,7 +26,7 @@ namespace ArenaOverhaul.TeamTournament
 
         public void SetTeam(TeamTournamentTeam team) => Team = team;
 
-        private TeamTournamentTeam _team;
+        private TeamTournamentTeam? _team;
 
         public void ResetScore() => Score = 0;
 

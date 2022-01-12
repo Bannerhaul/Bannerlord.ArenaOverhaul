@@ -25,7 +25,7 @@ namespace ArenaOverhaul.Patches
         [HarmonyPatch("GetXpFromHit")]
         public static IEnumerable<CodeInstruction> GetXpFromHitTranspiler(IEnumerable<CodeInstruction> instructions)
         {
-            List<CodeInstruction> codes = new List<CodeInstruction>(instructions);
+            List<CodeInstruction> codes = new(instructions);
             int num = 0;
             for (int i = 0; i < codes.Count; ++i)
             {

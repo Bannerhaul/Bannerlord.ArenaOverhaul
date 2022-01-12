@@ -39,7 +39,7 @@ namespace ArenaOverhaul.TeamTournament
         public TeamTournamentRound? NextRound => CurrentRoundIndex < Rounds.Length - 1 ? Rounds[CurrentRoundIndex + 1] : null;
         public TeamTournamentMatch? CurrentMatch => CurrentRound?.CurrentMatch;
         public int PlayerDenars => Hero.MainHero.Gold;
-        public int MaximumBetInstance => MathF.Min(150, PlayerDenars);
+        public int MaximumBetInstance => Math.Min(150, PlayerDenars);
 
         public TeamTournamentBehavior(TournamentGame tournamentGame, Settlement settlement, ITournamentGameBehavior gameBehavior, bool isPlayerParticipating)
         {
@@ -91,7 +91,11 @@ namespace ArenaOverhaul.TeamTournament
                 var topHeroes = partyLeader.HeroObject.PartyBelongedTo.MemberRoster
                     .GetTroopRoster()
                     .Where(x => x.Character.IsHero)
+#if e165
+                    .OrderByDescending(y => y.Character.GetPower())
+#else
                     .OrderByDescending(y => y.Character.GetBattlePower())
+#endif
                     .Select(z => z.Character)
                     .Take(CurrentInfo.TeamSize)
                     .ToList();
@@ -106,12 +110,20 @@ namespace ArenaOverhaul.TeamTournament
                 var strongestPartyTeam = partyLeader.HeroObject.PartyBelongedTo.MemberRoster
                     .GetTroopRoster()
                     .Where(x => !x.Character.IsHero)
+#if e165
+                    .OrderByDescending(z => z.Character.GetPower())
+#else
                     .OrderByDescending(z => z.Character.GetBattlePower())
+#endif
                     .Take(CurrentInfo.TeamSize - topHeroes.Count);
 
                 var flattenRoster = new FlattenedTroopRoster { strongestPartyTeam.ToList() };
 
+#if e165
+                foreach (var flattenedTroopRosterElement in flattenRoster.OrderByDescending(x => x.Troop.GetPower()))
+#else
                 foreach (var flattenedTroopRosterElement in flattenRoster.OrderByDescending(x => x.Troop.GetBattlePower()))
+#endif
                 {
                     topHeroes.Add(flattenedTroopRosterElement.Troop);
 
@@ -120,7 +132,11 @@ namespace ArenaOverhaul.TeamTournament
                 }
 
                 if (topHeroes.Count() == CurrentInfo.TeamSize)
+#if e165
+                    _teams!.Add(new TeamTournamentTeam(topHeroes.OrderByDescending(x => x.GetPower()).Select(y => new TeamTournamentMember(y))));
+#else
                     _teams!.Add(new TeamTournamentTeam(topHeroes.OrderByDescending(x => x.GetBattlePower()).Select(y => new TeamTournamentMember(y))));
+#endif
 
                 if (_teams!.Count == CurrentInfo.TeamsCount)
                     return;
@@ -367,7 +383,7 @@ namespace ArenaOverhaul.TeamTournament
             _teams!.ForEach(x => Rounds[0].AddTeam(x));
         }
 
-        public override InquiryData OnEndMissionRequest(out bool canPlayerLeave)
+        public override InquiryData? OnEndMissionRequest(out bool canPlayerLeave)
         {
             canPlayerLeave = false;
             return null;

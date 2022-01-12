@@ -99,13 +99,13 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
 
         private void RefreshBetProperties()
         {
-            TextObject textObject = new TextObject("{=L9GnQvsq}Stake: {BETTED_DENARS}", null);
+            TextObject textObject = new("{=L9GnQvsq}Stake: {BETTED_DENARS}", null);
             textObject.SetTextVariable("BETTED_DENARS", Tournament.BettedDenars);
             BettedDenarsText = textObject.ToString();
-            TextObject textObject2 = new TextObject("{=xzzSaN4b}Expected: {OVERALL_EXPECTED_DENARS}", null);
+            TextObject textObject2 = new("{=xzzSaN4b}Expected: {OVERALL_EXPECTED_DENARS}", null);
             textObject2.SetTextVariable("OVERALL_EXPECTED_DENARS", Tournament.OverallExpectedDenars);
             OverallExpectedDenarsText = textObject2.ToString();
-            TextObject textObject3 = new TextObject("{=yF5fpwNE}Total: {TOTAL}", null);
+            TextObject textObject3 = new("{=yF5fpwNE}Total: {TOTAL}", null);
             textObject3.SetTextVariable("TOTAL", Tournament.PlayerDenars);
             TotalDenarsText = textObject3.ToString();
             OnPropertyChanged("IsBetButtonEnabled");
@@ -143,18 +143,20 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
             var firstTeamLeader = new TeamTournamentMemberVM(winnerTeams.ElementAt(0).GetTeamLeader());
             var secondTeamLeader = new TeamTournamentMemberVM(winnerTeams.ElementAt(1).GetTeamLeader());
             TournamentWinner = firstTeamLeader;
+            Town tournamentTown = Tournament.TournamentGame.Town;
+            int renownReward = TournamentRewardManager.GetTakedownRenownReward(Hero.MainHero, tournamentTown);
 
-            if (this.TournamentWinner.Member.Character.IsHero)
+            if (TournamentWinner.Member!.Character.IsHero)
             {
-                Hero heroObject = this.TournamentWinner.Member.Character.HeroObject;
-                this.TournamentWinner.Character.ArmorColor1 = heroObject.MapFaction.Color;
-                this.TournamentWinner.Character.ArmorColor2 = heroObject.MapFaction.Color2;
+                Hero heroObject = TournamentWinner.Member.Character.HeroObject;
+                TournamentWinner.Character.ArmorColor1 = heroObject.MapFaction.Color;
+                TournamentWinner.Character.ArmorColor2 = heroObject.MapFaction.Color2;
             }
             else
             {
-                CultureObject culture = this.TournamentWinner.Member.Character.Culture;
-                this.TournamentWinner.Character.ArmorColor1 = culture.Color;
-                this.TournamentWinner.Character.ArmorColor2 = culture.Color2;
+                CultureObject culture = TournamentWinner.Member.Character.Culture;
+                TournamentWinner.Character.ArmorColor1 = culture.Color;
+                TournamentWinner.Character.ArmorColor2 = culture.Color2;
             }
 
             IsWinnerHero = TournamentWinner.Member.Character.IsHero;
@@ -169,50 +171,73 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
                 if (Tournament.TournamentGame.TournamentWinRenown > 0f)
                 {
                     GameTexts.SetVariable("RENOWN", Tournament.TournamentGame.TournamentWinRenown.ToString("F1"));
-                    BattleRewards.Add(new TournamentRewardVM(GameTexts.FindText("str_tournament_renown", null).ToString()));
+                    BattleRewards!.Add(new TournamentRewardVM(GameTexts.FindText("str_tournament_renown", null).ToString()));
                 }
 
-                if (this.Tournament.TournamentGame.TournamentWinInfluence > 0f)
+                if (Tournament.TournamentGame.TournamentWinInfluence > 0f)
                 {
-                    float tournamentWinInfluence = this.Tournament.TournamentGame.TournamentWinInfluence;
+                    float tournamentWinInfluence = Tournament.TournamentGame.TournamentWinInfluence;
                     TextObject textObject = GameTexts.FindText("str_tournament_influence", null);
                     textObject.SetTextVariable("INFLUENCE", tournamentWinInfluence.ToString("F1"));
                     textObject.SetTextVariable("INFLUENCE_ICON", "{=!}<img src=\"General\\Icons\\Influence@2x\" extend=\"7\">");
-                    this.BattleRewards.Add(new TournamentRewardVM(textObject.ToString()));
+                    BattleRewards!.Add(new TournamentRewardVM(textObject.ToString()));
                 }
 
                 if (Tournament.TournamentGame.Prize != null)
                 {
                     GameTexts.SetVariable("REWARD", Tournament.TournamentGame.Prize.Name.ToString());
-                    BattleRewards.Add(new TournamentRewardVM(GameTexts.FindText("str_tournament_reward", null).ToString(), new ImageIdentifierVM(Tournament.TournamentGame.Prize)));
+                    BattleRewards!.Add(new TournamentRewardVM(GameTexts.FindText("str_tournament_reward", null).ToString(), new ImageIdentifierVM(Tournament.TournamentGame.Prize)));
                 }
 
                 if (Tournament.OverallExpectedDenars > 0)
                 {
-                    var overallExpectedDenars = this.Tournament.OverallExpectedDenars;
+                    var overallExpectedDenars = Tournament.OverallExpectedDenars;
                     var textObject2 = GameTexts.FindText("str_tournament_bet", null);
                     textObject2.SetTextVariable("BET", overallExpectedDenars);
                     textObject2.SetTextVariable("GOLD_ICON", "{=!}<img src=\"General\\Icons\\Coin@2x\" extend=\"8\">");
-                    this.BattleRewards.Add(new TournamentRewardVM(textObject2.ToString()));
+                    BattleRewards!.Add(new TournamentRewardVM(textObject2.ToString()));
                 }
-            }
-            else if (firstTeamLeader.IsMainHero || secondTeamLeader.IsMainHero)
-            {
-                GameTexts.SetVariable("TOURNAMENT_FINAL_OPPONENT", $"{(firstTeamLeader == TournamentWinner ? firstTeamLeader : secondTeamLeader).Name}'s Team");
-                WinnerIntro = GameTexts.FindText("str_tournament_result_eliminated_at_final", null).ToString();
             }
             else
             {
-                GameTexts.SetVariable("TOURNAMENT_FINAL_PARTICIPANT_A", $"{(firstTeamLeader == TournamentWinner ? firstTeamLeader : secondTeamLeader).Name}'s Team");
-                GameTexts.SetVariable("TOURNAMENT_FINAL_PARTICIPANT_B", $"{(firstTeamLeader == TournamentWinner ? secondTeamLeader : firstTeamLeader).Name}'s Team");
-
-                if (_isPlayerParticipating)
+                if (firstTeamLeader.IsMainHero || secondTeamLeader.IsMainHero)
                 {
-                    GameTexts.SetVariable("TOURNAMENT_ELIMINATED_ROUND", Tournament.PlayerTeamLostAtRound);
-                    WinnerIntro = GameTexts.FindText("str_tournament_result_eliminated", null).ToString();
+                    GameTexts.SetVariable("TOURNAMENT_FINAL_OPPONENT", $"{(firstTeamLeader == TournamentWinner ? firstTeamLeader : secondTeamLeader).Name}'s Team");
+                    WinnerIntro = GameTexts.FindText("str_tournament_result_eliminated_at_final", null).ToString();
                 }
                 else
-                    WinnerIntro = GameTexts.FindText("str_tournament_result_spectator", null).ToString();
+                {
+                    GameTexts.SetVariable("TOURNAMENT_FINAL_PARTICIPANT_A", $"{(firstTeamLeader == TournamentWinner ? firstTeamLeader : secondTeamLeader).Name}'s Team");
+                    GameTexts.SetVariable("TOURNAMENT_FINAL_PARTICIPANT_B", $"{(firstTeamLeader == TournamentWinner ? secondTeamLeader : firstTeamLeader).Name}'s Team");
+
+                    if (_isPlayerParticipating)
+                    {
+                        GameTexts.SetVariable("TOURNAMENT_ELIMINATED_ROUND", Tournament.PlayerTeamLostAtRound);
+                        WinnerIntro = GameTexts.FindText("str_tournament_result_eliminated", null).ToString();
+                    }
+                    else
+                        WinnerIntro = GameTexts.FindText("str_tournament_result_spectator", null).ToString();
+                }
+                if (renownReward > 0) //this is consolation prize. If player won, he would've the takedown renown reward included in champion's award
+                {
+                    GameTexts.SetVariable("RENOWN_TAKEDOWN_REWARD", renownReward.ToString());
+                    BattleRewards!.Add(new TournamentRewardVM(GameTexts.FindText("str_tournament_renown_takedown_reward").ToString()));
+                }
+            }
+            int playerGoldPrize = TournamentWinner.IsMainHero ? TournamentRewardManager.GetTournamentGoldPrize(tournamentTown) : 0;
+            int playerRoundWinnings = TournamentRewardManager.RoundPrizeWinners[tournamentTown].FirstOrDefault(x => x.Participant.IsHumanPlayerCharacter).Winnings;
+            if (playerGoldPrize > 0 || playerRoundWinnings > 0)
+            {
+                if (playerGoldPrize > 0)
+                {
+                    GameTexts.SetVariable("TOTAL_GOLD_REWARD", (playerGoldPrize + playerRoundWinnings).ToString());
+                    BattleRewards!.Add(new TournamentRewardVM(GameTexts.FindText("str_tournament_gold_reward", "3").ToString()));
+                }
+                else
+                {
+                    GameTexts.SetVariable("PER_ROUND_REWARD", playerRoundWinnings.ToString());
+                    BattleRewards!.Add(new TournamentRewardVM(GameTexts.FindText("str_tournament_gold_reward", TournamentWinner.IsMainHero ? "2" : (renownReward > 0 ? "1" : "0")).ToString()));
+                }
             }
             IsOver = true;
         }
@@ -229,15 +254,15 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         {
             if (IsCurrentMatchActive && agent.IsHuman)
             {
-                var team = _currentMatch.Teams.First(x => x.Team.Members.Any(m => m.Descriptor.CompareTo(agent.Origin.UniqueSeed) == 0));
-                if (!team.Team.IsAlive)
+                var team = _currentMatch!.Teams.First(x => x.Team!.Members.Any(m => m.Descriptor.CompareTo(agent.Origin.UniqueSeed) == 0));
+                if (team.Team != null & !team.Team!.IsAlive)
                     team.GetTeamLeader().IsDead = true;
             }
         }
 
         private TeamTournamentMemberVM GetMemberForSeed(int seed)
         {
-            return CurrentMatch.GetMatchMemberVMs().FirstOrDefault(x => x.Member != null && x.Member.Descriptor.CompareTo(seed) == 0);
+            return CurrentMatch!.GetMatchMemberVMs().FirstOrDefault(x => x.Member != null && x.Member.Descriptor.CompareTo(seed) == 0);
         }
 
         #region view commands
@@ -283,8 +308,8 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
             {
                 Tournament.StartMatch();
                 IsCurrentMatchActive = true;
-                CurrentMatch.Refresh(true);
-                CurrentMatch.State = 3;
+                CurrentMatch!.Refresh(true);
+                CurrentMatch!.State = 3;
                 DisableUI();
                 IsCurrentMatchActive = true;
             }
@@ -311,8 +336,8 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
             {
                 Tournament.StartMatch();
                 IsCurrentMatchActive = true;
-                CurrentMatch.Refresh(true);
-                CurrentMatch.State = 3;
+                CurrentMatch!.Refresh(true);
+                CurrentMatch!.State = 3;
                 DisableUI();
                 IsCurrentMatchActive = true;
             }
@@ -364,7 +389,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
         [DataSourceProperty]
-        public TeamTournamentMemberVM TournamentWinner
+        public TeamTournamentMemberVM? TournamentWinner
         {
             get => _tournamentWinner;
             set
@@ -453,7 +478,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
         [DataSourceProperty]
-        public ImageIdentifierVM PrizeVisual
+        public ImageIdentifierVM? PrizeVisual
         {
             get => _prizeVisual;
             set
@@ -633,7 +658,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
         [DataSourceProperty]
-        public TeamTournamentMatchVM CurrentMatch
+        public TeamTournamentMatchVM? CurrentMatch
         {
             get => _currentMatch;
             set
@@ -764,7 +789,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
         [DataSourceProperty]
-        public TeamTournamentRoundVM Round1
+        public TeamTournamentRoundVM? Round1
         {
             get => _round1;
             set
@@ -778,7 +803,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
         [DataSourceProperty]
-        public TeamTournamentRoundVM Round2
+        public TeamTournamentRoundVM? Round2
         {
             get => _round2;
             set
@@ -792,7 +817,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
         [DataSourceProperty]
-        public TeamTournamentRoundVM Round3
+        public TeamTournamentRoundVM? Round3
         {
             get => _round3;
             set
@@ -806,7 +831,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
         [DataSourceProperty]
-        public TeamTournamentRoundVM Round4
+        public TeamTournamentRoundVM? Round4
         {
             get
             {
@@ -874,7 +899,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
         [DataSourceProperty]
-        public MBBindingList<TournamentRewardVM> BattleRewards
+        public MBBindingList<TournamentRewardVM>? BattleRewards
         {
             get => _battleRewards;
             set
@@ -892,30 +917,30 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         {
             get
             {
-                return this._isWinnerHero;
+                return _isWinnerHero;
             }
             set
             {
-                if (value != this._isWinnerHero)
+                if (value != _isWinnerHero)
                 {
-                    this._isWinnerHero = value;
+                    _isWinnerHero = value;
                     base.OnPropertyChangedWithValue(value, "IsWinnerHero");
                 }
             }
         }
 
         [DataSourceProperty]
-        public ImageIdentifierVM WinnerBanner
+        public ImageIdentifierVM? WinnerBanner
         {
             get
             {
-                return this._winnerBanner;
+                return _winnerBanner;
             }
             set
             {
-                if (value != this._winnerBanner)
+                if (value != _winnerBanner)
                 {
-                    this._winnerBanner = value;
+                    _winnerBanner = value;
                     base.OnPropertyChangedWithValue(value, "WinnerBanner");
                 }
             }
@@ -926,43 +951,43 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         private readonly List<TeamTournamentRoundVM> _rounds;
         private int _thisRoundBettedAmount;
         private bool _isPlayerParticipating;
-        private TeamTournamentRoundVM _round1;
-        private TeamTournamentRoundVM _round2;
-        private TeamTournamentRoundVM _round3;
-        private TeamTournamentRoundVM _round4;
+        private TeamTournamentRoundVM? _round1;
+        private TeamTournamentRoundVM? _round2;
+        private TeamTournamentRoundVM? _round3;
+        private TeamTournamentRoundVM? _round4;
         private int _activeRoundIndex = -1;
-        private string _joinTournamentText;
-        private string _skipRoundText;
-        private string _watchRoundText;
-        private string _leaveText;
+        private string _joinTournamentText = string.Empty;
+        private string _skipRoundText = string.Empty;
+        private string _watchRoundText = string.Empty;
+        private string _leaveText = string.Empty;
         private bool _canPlayerJoin;
-        private TeamTournamentMatchVM _currentMatch;
+        private TeamTournamentMatchVM? _currentMatch;
         private bool _isCurrentMatchActive;
-        private string _betTitleText;
-        private string _betDescriptionText;
-        private string _betOddsText;
-        private string _bettedDenarsText;
-        private string _overallExpectedDenarsText;
-        private string _currentExpectedDenarsText;
-        private string _totalDenarsText;
-        private string _acceptText;
-        private string _cancelText;
-        private string _prizeItemName;
-        private string _tournamentPrizeText;
-        private string _currentWagerText;
+        private string _betTitleText = string.Empty;
+        private string _betDescriptionText = string.Empty;
+        private string _betOddsText = string.Empty;
+        private string _bettedDenarsText = string.Empty;
+        private string _overallExpectedDenarsText = string.Empty;
+        private string _currentExpectedDenarsText = string.Empty;
+        private string _totalDenarsText = string.Empty;
+        private string _acceptText = string.Empty;
+        private string _cancelText = string.Empty;
+        private string _prizeItemName = string.Empty;
+        private string _tournamentPrizeText = string.Empty;
+        private string _currentWagerText = string.Empty;
         private int _wageredDenars = -1;
         private int _expectedBetDenars = -1;
-        private string _betText;
+        private string _betText = string.Empty;
         private int _maximumBetValue;
-        private string _tournamentWinnerTitle;
-        private TeamTournamentMemberVM _tournamentWinner;
-        private string _tournamentTitle;
+        private string _tournamentWinnerTitle = string.Empty;
+        private TeamTournamentMemberVM? _tournamentWinner;
+        private string _tournamentTitle = string.Empty;
         private bool _isOver;
         private bool _hasPrizeItem;
         private bool _isWinnerHero;
-        private string _winnerIntro;
-        private ImageIdentifierVM _prizeVisual;
-        private ImageIdentifierVM _winnerBanner;
-        private MBBindingList<TournamentRewardVM> _battleRewards;
+        private string _winnerIntro = string.Empty;
+        private ImageIdentifierVM? _prizeVisual;
+        private ImageIdentifierVM? _winnerBanner;
+        private MBBindingList<TournamentRewardVM>? _battleRewards;
     }
 }

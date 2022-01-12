@@ -7,7 +7,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
 {
     public class TeamTournamentMemberVM : ViewModel
     {
-        public TeamTournamentMember Member { get; private set; }
+        public TeamTournamentMember? Member { get; private set; }
 
         public TeamTournamentMemberVM()
         {
@@ -17,7 +17,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
 
         public TeamTournamentMemberVM(TeamTournamentMember member) : this()
         {
-            Refresh(member, Color.FromUint(member.Team.TeamColor));
+            Refresh(member, Color.FromUint(member.Team!.TeamColor));
         }
 
         public override void RefreshValues()
@@ -27,7 +27,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
                 Refresh(Member, TeamColor);
         }
 
-        public void Refresh(TeamTournamentMember member, Color teamColor)
+        public void Refresh(TeamTournamentMember? member, Color teamColor)
         {
             Member = member;
             TeamColor = teamColor;
