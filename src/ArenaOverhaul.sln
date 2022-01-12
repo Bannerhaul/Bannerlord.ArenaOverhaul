@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArenaOverhaul", "ArenaOverhaul\ArenaOverhaul.csproj", "{8DBCDF43-F035-4E37-B53D-70B52431A73E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArenaOverhaul.ImplementationLoader", "ArenaOverhaul.ImplementationLoader\ArenaOverhaul.ImplementationLoader.csproj", "{781C1663-5DFF-4E07-8D1D-329B45D30CF3}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{85E7F4E9-15E6-46E9-AC6E-AF17CFEF6FD4}"
 	ProjectSection(SolutionItems) = preProject
 		..\changelog.txt = ..\changelog.txt
@@ -59,22 +57,6 @@ Global
 		{8DBCDF43-F035-4E37-B53D-70B52431A73E}.Stable_Debug|x64.Build.0 = Stable_Debug|x64
 		{8DBCDF43-F035-4E37-B53D-70B52431A73E}.Stable_Release|x64.ActiveCfg = Stable_Release|x64
 		{8DBCDF43-F035-4E37-B53D-70B52431A73E}.Stable_Release|x64.Build.0 = Stable_Release|x64
-		{781C1663-5DFF-4E07-8D1D-329B45D30CF3}.Beta_Debug|x64.ActiveCfg = Minimal_Debug|x64
-		{781C1663-5DFF-4E07-8D1D-329B45D30CF3}.Beta_Debug|x64.Build.0 = Minimal_Debug|x64
-		{781C1663-5DFF-4E07-8D1D-329B45D30CF3}.Beta_Release|x64.ActiveCfg = Minimal_Release|x64
-		{781C1663-5DFF-4E07-8D1D-329B45D30CF3}.Beta_Release|x64.Build.0 = Minimal_Release|x64
-		{781C1663-5DFF-4E07-8D1D-329B45D30CF3}.Debug|x64.ActiveCfg = Minimal_Debug|x64
-		{781C1663-5DFF-4E07-8D1D-329B45D30CF3}.Debug|x64.Build.0 = Minimal_Debug|x64
-		{781C1663-5DFF-4E07-8D1D-329B45D30CF3}.Minimal_Debug|x64.ActiveCfg = Minimal_Debug|x64
-		{781C1663-5DFF-4E07-8D1D-329B45D30CF3}.Minimal_Debug|x64.Build.0 = Minimal_Debug|x64
-		{781C1663-5DFF-4E07-8D1D-329B45D30CF3}.Minimal_Release|x64.ActiveCfg = Minimal_Release|x64
-		{781C1663-5DFF-4E07-8D1D-329B45D30CF3}.Minimal_Release|x64.Build.0 = Minimal_Release|x64
-		{781C1663-5DFF-4E07-8D1D-329B45D30CF3}.Release|x64.ActiveCfg = Minimal_Release|x64
-		{781C1663-5DFF-4E07-8D1D-329B45D30CF3}.Release|x64.Build.0 = Minimal_Release|x64
-		{781C1663-5DFF-4E07-8D1D-329B45D30CF3}.Stable_Debug|x64.ActiveCfg = Minimal_Debug|x64
-		{781C1663-5DFF-4E07-8D1D-329B45D30CF3}.Stable_Debug|x64.Build.0 = Minimal_Debug|x64
-		{781C1663-5DFF-4E07-8D1D-329B45D30CF3}.Stable_Release|x64.ActiveCfg = Minimal_Release|x64
-		{781C1663-5DFF-4E07-8D1D-329B45D30CF3}.Stable_Release|x64.Build.0 = Minimal_Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
