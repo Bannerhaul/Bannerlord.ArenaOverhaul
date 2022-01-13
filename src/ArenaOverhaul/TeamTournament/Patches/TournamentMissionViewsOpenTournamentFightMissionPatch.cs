@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-
-using HarmonyLib;
+﻿using HarmonyLib;
 
 using SandBox.View;
 using SandBox.View.Missions;
 using SandBox.View.Missions.Tournaments;
+
+using System;
+using System.Collections.Generic;
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using SandBox.ViewModelCollection;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using SandBox.ViewModelCollection;
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
