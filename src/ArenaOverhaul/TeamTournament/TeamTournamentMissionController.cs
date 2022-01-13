@@ -137,7 +137,11 @@ namespace ArenaOverhaul.TeamTournament
                 foreach (Agent agent in Mission.Agents)
                 {
                     if (agent.IsAIControlled)
+#if e165
+                        Mission.GetMissionBehavior<AgentVictoryLogic>().SetTimersOfVictoryReactions(agent, 1f, 3f);
+#else
                         Mission.GetMissionBehavior<AgentVictoryLogic>().SetTimersOfVictoryReactionsOnTournamentVictoryForAgent(agent, 1f, 3f);
+#endif
                 }
 
                 return false;
@@ -208,7 +212,7 @@ namespace ArenaOverhaul.TeamTournament
                 var equipmentFromSlot = randomBattleEquipment.GetEquipmentFromSlot((EquipmentIndex) i);
                 if (equipmentFromSlot.Item != null)
                 {
-                    member.MatchEquipment.AddEquipmentToSlotWithoutAgent((EquipmentIndex) i, equipmentFromSlot);
+                    member.MatchEquipment!.AddEquipmentToSlotWithoutAgent((EquipmentIndex) i, equipmentFromSlot);
                 }
             }
         }
@@ -232,7 +236,7 @@ namespace ArenaOverhaul.TeamTournament
                 var member = _match!.MatchMembers.FirstOrDefault(x => x.IsCharWithDescriptor(affectedAgent.Origin.UniqueSeed));
 
                 _aliveMembers!.Remove(member);
-                member.Team.IsAlive = _aliveMembers.Any(x => x.Team == member.Team);
+                member.Team!.IsAlive = _aliveMembers.Any(x => x.Team == member.Team);
 
                 // apply score only if not on same team
                 if (affectedAgent.Team != affectorAgent.Team)
@@ -331,7 +335,7 @@ namespace ArenaOverhaul.TeamTournament
             // if player is still alive => player quit, remove and take teams score too
             if (player != null)
             {
-                foreach (var member in player.Team.Members)
+                foreach (var member in player.Team!.Members)
                 {
                     member.ResetScore();
                     _aliveMembers.Remove(member);
@@ -371,7 +375,7 @@ namespace ArenaOverhaul.TeamTournament
                 {
                     simAttacks.Remove(nextFighter);
                     _aliveMembers.Remove(nextFighter);
-                    nextFighter.Team.IsAlive = _aliveMembers.Any(x => x.Team == nextFighter.Team);
+                    nextFighter.Team!.IsAlive = _aliveMembers.Any(x => x.Team == nextFighter.Team);
 
                     if (!nextFighter.Team.IsAlive)
                     {

@@ -27,7 +27,11 @@ namespace ArenaOverhaul.TeamTournament.Patches
                         new TeamTournamentBehavior(tournamentGame, settlement, tournamentMissionController, isPlayerParticipating), // this is patched!
                         new AgentVictoryLogic(),
                         new MissionAgentPanicHandler(),
+#if e165
+                        new AgentBattleAILogic(),
+#else
                         new AgentHumanAILogic(),
+#endif
                         new ArenaAgentStateDeciderLogic(),
                         new MissionHardBorderPlacer(),
                         new MissionBoundaryPlacer(),

@@ -17,9 +17,9 @@
         <!--MCM Version-->
         <MCMVersion>4.3.17</MCMVersion>
         <!--BUTRShared Version-->
-        <BUTRSharedVersion>2.0.0.77</BUTRSharedVersion>
+        <BUTRSharedVersion>2.0.0.78</BUTRSharedVersion>
         <!--BUTRModuleManager Version-->
-        <BUTRModuleManagerVersion>3.0.84</BUTRModuleManagerVersion>
+        <BUTRModuleManagerVersion>3.0.85</BUTRModuleManagerVersion>
         <!--ModuleLoader Version-->
         <BUTRModuleLoaderVersion>1.0.0</BUTRModuleLoaderVersion>
         <!--Harmony Extensions Version-->

@@ -109,7 +109,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
             textObject3.SetTextVariable("TOTAL", Tournament.PlayerDenars);
             TotalDenarsText = textObject3.ToString();
             OnPropertyChanged("IsBetButtonEnabled");
-            MaximumBetValue = MathF.Min(Tournament.GetMaximumBet() - _thisRoundBettedAmount, Hero.MainHero.Gold);
+            MaximumBetValue = Math.Min(Tournament.GetMaximumBet() - _thisRoundBettedAmount, Hero.MainHero.Gold);
             GameTexts.SetVariable("NORMALIZED_EXPECTED_GOLD", (int) (Tournament.BetOdd * 100f));
             GameTexts.SetVariable("GOLD_ICON", "{=!}<img src=\"General\\Icons\\Coin@2x\" extend=\"8\">");
             BetOddsText = GameTexts.FindText("str_tournament_bet_odd", null).ToString();
@@ -173,7 +173,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
                     GameTexts.SetVariable("RENOWN", Tournament.TournamentGame.TournamentWinRenown.ToString("F1"));
                     BattleRewards!.Add(new TournamentRewardVM(GameTexts.FindText("str_tournament_renown", null).ToString()));
                 }
-
+#if !e165
                 if (Tournament.TournamentGame.TournamentWinInfluence > 0f)
                 {
                     float tournamentWinInfluence = Tournament.TournamentGame.TournamentWinInfluence;
@@ -182,7 +182,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
                     textObject.SetTextVariable("INFLUENCE_ICON", "{=!}<img src=\"General\\Icons\\Influence@2x\" extend=\"7\">");
                     BattleRewards!.Add(new TournamentRewardVM(textObject.ToString()));
                 }
-
+#endif
                 if (Tournament.TournamentGame.Prize != null)
                 {
                     GameTexts.SetVariable("REWARD", Tournament.TournamentGame.Prize.Name.ToString());
@@ -265,7 +265,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
             return CurrentMatch!.GetMatchMemberVMs().FirstOrDefault(x => x.Member != null && x.Member.Descriptor.CompareTo(seed) == 0);
         }
 
-        #region view commands
+#region view commands
 #pragma warning disable IDE0051 // Remove unused private members
         /// <summary>
         /// DO NOT REMOVE
@@ -276,7 +276,11 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
             {
                 InformationManager.AddTooltipInformation(typeof(ItemObject), new object[]
                 {
+#if e165
+                    new EquipmentElement(Tournament.TournamentGame.Prize, null, null)
+#else
                     new EquipmentElement(Tournament.TournamentGame.Prize, null, null, false)
+#endif
                 });
             }
         }
@@ -371,9 +375,9 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
 #pragma warning restore IDE0051 // Remove unused private members
-        #endregion
+#endregion
 
-        #region view properties
+#region view properties
         [DataSourceProperty]
         public string TournamentWinnerTitle
         {
@@ -946,7 +950,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
             }
         }
 
-        #endregion view properties
+#endregion view properties
 
         private readonly List<TeamTournamentRoundVM> _rounds;
         private int _thisRoundBettedAmount;
