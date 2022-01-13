@@ -14,3 +14,9 @@
 </p>
 
 A variety of tweaks and gameplay changes to make arena and tournament experience more enjoyable and rewarding on all stages of the game.
+
+### Contributors 
+- Aragas
+- eg3r
+
+Thank you for all the support!
