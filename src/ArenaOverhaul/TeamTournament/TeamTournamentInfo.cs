@@ -31,13 +31,13 @@ namespace ArenaOverhaul.TeamTournament
             TeamSize = MBRandom.Random.Next(2, Settings.Instance!.TeamSizeMax + 1);
 
             // 8, 16, 32 teams possible -> also 4 but needs more testing and fixing 
-            TeamsCount = (int) Math.Pow(2, MBRandom.Random.Next(3, (int) Math.Log(Settings.Instance!.TeamsCountMax.SelectedValue, 2) + 1)); 
-           
+            TeamsCount = (int) Math.Pow(2, MBRandom.Random.Next(3, (int) Math.Log(Settings.Instance!.TeamsCountMax.SelectedValue, 2) + 1));
+
             // if full (32) => 8 rounds, else can be 4 or 8
             FirstRoundMatches = TeamsCount == 32 ? 8 : (TeamsCount / (MBRandom.Random.Next(2) * 2 + 2));
 
             // simple log2 round progression (members/2 in every round)
-            Rounds = (int) Math.Min(Math.Log(TeamsCount, 2), 4); 
+            Rounds = (int) Math.Min(Math.Log(TeamsCount, 2), 4);
             Current = this;
         }
 
