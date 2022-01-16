@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: 0 0 * * * # Every day at midnight (UTC)
   workflow_dispatch:
-  
+
 jobs:
   dotnet-format:
     runs-on: ubuntu-latest
@@ -15,4 +15,4 @@ jobs:
           workspace: "src/ArenaOverhaul.sln"
           github-token: ${{ secrets.GITHUB_TOKEN }}
           assignees: 'artifixer'
-          reviewers: 'artifixer'        
+          reviewers: 'artifixer'

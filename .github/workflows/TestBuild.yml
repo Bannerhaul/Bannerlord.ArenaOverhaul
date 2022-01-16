@@ -9,8 +9,8 @@ on:
       - main
       - dev
     # hopefully will be triggered more often
-    types: [assigned, opened, edited, reopened, review_requested, ready_for_review]      
-  workflow_dispatch:      
+    types: [assigned, opened, edited, reopened, review_requested, ready_for_review]
+  workflow_dispatch:
 
 env:
   # Disable the .NET logo in the console output.
