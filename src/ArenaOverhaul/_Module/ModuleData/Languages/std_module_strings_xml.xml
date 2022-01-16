@@ -35,9 +35,9 @@
 		<string id="ULKHRKsSV" text="reasonably far from here" />
 		<string id="2JXPNLOm3" text="very far from here" />
 		<string id="UOpsoG57t" text="tier {TIER} {TYPE}, {NAME}, worth {GOLD}{GOLD_ICON}" />
-        <string id="fpPMPCNp5" text="You don't have enough gold." />
-        <string id="EPjU6L6kg" text="You don't have enough gold to do another round with the current loadout." />
-        <string id="9REfw5FN6" text="Another round of practice with the current loadout will cost you {REMATCH_COST}{GOLD_ICON}" />
+		<string id="fpPMPCNp5" text="You don't have enough gold." />
+		<string id="EPjU6L6kg" text="You don't have enough gold to do another round with the current loadout." />
+		<string id="9REfw5FN6" text="Another round of practice with the current loadout will cost you {REMATCH_COST}{GOLD_ICON}" />
 		<!--
 		|||||||||||||||||||||||||| Item categories ||||||||||||||||||||||||||
 		-->
@@ -113,10 +113,10 @@
 		<string id="gknaSzMr6" text="Standard" />
 		<string id="aBVrVSioz" text="Additive" />
 		<string id="TY9SqFLBs" text="Multiplicative" />
-        <string id="Hf3fpLNlh" text="Never" />
-        <string id="JHsRs730T" text="When prize tier can be improved" />
-        <string id="oVADnv9sb" text="When chances for better prize are improved" />
-        <string id="MwOn3n7yC" text="When situation changed" />
+		<string id="Hf3fpLNlh" text="Never" />
+		<string id="JHsRs730T" text="When prize tier can be improved" />
+		<string id="oVADnv9sb" text="When chances for better prize are improved" />
+		<string id="MwOn3n7yC" text="When situation changed" />
 		<!-- Arena Practice settings -->
 		<string id="wtKB2udZJ" text="Total participants" />
 		<string id="gaGpV2GcX" text="Active participants" />
@@ -167,11 +167,11 @@
 		<!-- Tournament settings and hints-->
 		<string id="hS7XbrLGG" text="Maximum bet" />
 		<string id="gQvJ8Vvsk" text="The maximum amount of gold that is usually allowed to be wagered in each round of a tournament. Native = 150. Default = 500." />
-        <string id="qPAga7DLd" text="Enable randomized betting odds" />
-        <string id="kGyR7NsKh" text="When this option is enabled, bet odds are slightly randomized, but still mostly based on the prediction of the player's success." />
-        <string id="cCAOeRdmt" text="Prize reroll condition" />
-        <string id="CDGmDeYii" text="Specify when and if tournament prizes should be rerolled. Normally prizes are rerolled when player joins the tournament - if the nubmber of participating nobles changed since the tournament was created (affects prize quality). Native is [When situation changed]. Default is [When prize tier can be improved]." />
-        <string id="IfsaDqygk" text="Enable gold prizes" />
+		<string id="qPAga7DLd" text="Enable randomized betting odds" />
+		<string id="kGyR7NsKh" text="When this option is enabled, bet odds are slightly randomized, but still mostly based on the prediction of the player's success." />
+		<string id="cCAOeRdmt" text="Prize reroll condition" />
+		<string id="CDGmDeYii" text="Specify when and if tournament prizes should be rerolled. Normally prizes are rerolled when player joins the tournament - if the nubmber of participating nobles changed since the tournament was created (affects prize quality). Native is [When situation changed]. Default is [When prize tier can be improved]." />
+		<string id="IfsaDqygk" text="Enable gold prizes" />
 		<string id="yVAG4f83d" text="When this option is enabled, there are also gold prizes in tournaments. This is in addition to the usual prize items and bet wins." />
 		<string id="fH4Ev0UoC" text="Enable prize scaling" />
 		<string id="1THMacQwa" text="When this option is enabled, tournament prizes are scaling with player's renown. Slightly unconventional, but helps keep tournaments useful in the mid and late game." />
