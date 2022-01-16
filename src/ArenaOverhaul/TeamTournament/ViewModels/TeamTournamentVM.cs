@@ -265,7 +265,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
             return CurrentMatch!.GetMatchMemberVMs().FirstOrDefault(x => x.Member != null && x.Member.Descriptor.CompareTo(seed) == 0);
         }
 
-#region view commands
+        #region view commands
 #pragma warning disable IDE0051 // Remove unused private members
         /// <summary>
         /// DO NOT REMOVE
@@ -375,9 +375,9 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
 #pragma warning restore IDE0051 // Remove unused private members
-#endregion
+        #endregion
 
-#region view properties
+        #region view properties
         [DataSourceProperty]
         public string TournamentWinnerTitle
         {
@@ -950,7 +950,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
             }
         }
 
-#endregion view properties
+        #endregion view properties
 
         private readonly List<TeamTournamentRoundVM> _rounds;
         private int _thisRoundBettedAmount;
