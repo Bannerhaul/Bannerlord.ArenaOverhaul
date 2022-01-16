@@ -37,10 +37,12 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Authors>artifixer</Authors>
-        <Company></Company>
+        <Authors>artifixer, Aragas, eg3r</Authors>
         <Product>Arena Overhaul Library for Bannerlord</Product>
-    </PropertyGroup>
+        <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+        <Copyright>Copyright © 2020-2022 artifixer</Copyright>
+        <Description>Arena practice and tournaments overhaul for Mount &amp; Blade II: Bannerlord</Description>
+    </PropertyGroup>    
 
     <PropertyGroup>
         <IsMinimal>true</IsMinimal>
