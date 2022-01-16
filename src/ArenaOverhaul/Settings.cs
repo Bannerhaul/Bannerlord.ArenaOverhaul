@@ -33,10 +33,10 @@ namespace ArenaOverhaul
         internal const string DropdownValueAdditive = "{=aBVrVSioz}Additive";
         internal const string DropdownValueMultiplicative = "{=TY9SqFLBs}Multiplicative";
 
-        internal const string DropdownValueNever = "{=}Never";
-        internal const string DropdownValueOnPrizeTierImprovement = "{=}When prize tier can be improved";
-        internal const string DropdownValueOnImprovement = "{=}When chances for better prize are improved";
-        internal const string DropdownValueOnChange = "{=}When situation changed";
+        internal const string DropdownValueNever = "{=Hf3fpLNlh}Never";
+        internal const string DropdownValueOnPrizeTierImprovement = "{=JHsRs730T}When prize tier can be improved";
+        internal const string DropdownValueOnImprovement = "{=oVADnv9sb}When chances for better prize are improved";
+        internal const string DropdownValueOnChange = "{=MwOn3n7yC}When situation changed";
 
         //Arena Practice settings
         [SettingPropertyInteger("{=wtKB2udZJ}Total participants", 10, 150, Order = 0, RequireRestart = false, HintText = "{=89f5zrS7i}The total number of participants in the Arena Practice. It is recommended to be a multiple of 3. Default = 30.")]
@@ -171,11 +171,11 @@ namespace ArenaOverhaul
         [SettingPropertyGroup(HeadingTournaments, GroupOrder = 2)]
         public int TournamentMaximumBet { get; set; } = 500;
 
-        [SettingPropertyBool("{=}Enable randomized betting odds", Order = 1, RequireRestart = false, HintText = "{=}When this option is enabled, bet odds are slightly randomized, but still mostly based on the prediction of the player's success.")]
+        [SettingPropertyBool("{=qPAga7DLd}Enable randomized betting odds", Order = 1, RequireRestart = false, HintText = "{=kGyR7NsKh}When this option is enabled, bet odds are slightly randomized, but still mostly based on the prediction of the player's success.")]
         [SettingPropertyGroup(HeadingTournaments, GroupOrder = 2)]
         public bool EnableRandomizedBettingOdds { get; set; } = true;
 
-        [SettingPropertyDropdown("{=}Prize reroll condition", Order = 2, RequireRestart = false, HintText = "{=}Specify when and if tournament prizes should be rerolled. Normally prizes are rerolled when player joins the tournament - if the nubmber of participating nobles changed since the tournament was created (affects prize quality). Native is [When situation changed]. Default is [When prize tier can be improved].")]
+        [SettingPropertyDropdown("{=cCAOeRdmt}Prize reroll condition", Order = 2, RequireRestart = false, HintText = "{=CDGmDeYii}Specify when and if tournament prizes should be rerolled. Normally prizes are rerolled when player joins the tournament - if the nubmber of participating nobles changed since the tournament was created (affects prize quality). Native is [When situation changed]. Default is [When prize tier can be improved].")]
         [SettingPropertyGroup(HeadingTournaments, GroupOrder = 2)]
         public DropdownDefault<string> TournamentPrizeRerollCondition { get; set; } = new DropdownDefault<string>(new string[]
         {

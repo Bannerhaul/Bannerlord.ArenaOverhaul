@@ -241,7 +241,7 @@ namespace ArenaOverhaul.CampaignBehaviors
             int price = GetWeaponLoadoutChoiceCost();
             if (Hero.MainHero.Gold < stage * price)
             {
-                explanation = new TextObject("{=}You don't have enough gold.", null);
+                explanation = new TextObject("{=fpPMPCNp5}You don't have enough gold.", null);
                 return false;
             }
             explanation = null;
@@ -255,12 +255,12 @@ namespace ArenaOverhaul.CampaignBehaviors
                 int price = _currentLoadoutStage * GetWeaponLoadoutChoiceCost();
                 if (Hero.MainHero.Gold < price)
                 {
-                    explanation = new TextObject("{=}You don't have enough gold to do another round with the current loadout.", null);
+                    explanation = new TextObject("{=EPjU6L6kg}You don't have enough gold to do another round with the current loadout.", null);
                     return false;
                 }
                 else
                 {
-                    explanation = new TextObject("{=}Another round of practice with the current loadout will cost you {REMATCH_COST}{GOLD_ICON}", null);
+                    explanation = new TextObject("{=9REfw5FN6}Another round of practice with the current loadout will cost you {REMATCH_COST}{GOLD_ICON}", null);
                     explanation.SetTextVariable("REMATCH_COST", price);
                     return true;
                 }
