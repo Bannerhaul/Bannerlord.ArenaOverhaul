@@ -70,7 +70,7 @@ namespace ArenaOverhaul
             if (game.GameType is Campaign)
             {
                 //CampaignGameStarter
-                CampaignGameStarter gameStarter = (CampaignGameStarter)gameStarterObject;
+                CampaignGameStarter gameStarter = (CampaignGameStarter) gameStarterObject;
                 //Behaviors
                 gameStarter.AddBehavior(new AOArenaBehavior());
                 //Texts

@@ -2,8 +2,6 @@
 
 using HarmonyLib;
 
-using SandBox;
-
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -11,7 +9,6 @@ using System.Reflection.Emit;
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.SandBox.GameComponents.Map;
-using TaleWorlds.MountAndBlade;
 
 namespace ArenaOverhaul.Patches
 {
@@ -25,7 +22,7 @@ namespace ArenaOverhaul.Patches
         [HarmonyPatch("GetXpFromHit")]
         public static IEnumerable<CodeInstruction> GetXpFromHitTranspiler(IEnumerable<CodeInstruction> instructions)
         {
-            List<CodeInstruction> codes = new List<CodeInstruction>(instructions);
+            List<CodeInstruction> codes = new(instructions);
             int num = 0;
             for (int i = 0; i < codes.Count; ++i)
             {
@@ -48,7 +45,7 @@ namespace ArenaOverhaul.Patches
         internal static double GetTournamentXPRate()
         {
             return Settings.Instance!.TournamentExperienceRate;
-            
+
         }
 
         internal static double GetPracticeFightXPRate()

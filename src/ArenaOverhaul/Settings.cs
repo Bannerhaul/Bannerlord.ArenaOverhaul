@@ -26,11 +26,17 @@ namespace ArenaOverhaul
         private const string HeadingTournamentsMaterialRewards = HeadingTournaments + "/{=ZlvTL5D4T}Material rewards";
         private const string HeadingTournamentsIntangibleRewards = HeadingTournaments + "/{=BCzO2WGq9}Intangible rewards";
         private const string HeadingTournamentsExperience = HeadingTournaments + "/{=oywDR1MSm}Experience";
+        private const string HeadingTournamentsTeamGame = HeadingTournaments + "/{=h6sPrqfax}Team Tournaments";
 
         //Reused settings, hints and values
         internal const string DropdownValueStandard = "{=gknaSzMr6}Standard";
         internal const string DropdownValueAdditive = "{=aBVrVSioz}Additive";
         internal const string DropdownValueMultiplicative = "{=TY9SqFLBs}Multiplicative";
+
+        internal const string DropdownValueNever = "{=}Never";
+        internal const string DropdownValueOnPrizeTierImprovement = "{=}When prize tier can be improved";
+        internal const string DropdownValueOnImprovement = "{=}When chances for better prize are improved";
+        internal const string DropdownValueOnChange = "{=}When situation changed";
 
         //Arena Practice settings
         [SettingPropertyInteger("{=wtKB2udZJ}Total participants", 10, 150, Order = 0, RequireRestart = false, HintText = "{=89f5zrS7i}The total number of participants in the Arena Practice. It is recommended to be a multiple of 3. Default = 30.")]
@@ -53,7 +59,7 @@ namespace ArenaOverhaul
         [SettingPropertyGroup(HeadingPractice, GroupOrder = 0)]
         public bool PracticeEnableLoadoutChoice { get; set; } = true;
 
-        [SettingPropertyInteger("{=L73kYZTnf}Price for picking weapons", 0, 50, Order = 5, RequireRestart = false, HintText = "{=rZH6qYOrT}You will have to pay this sum per a wepon stage (tier) when picking a weapon for the Arena Practice. Default = 10.")]
+        [SettingPropertyInteger("{=L73kYZTnf}Price for picking weapons", 0, 100, Order = 5, RequireRestart = false, HintText = "{=rZH6qYOrT}You will have to pay this sum per a wepon stage (tier) when picking a weapon for the Arena Practice. Default = 10.")]
         [SettingPropertyGroup(HeadingPractice, GroupOrder = 0)]
         public int PracticeLoadoutChoiceCost { get; set; } = 10;
 
@@ -115,7 +121,7 @@ namespace ArenaOverhaul
         [SettingPropertyGroup(HeadingExpansivePractice, GroupOrder = 1)]
         public bool ExpansivePracticeEnableLoadoutChoice { get; set; } = true;
 
-        [SettingPropertyInteger("{=L73kYZTnf}Price for picking weapons", 0, 50, Order = 5, RequireRestart = false, HintText = "{=B9xXCFneS}You will have to pay this sum per a wepon stage (tier) when picking a weapon for the Expansive Arena Practice. Default = 10.")]
+        [SettingPropertyInteger("{=L73kYZTnf}Price for picking weapons", 0, 100, Order = 5, RequireRestart = false, HintText = "{=B9xXCFneS}You will have to pay this sum per a wepon stage (tier) when picking a weapon for the Expansive Arena Practice. Default = 10.")]
         [SettingPropertyGroup(HeadingExpansivePractice, GroupOrder = 1)]
         public int ExpansivePracticeLoadoutChoiceCost { get; set; } = 10;
 
@@ -165,6 +171,20 @@ namespace ArenaOverhaul
         [SettingPropertyGroup(HeadingTournaments, GroupOrder = 2)]
         public int TournamentMaximumBet { get; set; } = 500;
 
+        [SettingPropertyBool("{=}Enable randomized betting odds", Order = 1, RequireRestart = false, HintText = "{=}When this option is enabled, bet odds are slightly randomized, but still mostly based on the prediction of the player's success.")]
+        [SettingPropertyGroup(HeadingTournaments, GroupOrder = 2)]
+        public bool EnableRandomizedBettingOdds { get; set; } = true;
+
+        [SettingPropertyDropdown("{=}Prize reroll condition", Order = 2, RequireRestart = false, HintText = "{=}Specify when and if tournament prizes should be rerolled. Normally prizes are rerolled when player joins the tournament - if the nubmber of participating nobles changed since the tournament was created (affects prize quality). Native is [When situation changed]. Default is [When prize tier can be improved].")]
+        [SettingPropertyGroup(HeadingTournaments, GroupOrder = 2)]
+        public DropdownDefault<string> TournamentPrizeRerollCondition { get; set; } = new DropdownDefault<string>(new string[]
+        {
+            DropdownValueNever,
+            DropdownValueOnPrizeTierImprovement,
+            DropdownValueOnImprovement,
+            DropdownValueOnChange
+        }, 1);
+
         [SettingPropertyBool("{=IfsaDqygk}Enable gold prizes", Order = 0, RequireRestart = false, HintText = "{=yVAG4f83d}When this option is enabled, there are also gold prizes in tournaments. This is in addition to the usual prize items and bet wins.")]
         [SettingPropertyGroup(HeadingTournamentsMaterialRewards, GroupOrder = 0)]
         public bool EnableTournamentGoldPrizes { get; set; } = true;
@@ -196,5 +216,39 @@ namespace ArenaOverhaul
         [SettingPropertyFloatingInteger("{=9dP3VJpOG}Experience gain rate", 0f, 1f, "#0.0%", Order = 0, RequireRestart = false, HintText = "{=C5fcetmfG}Experience gain rate in the tournament fights. Native = 33%. Default = 66.6%.")]
         [SettingPropertyGroup(HeadingTournamentsExperience, GroupOrder = 2)]
         public float TournamentExperienceRate { get; set; } = 0.666f;
+
+        // Team Tournament settings
+        [SettingPropertyBool("{=PSnYupZhT}Enable Team Tournaments", RequireRestart = false, HintText = "{=qHyqXp9tK}Adds an option for joining and participating in the tournaments as a team.", Order = 0)]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        public bool EnableTeamTournaments { get; set; } = true;
+
+        [SettingPropertyInteger("{=Q6qQge312}Maximum team size", 2, 16, RequireRestart = false, HintText = "{=4q3hSTZPZ}The maximum number of members in a team. A team has to consist of at least two members.", Order = 5)]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        public int TeamSizeMax { get; set; } = 8;
+
+        [SettingPropertyDropdown("{=6o45aTuZi}Maximum number of teams", RequireRestart = false, HintText = "{=34r9jsdJq}The maximum number of teams in a tournament. A tournament has to have at least 8 teams.", Order = 10)]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        public DropdownDefault<int> TeamsCountMax { get; set; } = new DropdownDefault<int>(new int[]
+        {
+            8,
+            16,
+            32
+        }, 1);
+
+        [SettingPropertyInteger("{=l2FTrzzXX}Team 1 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 15)]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        public int TeamOneColor { get; set; } = 83;
+
+        [SettingPropertyInteger("{=jWYXBiEZp}Team 2 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 16)]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        public int TeamTwoColor { get; set; } = 119;
+
+        [SettingPropertyInteger("{=iRvUExaRI}Team 3 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 17)]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        public int TeamThreeColor { get; set; } = 88;
+
+        [SettingPropertyInteger("{=F6qBgeAOk}Team 4 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 18)]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        public int TeamFourColor { get; set; } = 84;
     }
 }
