@@ -30,10 +30,10 @@
 		<!-- Bannerlord Module Loader. Do not change the name! -->
 		<SubModule>
 			<Name value="Bannerlord Module Loader" />
-			<DLLName value="Bannerlord.ModuleLoader.dll" />
-			<SubModuleClassType value="Bannerlord.ModuleLoader.SubModule" />
+			<DLLName value="Bannerlord.ModuleLoader.$modulename$.dll" />
+			<SubModuleClassType value="Bannerlord.ModuleLoader.$modulename$" />
 			<Tags>
-				<Tag key="LoaderFilter" value ="ArenaOverhaul.*.dll" />
+				<Tag key="LoaderFilter" value ="$modulename$.*.dll" />
 			</Tags>
 		</SubModule>
 	</SubModules>
