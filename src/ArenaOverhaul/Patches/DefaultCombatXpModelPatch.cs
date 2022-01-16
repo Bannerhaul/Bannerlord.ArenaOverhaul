@@ -2,8 +2,6 @@
 
 using HarmonyLib;
 
-using SandBox;
-
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -11,7 +9,6 @@ using System.Reflection.Emit;
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.SandBox.GameComponents.Map;
-using TaleWorlds.MountAndBlade;
 
 namespace ArenaOverhaul.Patches
 {

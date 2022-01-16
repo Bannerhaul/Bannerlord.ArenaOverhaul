@@ -305,6 +305,12 @@ namespace ArenaOverhaul.TeamTournament
                   false, damageAmount,
                   affectedAgent.Health < 1f);
             }
+            //NoticableTakedowns for renown reward
+            if (affectedAgent.Origin == null || affectorAgent == null || affectorAgent.Origin == null)
+            {
+                return;
+            }
+            TournamentRewardManager.UpdateNoticableTakedowns(affectorAgent, affectedAgent);
         }
 
         public bool CheckIfIsThereAnyEnemies()
@@ -376,6 +382,8 @@ namespace ArenaOverhaul.TeamTournament
                     simAttacks.Remove(nextFighter);
                     _aliveMembers.Remove(nextFighter);
                     nextFighter.Team!.IsAlive = _aliveMembers.Any(x => x.Team == nextFighter.Team);
+
+                    TournamentRewardManager.UpdateNoticableTakedowns(currentFighter, nextFighter);
 
                     if (!nextFighter.Team.IsAlive)
                     {

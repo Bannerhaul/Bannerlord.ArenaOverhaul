@@ -1,13 +1,10 @@
 ﻿using ArenaOverhaul.CampaignBehaviors;
 
-using SandBox;
-
 using System;
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
-using TaleWorlds.MountAndBlade;
 
 namespace ArenaOverhaul
 {

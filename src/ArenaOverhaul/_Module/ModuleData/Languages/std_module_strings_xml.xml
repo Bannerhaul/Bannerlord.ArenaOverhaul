@@ -104,7 +104,8 @@
 		<string id="C5nJgxepr" text="Rewards" />
 		<string id="oywDR1MSm" text="Experience" />
 		<string id="ZlvTL5D4T" text="Material rewards" />
-		<string id="BCzO2WGq9" text="Intangible rewards" />		
+		<string id="BCzO2WGq9" text="Intangible rewards" />
+		<string id="h6sPrqfax" text="Team Tournaments" />
 		<!-- Dropdown values - practice prize calculation -->
 		<string id="gknaSzMr6" text="Standard" />
 		<string id="aBVrVSioz" text="Additive" />
@@ -174,20 +175,19 @@
 		<string id="eLKi8Ptgm" text="Influence reward for the champion" />
 		<string id="uYmFPwO8z" text="The amount of influence that tournament campion receives, if he is a noble lord of any kingdom. Native = 1. Default = 10." />
 		<string id="C5fcetmfG" text="Experience gain rate in the tournament fights. Native = 33%. Default = 66.6%." />
-		<!-- Team Tournaments settings and hints-->
+		<!-- Team Tournament settings and hints-->
 		<string id="PSnYupZhT" text="Enable Team Tournaments" />
 		<string id="qHyqXp9tK" text="Adds an option for joining and participating in the tournaments as a team." />
+		<string id="Q6qQge312" text="Maximum team size" />
+		<string id="4q3hSTZPZ" text="The maximum number of members in a team. A team has to consist of at least two members." />
+		<string id="6o45aTuZi" text="Maximum number of teams" />
+		<string id="34r9jsdJq" text="The maximum number of teams in a tournament. A tournament has to have at least 8 teams." />
 		<string id="l2FTrzzXX" text="Team 1 Color Index" />
 		<string id="jWYXBiEZp" text="Team 2 Color Index" />
 		<string id="iRvUExaRI" text="Team 3 Color Index" />
 		<string id="F6qBgeAOk" text="Team 4 Color Index" />
 		<string id="3r3TStZPU" text="Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors." />
-		<string id="h6sPrqfax" text="Team Tournament" />
 		<string id="Ams5ccKzh" text="Roster can only be selected for team tournaments." />
 		<string id="xRkr497KP" text="Join as a team" />
-		<string id="Q6qQge312" text="Team Size Max" />
-		<string id="4q3hSTZPZ" text="The maximum number of members in a team. A team consists of at least two members." />
-		<string id="6o45aTuZi" text="Max Teams per Tournament" />
-		<string id="34r9jsdJq" text="The maximum amount of teams in a tournament. A tournament has at least 8 teams." />
 	</strings>
 </base>

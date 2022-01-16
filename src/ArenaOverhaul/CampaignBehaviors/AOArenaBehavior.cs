@@ -53,7 +53,6 @@ namespace ArenaOverhaul.CampaignBehaviors
             CampaignEvents.AfterMissionStarted.AddNonSerializedListener(this, AfterMissionStarted);
             CampaignEvents.TournamentFinished.AddNonSerializedListener(this, OnTournamentFinished);
             CampaignEvents.SettlementEntered.AddNonSerializedListener(this, OnSettlementEntered);
-            CampaignEvents.ClanTierIncrease.AddNonSerializedListener(this, OnClanTierChanged);
         }
 
         private void OnAfterSessionLaunched(CampaignGameStarter campaignGameStarter)
@@ -85,7 +84,7 @@ namespace ArenaOverhaul.CampaignBehaviors
             campaignGameStarter.AddGameMenuOption("town_arena", "town_arena_enter_expansive_practice_fight", "{=a3uuVmMKR}Expansive practice fight", new GameMenuOption.OnConditionDelegate(game_menu_enter_expansive_practice_fight_on_condition), new GameMenuOption.OnConsequenceDelegate(game_menu_enter_expansive_practice_fight_on_consequence), false, 1, false);
             campaignGameStarter.AddGameMenuOption("town_arena", "town_arena_nearby_tournaments", "{=aiDNBFQ4U}Nearby Tournaments", args => { _tournamentListOffset = 0; args.optionLeaveType = GameMenuOption.LeaveType.Submenu; return true; }, x => GameMenu.SwitchToMenu("nearby_tournaments_list"), false, 2, false);
 
-#if e164 || e165
+#if e165
             campaignGameStarter.AddGameMenu("nearby_tournaments_list", "{=!}{MENU_TEXT}", new OnInitDelegate(game_menu_nearby_tournaments_list_on_init), GameOverlays.MenuOverlayType.SettlementWithBoth, GameMenu.MenuFlags.none, null);
 #else
             campaignGameStarter.AddGameMenu("nearby_tournaments_list", "{=!}{MENU_TEXT}", new OnInitDelegate(game_menu_nearby_tournaments_list_on_init), GameOverlays.MenuOverlayType.SettlementWithBoth, GameMenu.MenuFlags.None, null);
@@ -94,12 +93,7 @@ namespace ArenaOverhaul.CampaignBehaviors
             campaignGameStarter.AddGameMenuOption("nearby_tournaments_list", "nearby_tournaments_list_previouspage", "{=De0boqLm0}Previous page...", args => { args.optionLeaveType = GameMenuOption.LeaveType.LeaveTroopsAndFlee; return _tournamentListOffset > 0; }, x => { --_tournamentListOffset; GameMenu.SwitchToMenu("nearby_tournaments_list"); }, false, 20, false);
             campaignGameStarter.AddGameMenuOption("nearby_tournaments_list", "nearby_tournaments_list_leave", "{=fakGolQMf}Back to arena", args => { args.optionLeaveType = GameMenuOption.LeaveType.Leave; return true; }, x => GameMenu.SwitchToMenu("town_arena"), true, 10, false);
 
-#if !e164 && !e165
-            if (Settings.Instance!.EnableTeamTournaments)
-            {
-                campaignGameStarter.AddGameMenuOption("menu_town_tournament_join", "participate_as_team", "{=xRkr497KP}Join as a team", new GameMenuOption.OnConditionDelegate(team_game_select_roster_condition), new GameMenuOption.OnConsequenceDelegate(team_game_select_roster_consequence), false, 1, false);
-            }
-#endif
+            campaignGameStarter.AddGameMenuOption("menu_town_tournament_join", "participate_as_team", "{=xRkr497KP}Join as a team", new GameMenuOption.OnConditionDelegate(team_game_select_roster_condition), new GameMenuOption.OnConsequenceDelegate(team_game_select_roster_consequence), false, 1, false);
 
 #if DEBUG // only needed when debugging for testing
             campaignGameStarter.AddGameMenuOption("town_arena", "test_add_tournament_game", "Add Tournament", new GameMenuOption.OnConditionDelegate(AddTournamentCondition), new GameMenuOption.OnConsequenceDelegate(AddTournamentConsequence), false, 3, true);
@@ -152,28 +146,6 @@ namespace ArenaOverhaul.CampaignBehaviors
             AddLoadoutDialogues(_campaignGame!, settlement);
         }
 
-        public void OnClanTierChanged(Clan clan, bool shouldNotify = true)
-        {
-            if (clan == Clan.PlayerClan)
-            {
-                UpdateTournamentPrizes();
-            }
-        }
-
-        private void UpdateTournamentPrizes()
-        {
-            var fightTournamentGames = Town.AllTowns.Where(x => Campaign.Current.TournamentManager.GetTournamentGame(x) is FightTournamentGame).Select(x => (FightTournamentGame) Campaign.Current.TournamentManager.GetTournamentGame(x)).ToList();
-            foreach (FightTournamentGame fightTournamentGame in fightTournamentGames)
-            {
-                FieldAccessHelper.FTGPossibleRegularRewardItemObjectsCacheByRef(fightTournamentGame)?.Clear();
-                FieldAccessHelper.FTGPossibleEliteRewardItemObjectsCacheByRef(fightTournamentGame)?.Clear();
-                if (Settlement.CurrentSettlement is null || !Settlement.CurrentSettlement.IsTown || fightTournamentGame.Town != Settlement.CurrentSettlement.Town)
-                {
-                    fightTournamentGame.UpdateTournamentPrize(true);
-                }
-            }
-        }
-
         protected void AddLoadoutDialogues(CampaignGameStarter campaignGameStarter, Settlement settlement)
         {
             if (!_visitedCultures.Contains(settlement.MapFaction.Culture))
@@ -210,7 +182,7 @@ namespace ArenaOverhaul.CampaignBehaviors
                         if (!listOfExistingLoadouts.Contains(equipmentEntry))
                         {
                             listOfExistingLoadouts.Add(equipmentEntry);
-                            campaignGameStarter.AddPlayerLine(dialogueID, "arena_master_practice_weapons_list", "close_window", dialogueText, new ConversationSentence.OnConditionDelegate(() => conversation_town_arena_culture_match_on_condition(settlement.MapFaction.Culture, equipmentStage)), new ConversationSentence.OnConsequenceDelegate(() => conversation_arena_join_fight_with_selected_loadout_on_consequence(loadout)), 100, null, null);
+                            campaignGameStarter.AddPlayerLine(dialogueID, "arena_master_practice_weapons_list", "close_window", dialogueText, new ConversationSentence.OnConditionDelegate(() => conversation_town_arena_culture_match_on_condition(settlement.MapFaction.Culture, equipmentStage)), new ConversationSentence.OnConsequenceDelegate(() => conversation_arena_join_fight_with_selected_loadout_on_consequence(loadout)), 100, new ConversationSentence.OnClickableConditionDelegate((out TextObject? explanation) => conversation_town_arena_afford_loadout_choice_on_condition(out explanation, equipmentStage)), null);
                         }
                     }
                 }
@@ -259,6 +231,39 @@ namespace ArenaOverhaul.CampaignBehaviors
             {
                 explanation = new TextObject("{=jcEoUPCB}You are in disguise.", null);
                 return false;
+            }
+            explanation = null;
+            return true;
+        }
+
+        private bool conversation_town_arena_afford_loadout_choice_on_condition(out TextObject? explanation, int stage)
+        {
+            int price = GetWeaponLoadoutChoiceCost();
+            if (Hero.MainHero.Gold < stage * price)
+            {
+                explanation = new TextObject("{=}You don't have enough gold.", null);
+                return false;
+            }
+            explanation = null;
+            return true;
+        }
+
+        internal bool conversation_town_arena_afford_loadout_choice_on_condition(out TextObject? explanation)
+        {
+            if (_chosenLoadout >= 0)
+            {
+                int price = _currentLoadoutStage * GetWeaponLoadoutChoiceCost();
+                if (Hero.MainHero.Gold < price)
+                {
+                    explanation = new TextObject("{=}You don't have enough gold to do another round with the current loadout.", null);
+                    return false;
+                }
+                else
+                {
+                    explanation = new TextObject("{=}Another round of practice with the current loadout will cost you {REMATCH_COST}{GOLD_ICON}", null);
+                    explanation.SetTextVariable("REMATCH_COST", price);
+                    return true;
+                }
             }
             explanation = null;
             return true;
@@ -381,7 +386,7 @@ namespace ArenaOverhaul.CampaignBehaviors
 
                     ItemObject prizeItemObject = Campaign.Current.TournamentManager.GetTournamentGame(town).Prize;
                     TextObject prizeTextObject = new("{=UOpsoG57t}tier {TIER} {TYPE}, {NAME}, worth {GOLD}{GOLD_ICON}");
-                    prizeTextObject.SetTextVariable("TIER", (int) prizeItemObject.Tier + 1);
+                    LocalizationHelper.SetNumericVariable(prizeTextObject, "TIER", (int) prizeItemObject.Tier + 1);
                     prizeTextObject.SetTextVariable("TYPE", GetItemTypeName(prizeItemObject.Type));
                     prizeTextObject.SetTextVariable("NAME", prizeItemObject.Name);
                     prizeTextObject.SetTextVariable("GOLD", prizeItemObject.Value);
@@ -483,6 +488,11 @@ namespace ArenaOverhaul.CampaignBehaviors
 
         public bool team_game_select_roster_condition(MenuCallbackArgs args)
         {
+            if (!Settings.Instance!.EnableTeamTournaments)
+            {
+                return false;
+            }
+
             bool canPlayerDo = Campaign.Current.Models.SettlementAccessModel.CanMainHeroDoSettlementAction(
                 Settlement.CurrentSettlement,
                 SettlementAccessModel.SettlementAction.JoinTournament,

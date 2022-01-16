@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Helpers;
-
 using SandBox.TournamentMissions.Missions;
 
 using TaleWorlds.CampaignSystem;
@@ -228,6 +226,7 @@ namespace ArenaOverhaul.TeamTournament
             CurrentRoundIndex = 0;
             CreateTorunamentTree();
             CalculateBet();
+            TournamentRewardManager.InitiateTournament(TournamentGame.Town);
         }
 
         public override void OnMissionTick(float dt)
@@ -262,6 +261,9 @@ namespace ArenaOverhaul.TeamTournament
             LastMatch = CurrentMatch;
             CurrentRound.EndMatch();
             MissionBehavior.OnMatchEnded();
+
+            // Update round rewards
+            TournamentRewardManager.UpdateRoundWinnings(this);
 
             // add winners to next round
             if (NextRound != null)
@@ -300,11 +302,11 @@ namespace ArenaOverhaul.TeamTournament
                         if (Winner.Character == CharacterObject.PlayerCharacter)
                             OnPlayerWinTournament();
 
-                        Campaign.Current.TournamentManager.GivePrizeToWinner(this.TournamentGame, this.Winner.Character.HeroObject, true);
+                        Campaign.Current.TournamentManager.GivePrizeToWinner(TournamentGame, Winner.Character.HeroObject, true);
                         Campaign.Current.TournamentManager.AddLeaderboardEntry(Winner.Character.HeroObject);
                     }
-                    var list = new List<CharacterObject>(this._teams.SelectMany(x => x.Members).Select(y => y.Character));
-                    CampaignEventDispatcher.Instance.OnTournamentFinished(Winner?.Character, list.GetReadOnlyList<CharacterObject>(), Settlement.Town, this.TournamentGame.Prize);
+                    var list = new List<CharacterObject>(_teams.SelectMany(x => x.Members).Select(y => y.Character));
+                    CampaignEventDispatcher.Instance.OnTournamentFinished(Winner?.Character, list.GetReadOnlyList<CharacterObject>(), Settlement.Town, TournamentGame.Prize);
 
                     CurrentInfo.Finish();
 
@@ -342,13 +344,7 @@ namespace ArenaOverhaul.TeamTournament
             if (Campaign.Current.GameMode != CampaignGameMode.Campaign)
                 return;
 
-            //GainRenownAction.Apply(Hero.MainHero, TournamentGame.TournamentWinRenown, false);
-
-            if (Hero.MainHero.MapFaction.IsKingdomFaction && Hero.MainHero.MapFaction.Leader != Hero.MainHero)
-                GainKingdomInfluenceAction.ApplyForDefault(Hero.MainHero, 1f);
-
-            //Hero.MainHero.PartyBelongedTo.ItemRoster.AddToCounts(TournamentGame.Prize, 1);
-
+            //Renown, influence and gold prizes are awarded by the TournamentRewardManager, so we only account bet winnings here
             if (OverallExpectedDenars > 0)
                 GiveGoldAction.ApplyBetweenCharacters(null, Hero.MainHero, OverallExpectedDenars, false);
 
@@ -400,30 +396,96 @@ namespace ArenaOverhaul.TeamTournament
 
         public int GetMaximumBet()
         {
+            int defaultMax = Settings.Instance!.TournamentMaximumBet;
             if (Hero.MainHero.GetPerkValue(DefaultPerks.Roguery.DeepPockets))
-                return 150 * (int) DefaultPerks.Roguery.DeepPockets.PrimaryBonus;
-            return 150;
+            {
+                return defaultMax * (int) DefaultPerks.Roguery.DeepPockets.PrimaryBonus;
+            }
+            return defaultMax;
         }
 
-        // TODO: this needs "rework"
+        //Vanilla bet calculation actually maps nicely to the team tournaments
         private void CalculateBet()
         {
-            if (IsPlayerParticipating)
+            if (!IsPlayerParticipating)
             {
-                if (CurrentRound.CurrentMatch == null)
-                {
-                    BetOdd = 0f;
-                    return;
-                }
+                return;
+            }
 
-                if (IsPlayerEliminated || !IsPlayerParticipating)
+            if (CurrentRound.CurrentMatch == null)
+            {
+                BetOdd = 0.0f;
+            }
+            else if (IsPlayerEliminated)
+            {
+                OverallExpectedDenars = 0;
+                BetOdd = 0.0f;
+            }
+            else
+            {
+                List<KeyValuePair<Hero, int>> leaderboard = Campaign.Current.TournamentManager.GetLeaderboard();
+                int playerTournamentWins = 0;
+                int maxLeaderbordWins = 0;
+                for (int index = 0; index < leaderboard.Count; ++index)
                 {
-                    OverallExpectedDenars = 0;
-                    BetOdd = 0f;
-                    return;
+                    if (leaderboard[index].Key == Hero.MainHero)
+                        playerTournamentWins = leaderboard[index].Value;
+                    if (leaderboard[index].Value > maxLeaderbordWins)
+                        maxLeaderbordWins = leaderboard[index].Value;
                 }
-                // TODO: make a better bet odd calculation
-                BetOdd = MBRandom.Random.Next(3, 5);
+                float playerRating = 30f + Hero.MainHero.Level + Math.Max(0, playerTournamentWins * 12 - maxLeaderbordWins * 2);
+                float totalParticipantsRating = 0.0f;
+                float playerTeamRating = 0.0f;
+                float otherTeamsRating = 0.0f;
+                foreach (TeamTournamentMatch match in CurrentRound.Matches)
+                {
+                    foreach (TeamTournamentTeam tournamentTeam in match.Teams)
+                    {
+                        float teamRating = 0.0f;
+                        foreach (TeamTournamentMember participant in tournamentTeam.Members)
+                        {
+                            if (participant.Character != CharacterObject.PlayerCharacter)
+                            {
+                                int participantTournamentWins = 0;
+                                if (participant.Character.IsHero)
+                                {
+                                    for (int index = 0; index < leaderboard.Count; ++index)
+                                    {
+                                        if (leaderboard[index].Key == participant.Character.HeroObject)
+                                            participantTournamentWins = leaderboard[index].Value;
+                                    }
+                                }
+                                teamRating += participant.Character.Level + Math.Max(0, participantTournamentWins * 8 - maxLeaderbordWins * 2);
+                            }
+                        }
+                        if (tournamentTeam.IsPlayerTeam)
+                        {
+                            playerTeamRating = teamRating;
+                            foreach (TeamTournamentTeam otherTournamentTeam in match.Teams)
+                            {
+                                if (tournamentTeam != otherTournamentTeam)
+                                {
+                                    foreach (TeamTournamentMember participant in otherTournamentTeam.Members)
+                                    {
+                                        int participantTournamentWins = 0;
+                                        if (participant.Character.IsHero)
+                                        {
+                                            for (int index = 0; index < leaderboard.Count; ++index)
+                                            {
+                                                if (leaderboard[index].Key == participant.Character.HeroObject)
+                                                    participantTournamentWins = leaderboard[index].Value;
+                                            }
+                                        }
+                                        otherTeamsRating += participant.Character.Level + Math.Max(0, participantTournamentWins * 8 - maxLeaderbordWins * 2);
+                                    }
+                                }
+                            }
+                        }
+                        totalParticipantsRating += teamRating;
+                    }
+                }
+                float randomFactor = Settings.Instance!.EnableRandomizedBettingOdds ? MBRandom.RandomFloatRanged(0.75f, 1.25f) : 1f;
+                BetOdd = (int) (MathF.Clamp(MathF.Pow(1f / ((playerTeamRating + playerRating) / totalParticipantsRating * (playerRating / (playerTeamRating + playerRating + 0.5f * (totalParticipantsRating - (playerTeamRating + otherTeamsRating))))), 0.75f) * randomFactor, 1.1f, MaximumOdd) * 10.0) / 10f;
             }
         }
 

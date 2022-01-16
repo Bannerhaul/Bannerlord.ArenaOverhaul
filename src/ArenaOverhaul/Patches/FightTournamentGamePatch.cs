@@ -23,6 +23,7 @@ namespace ArenaOverhaul.Patches
         private static readonly MethodInfo miGetRegularRewardItemMinValue = AccessTools.Method(typeof(FightTournamentGamePatch), "GetRegularRewardItemMinValue");
         private static readonly MethodInfo miGetRegularRewardItemMaxValue = AccessTools.Method(typeof(FightTournamentGamePatch), "GetRegularRewardItemMaxValue");
         private static readonly MethodInfo miAddPlayerParyToParticipantCharacters = AccessTools.Method(typeof(FightTournamentGamePatch), "AddPlayerParyToParticipantCharacters");
+        private static readonly MethodInfo miShouldPrizeBeRerolled = AccessTools.Method(typeof(FightTournamentGamePatch), "ShouldPrizeBeRerolled");
 
         private static readonly MethodInfo miListAdd = AccessTools.Method(typeof(List<CharacterObject>), "Add");
 
@@ -85,6 +86,60 @@ namespace ArenaOverhaul.Patches
                 issueInfo.Append($"\nMethodInfos:");
                 issueInfo.Append($"\n\tmiListAdd={(miListAdd != null ? miListAdd.ToString() : "not found")}");
                 issueInfo.Append($"\n\tmiAddPlayerParyToParticipantCharacters={(miAddPlayerParyToParticipantCharacters != null ? miAddPlayerParyToParticipantCharacters.ToString() : "not found")}");
+                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod());
+                LoggingHelper.Log(issueInfo.ToString());
+            }
+        }
+
+        [HarmonyTranspiler]
+        [HarmonyPatch("GetTournamentPrize")]
+        public static IEnumerable<CodeInstruction> GetTournamentPrizeTranspiler(IEnumerable<CodeInstruction> instructions)
+        {
+            List<CodeInstruction> codes = new(instructions);
+            int numberOfEdits = 0;
+            int ldarg2Index = 0;
+            int continueIndex = 0;
+            for (int i = 2; i < codes.Count; ++i)
+            {
+                if (numberOfEdits == 0 && codes[i].opcode == OpCodes.Bne_Un_S && codes[i - 1].opcode == OpCodes.Ldloc_0 && codes[i - 2].opcode == OpCodes.Ldarg_2)
+                {
+                    ldarg2Index = i - 2;
+                    continueIndex = i;
+                    ++numberOfEdits;
+                    break;
+                }
+            }
+
+            //Logging
+            if (ldarg2Index == 0 || continueIndex == 0 || numberOfEdits < 1)
+            {
+                LogNoHooksIssue(ldarg2Index, continueIndex, numberOfEdits, codes);
+                if (numberOfEdits < 2)
+                {
+                    MessageHelper.ErrorMessage("Harmony transpiler for FightTournamentGame. GetTournamentPrize was not able to make all required changes!");
+                }
+            }
+            if (ldarg2Index > 0 && continueIndex > 0)
+            {
+                codes[continueIndex].opcode = OpCodes.Brtrue;
+                codes.InsertRange(continueIndex, new CodeInstruction[] { new CodeInstruction(opcode: OpCodes.Call, operand: miShouldPrizeBeRerolled) });
+            }
+            else
+            {
+                MessageHelper.ErrorMessage("Harmony transpiler for FightTournamentGame. GetTournamentPrize could not find code hooks for applying reroll settings!");
+            }
+
+            return codes.AsEnumerable();
+
+            //local methods
+            static void LogNoHooksIssue(int ldarg2Index, int continueIndex, int numberOfEdits, List<CodeInstruction> codes)
+            {
+                LoggingHelper.Log("Indexes:", "Transpiler for FightTournamentGame.GetParticipantCharacters");
+                StringBuilder issueInfo = new("");
+                issueInfo.Append($"\tldarg2Index={ldarg2Index}.\n\tcontinueIndex={continueIndex}.");
+                issueInfo.Append($"\nNumberOfEdits: {numberOfEdits}");
+                issueInfo.Append($"\nMethodInfos:");
+                issueInfo.Append($"\n\tmiShouldPrizeBeRerolled={(miShouldPrizeBeRerolled != null ? miShouldPrizeBeRerolled.ToString() : "not found")}");
                 LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod());
                 LoggingHelper.Log(issueInfo.ToString());
             }
@@ -194,6 +249,16 @@ namespace ArenaOverhaul.Patches
                 }
             }
         }
+
+        internal static bool ShouldPrizeBeRerolled(int lastRecordedNobleCountForTournamentPrize, int participantingNoblesCount) =>
+            Settings.Instance!.TournamentPrizeRerollCondition.SelectedIndex switch
+            {
+                0 => false, //Never
+                1 => lastRecordedNobleCountForTournamentPrize >= 4 && participantingNoblesCount < 4, //When prize tier can be improved
+                2 => lastRecordedNobleCountForTournamentPrize > participantingNoblesCount, //When chances for better prize are improved
+                3 => lastRecordedNobleCountForTournamentPrize != participantingNoblesCount, //When situation changed
+                _ => true,
+            };
 
         internal static int GetRegularRewardItemMinValue()
         {

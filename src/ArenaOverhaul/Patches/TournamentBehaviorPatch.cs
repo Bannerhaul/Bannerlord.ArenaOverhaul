@@ -4,6 +4,7 @@ using HarmonyLib;
 
 using SandBox.TournamentMissions.Missions;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -11,6 +12,8 @@ using System.Reflection.Emit;
 using System.Text;
 
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.Core;
+using TaleWorlds.Library;
 
 namespace ArenaOverhaul.Patches
 {
@@ -18,14 +21,16 @@ namespace ArenaOverhaul.Patches
     public static class TournamentBehaviorPatch
     {
         private static readonly MethodInfo miGetMaximumBet = AccessTools.Method(typeof(TournamentBehaviorPatch), "GetMaximumBet");
+        private static readonly MethodInfo miGetBettingOddRandomFactor = AccessTools.Method(typeof(TournamentBehaviorPatch), "GetBettingOddRandomFactor");
         private static readonly MethodInfo miGetNextRound = AccessTools.PropertyGetter(typeof(TournamentBehavior), "NextRound");
-        private static readonly MethodInfo miUpdateRoundWinnings = AccessTools.Method(typeof(TournamentRewardManager), "UpdateRoundWinnings");
+        private static readonly MethodInfo miUpdateRoundWinnings = AccessTools.Method(typeof(TournamentRewardManager), "UpdateRoundWinnings", new Type[] { typeof(TournamentBehavior) });
         private static readonly MethodInfo miGetMainHero = AccessTools.PropertyGetter(typeof(Hero), "MainHero");
         private static readonly MethodInfo miGetOverallExpectedDenars = AccessTools.PropertyGetter(typeof(TournamentBehavior), "OverallExpectedDenars");
+        private static readonly MethodInfo miMathFPow = AccessTools.Method(typeof(MathF), "Pow", new Type[] { typeof(float), typeof(float) });
 
         [HarmonyTranspiler]
         [HarmonyPatch("GetMaximumBet")]
-        public static IEnumerable<CodeInstruction> CreateTorunamentTreeTranspiler(IEnumerable<CodeInstruction> instructions)
+        public static IEnumerable<CodeInstruction> GetMaximumBetTranspiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> codes = new(instructions);
             for (int i = 0; i < codes.Count; ++i)
@@ -33,6 +38,22 @@ namespace ArenaOverhaul.Patches
                 if (codes[i].LoadsConstant(150))
                 {
                     codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetMaximumBet);
+                    break;
+                }
+            }
+            return codes.AsEnumerable();
+        }
+
+        [HarmonyTranspiler]
+        [HarmonyPatch("CalculateBet")]
+        public static IEnumerable<CodeInstruction> CalculateBetTranspiler(IEnumerable<CodeInstruction> instructions)
+        {
+            List<CodeInstruction> codes = new(instructions);
+            for (int i = 0; i < codes.Count; ++i)
+            {
+                if (codes[i].LoadsConstant(1.1f) && codes[i - 1].Calls(miMathFPow))
+                {
+                    codes.InsertRange(i, new CodeInstruction[] { new CodeInstruction(opcode: OpCodes.Call, operand: miGetBettingOddRandomFactor), new CodeInstruction(OpCodes.Mul) });
                     break;
                 }
             }
@@ -115,7 +136,7 @@ namespace ArenaOverhaul.Patches
             if (renownAndInfluenceStartIndex == 0 || renownAndInfluenceEndIndex == 0)
             {
                 LogNoHooksIssue(renownAndInfluenceStartIndex, renownAndInfluenceEndIndex, codes);
-                MessageHelper.ErrorMessage("Harmony transpiler for TournamentBehavior. OnPlayerWinTournament could not find code hooks adding round winnings!");
+                MessageHelper.ErrorMessage("Harmony transpiler for TournamentBehavior. OnPlayerWinTournament could not find code hooks for removing surplus rewards!");
             }
             else
             {
@@ -143,6 +164,11 @@ namespace ArenaOverhaul.Patches
         internal static int GetMaximumBet()
         {
             return Settings.Instance!.TournamentMaximumBet;
+        }
+
+        internal static float GetBettingOddRandomFactor()
+        {
+            return Settings.Instance!.EnableRandomizedBettingOdds ? MBRandom.RandomFloatRanged(0.75f, 1.25f) : 1f;
         }
     }
 }

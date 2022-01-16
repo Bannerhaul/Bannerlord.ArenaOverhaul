@@ -1,7 +1,13 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.1.0
 Game Versions: e1.6.5,e1.7.0,e1.7.1
+* Compatibility with e1.7.1
 * Team Tournaments
+* Optional bett odds randomization
+* Fixed a fee for choosing a practice loadout
+* Added tournament prize reroll options
+* Removed tournament prize rerolling on clan rank-up
+* Fixed renown being rewarded several times on e1.7.0 and e1.7.1
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.1
 Game Versions: e1.6.5,e1.7.0

@@ -1,4 +1,6 @@
-﻿using SandBox.TournamentMissions.Missions;
+﻿using ArenaOverhaul.TeamTournament;
+
+using SandBox.TournamentMissions.Missions;
 
 using System;
 using System.Collections.Generic;
@@ -49,24 +51,37 @@ namespace ArenaOverhaul
             _roundWinners[instance.TournamentGame.Town].AddRange(instance.LastMatch.Winners.Where(x => x.Character.IsHero).Select(x => (Round: instance.CurrentRoundIndex, Winner: x.Character)).ToList());
         }
 
+        internal static void UpdateRoundWinnings(TeamTournamentBehavior instance)
+        {
+            _roundWinners[instance.TournamentGame.Town].AddRange(instance.LastMatch!.Winners.Where(x => x.GetTeamLeader().Character.IsHero).Select(x => (Round: instance.CurrentRoundIndex, Winner: x.GetTeamLeader().Character)).ToList());
+        }
+
+        internal static void UpdateNoticableTakedowns(CharacterObject affectorCharacter, CharacterObject affectedCharacter)
+        {
+            if (affectorCharacter.IsHero && affectedCharacter.IsHero)
+            {
+                Hero affectorHero = affectorCharacter.HeroObject;
+                Hero affectedHero = affectedCharacter.HeroObject;
+                UpdateNoticableTakedowns(affectorHero, affectedHero);
+            }
+        }
+
         internal static void UpdateNoticableTakedowns(Agent affectorAgent, Agent affectedAgent)
         {
-            if (affectorAgent.Character.IsHero && affectedAgent.Character.IsHero && affectedAgent.Health < 1.0)
+            if (affectedAgent.Health < 1.0 )
             {
-                Hero affectorHero = ((CharacterObject) affectorAgent.Character).HeroObject;
-                Hero affectedHero = ((CharacterObject) affectedAgent.Character).HeroObject;
-                UpdateNoticableTakedowns(affectorHero, affectedHero);
+                UpdateNoticableTakedowns((CharacterObject) affectorAgent.Character, (CharacterObject) affectedAgent.Character);
             }
         }
 
         internal static void UpdateNoticableTakedowns(TournamentParticipant simulatedPuncher, TournamentParticipant simulatedVictim)
         {
-            if (simulatedPuncher.Character.IsHero && simulatedVictim.Character.IsHero)
-            {
-                Hero affectorHero = simulatedPuncher.Character.HeroObject;
-                Hero affectedHero = simulatedVictim.Character.HeroObject;
-                UpdateNoticableTakedowns(affectorHero, affectedHero);
-            }
+            UpdateNoticableTakedowns(simulatedPuncher.Character, simulatedVictim.Character);
+        }
+
+        internal static void UpdateNoticableTakedowns(TeamTournamentMember simulatedPuncher, TeamTournamentMember simulatedVictim)
+        {
+            UpdateNoticableTakedowns(simulatedPuncher.Character, simulatedVictim.Character);
         }
 
         private static void UpdateNoticableTakedowns(Hero affectorHero, Hero affectedHero)
