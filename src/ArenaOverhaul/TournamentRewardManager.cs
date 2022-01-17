@@ -68,7 +68,7 @@ namespace ArenaOverhaul
 
         internal static void UpdateNoticableTakedowns(Agent affectorAgent, Agent affectedAgent)
         {
-            if (affectedAgent.Health < 1.0 )
+            if (affectedAgent.Health < 1.0)
             {
                 UpdateNoticableTakedowns((CharacterObject) affectorAgent.Character, (CharacterObject) affectedAgent.Character);
             }
