@@ -1,8 +1,8 @@
-﻿using System;
+﻿using SandBox.TournamentMissions.Missions;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using SandBox.TournamentMissions.Missions;
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
