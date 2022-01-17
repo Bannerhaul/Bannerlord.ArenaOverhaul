@@ -28,7 +28,7 @@ namespace ArenaOverhaul.Patches
             int renownAwardEndIndex = 0;
             for (int i = 1; i < codes.Count; ++i)
             {
-                if (renownAwardStartIndex == 0 && codes[i].opcode == OpCodes.Ldarg_1 && codes[i - 1].opcode == OpCodes.Brfalse_S)
+                if (renownAwardStartIndex == 0 && codes[i].opcode == OpCodes.Ldarg_1 && codes[i - 1].opcode == OpCodes.Brfalse_S && codes[i + 3].opcode != OpCodes.Brfalse_S)
                 {
                     renownAwardStartIndex = i;
                 }
