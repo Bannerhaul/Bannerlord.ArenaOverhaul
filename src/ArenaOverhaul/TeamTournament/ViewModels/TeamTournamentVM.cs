@@ -252,9 +252,9 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
 
         public void OnAgentRemoved(Agent agent)
         {
-            if (IsCurrentMatchActive && agent.IsHuman)
+            if (IsCurrentMatchActive && agent.IsHuman && _currentMatch != null)
             {
-                var teamVM = _currentMatch!.Teams.FirstOrDefault(x => x.Team!.Members.Any(m => m.Descriptor.CompareTo(agent.Origin.UniqueSeed) == 0));
+                var teamVM = _currentMatch.Teams.FirstOrDefault(x => x.Team!.Members.Any(m => m.Descriptor.CompareTo(agent.Origin.UniqueSeed) == 0));
                 if (teamVM.Team != null && !teamVM.Team.IsAlive)
                     teamVM.GetTeamLeader().IsDead = true;
             }
