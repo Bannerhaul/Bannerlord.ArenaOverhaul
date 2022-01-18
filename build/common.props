@@ -3,7 +3,7 @@
 
     <!--Module Version-->
     <PropertyGroup>
-        <Version>1.1.3</Version>
+        <Version>1.1.4</Version>
     </PropertyGroup>
 
     <!-- Versions of Major Dependencies (for Package References & SubModule.xml Substitution) -->
