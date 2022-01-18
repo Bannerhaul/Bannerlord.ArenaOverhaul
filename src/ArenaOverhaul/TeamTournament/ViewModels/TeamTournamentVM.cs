@@ -252,17 +252,12 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
 
         public void OnAgentRemoved(Agent agent)
         {
-            if (IsCurrentMatchActive && agent.IsHuman)
+            if (IsCurrentMatchActive && agent.IsHuman && _currentMatch != null)
             {
-                var team = _currentMatch!.Teams.First(x => x.Team!.Members.Any(m => m.Descriptor.CompareTo(agent.Origin.UniqueSeed) == 0));
-                if (team.Team != null & !team.Team!.IsAlive)
-                    team.GetTeamLeader().IsDead = true;
+                var teamVM = _currentMatch.Teams.FirstOrDefault(x => x.Team!.Members.Any(m => m.Descriptor.CompareTo(agent.Origin.UniqueSeed) == 0));
+                if (teamVM.Team != null && !teamVM.Team.IsAlive)
+                    teamVM.GetTeamLeader().IsDead = true;
             }
-        }
-
-        private TeamTournamentMemberVM GetMemberForSeed(int seed)
-        {
-            return CurrentMatch!.GetMatchMemberVMs().FirstOrDefault(x => x.Member != null && x.Member.Descriptor.CompareTo(seed) == 0);
         }
 
         #region view commands
