@@ -61,7 +61,7 @@ jobs:
       shell: pwsh
 
     - name: Upload bannerlord folder
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ArenaOverhaul
         path: ./bannerlord/Modules/
