@@ -3,13 +3,13 @@
 
     <!--Module Version-->
     <PropertyGroup>
-        <Version>1.1.4</Version>
+        <Version>1.1.5</Version>
     </PropertyGroup>
 
     <!-- Versions of Major Dependencies (for Package References & SubModule.xml Substitution) -->
     <PropertyGroup>
         <!--Harmony Version-->
-        <HarmonyVersion>2.1.1</HarmonyVersion>
+        <HarmonyVersion>2.2.1</HarmonyVersion>
         <!--ButterLib Version-->
         <ButterLibVersion>2.1.2</ButterLibVersion>
         <!--BuildResources Version-->
@@ -31,7 +31,8 @@
         <Platforms>x64</Platforms>
         <LangVersion>9.0</LangVersion>
         <Nullable>enable</Nullable>
-        <ModuleName>ArenaOverhaul</ModuleName>
+        <ModuleId>ArenaOverhaul</ModuleId>
+        <ModuleName>$(ModuleId)</ModuleName>
         <DisplayName>Arena Overhaul</DisplayName>
         <RootNamespace>$(ModuleName)</RootNamespace>
     </PropertyGroup>
@@ -64,10 +65,17 @@
         <!--Parsing  supported-game-versions.txt-->
         <SGVLineCount>$([System.Text.RegularExpressions.Regex]::Split($(SGVFile), `\r\n|\r|\n`).Length)</SGVLineCount>
         <SGVLastEntryIndex>$([MSBuild]::Subtract($(SGVLineCount), 1))</SGVLastEntryIndex>
-        <!--First enrty is Beta, second Stable, last Minimal-->
-        <GameBetaVersion>$([System.Text.RegularExpressions.Regex]::Split($(SGVFile), `\r\n|\r|\n`)[0])</GameBetaVersion>
-        <GameStableVersion>$([System.Text.RegularExpressions.Regex]::Split($(SGVFile), `\r\n|\r|\n`)[1])</GameStableVersion>
-        <GameMinimalVersion>$([System.Text.RegularExpressions.Regex]::Split($(SGVFile), `\r\n|\r|\n`)[$(SGVLastEntryIndex)])</GameMinimalVersion>
+        <!-- First enrty is Beta, second Stable, last Minimal -->
+        <FirstLine  Condition="'$(SGVLineCount)' &gt; 0">$([System.Text.RegularExpressions.Regex]::Split($(SGVFile), `\r\n|\r|\n`)[0])</FirstLine>
+        <SecondLine Condition="'$(SGVLineCount)' &gt; 1">$([System.Text.RegularExpressions.Regex]::Split($(SGVFile), `\r\n|\r|\n`)[1])</SecondLine>
+        <LastLine   Condition="'$(SGVLineCount)' &gt; 0">$([System.Text.RegularExpressions.Regex]::Split($(SGVFile), `\r\n|\r|\n`)[$(SGVLastEntryIndex)])</LastLine>
+        <!-- -->
+        <SecondLine Condition="'$(SecondLine)' == ''">$(FirstLine)</SecondLine>
+        <LastLine Condition="'$(LastLine)' == ''">$(SecondLine)</LastLine>
+        <!-- -->
+        <GameBetaVersion>$(FirstLine)</GameBetaVersion>
+        <GameStableVersion>$(SecondLine)</GameStableVersion>
+        <GameMinimalVersion>$(LastLine)</GameMinimalVersion>
         <!-- -->
         <GameVersionWithPrefix>e1.1.0</GameVersionWithPrefix>
         <GameVersionWithPrefix Condition="$(IsMinimal)">$(GameMinimalVersion)</GameVersionWithPrefix>

@@ -4,7 +4,7 @@ using System.Linq;
 
 using TaleWorlds.Core;
 
-using static TaleWorlds.CampaignSystem.SandBox.Source.TournamentGames.TournamentMatch;
+using static TaleWorlds.CampaignSystem.TournamentGames.TournamentMatch;
 
 namespace ArenaOverhaul.TeamTournament
 {
@@ -69,7 +69,6 @@ namespace ArenaOverhaul.TeamTournament
         public void End()
         {
             State = MatchState.Finished;
-            _winners = GetWinners();
         }
 
         public void Start()
@@ -87,16 +86,14 @@ namespace ArenaOverhaul.TeamTournament
 
         public bool IsFullMatch => _teams.Count == _teams.Capacity;
 
-        private List<TeamTournamentTeam> GetWinners()
-        {
-            if (State != MatchState.Finished || _winners == null)
-                _winners = Teams.OrderByDescending(x => x.Score).Take(_winnerTeamsPerMatch).ToList();
-
-            return _winners;
-        }
+        private List<TeamTournamentTeam> GetWinners() =>
+            State switch
+            {
+                MatchState.Finished => Teams.OrderByDescending(x => x.Score).Take(_winnerTeamsPerMatch).ToList(),
+                _ => new()
+            };
 
         private readonly int _winnerTeamsPerMatch;
-        private List<TeamTournamentTeam>? _winners;
         private List<TeamTournamentTeam> _teams;
     }
 }

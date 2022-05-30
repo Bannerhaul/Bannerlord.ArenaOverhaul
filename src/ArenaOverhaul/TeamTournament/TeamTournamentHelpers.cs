@@ -2,6 +2,8 @@
 using System.Linq;
 
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.Settlements;
+using TaleWorlds.Core;
 
 namespace ArenaOverhaul.TeamTournament
 {
@@ -25,7 +27,7 @@ namespace ArenaOverhaul.TeamTournament
 
         public static IEnumerable<CharacterObject> GetCombatantHeroesInSettlement(this Settlement settlement)
         {
-            return settlement.GetHeroesInSettlement().Where(x => !x.HeroObject.IsChild && !x.HeroObject.IsNotable && !x.HeroObject.Noncombatant && !x.HeroObject.IsWounded);
+            return settlement.GetHeroesInSettlement().Where(x => x.CanBeAParticipant(true, false));
         }
 
         public static IEnumerable<Hero> AllLivingRelatedHeroes(this Hero inHero)
@@ -47,6 +49,18 @@ namespace ArenaOverhaul.TeamTournament
 
             foreach (Hero hero3 in inHero.ExSpouses.Where(x => !x.IsDead))
                 yield return hero3;
+        }
+
+        public static bool CanBeAParticipant(this CharacterObject character, bool considerSkills, bool allowNotables = false)
+        {
+            if (!character.IsHero)
+                return !considerSkills || character.Tier >= 3;
+            
+            Hero heroObject = character.HeroObject;
+            return
+                !heroObject.IsChild && !heroObject.Noncombatant && !heroObject.IsWounded
+                && (allowNotables || !heroObject.IsNotable)
+                && (!considerSkills || heroObject.GetSkillValue(DefaultSkills.OneHanded) >= 100 || heroObject.GetSkillValue(DefaultSkills.TwoHanded) >= 100 || heroObject.GetSkillValue(DefaultSkills.Polearm) >= 100);
         }
 
         public static Town GetCurrentTown() => Settlement.CurrentSettlement.Town;

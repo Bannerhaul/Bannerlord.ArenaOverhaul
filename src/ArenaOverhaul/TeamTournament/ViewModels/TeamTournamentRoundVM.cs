@@ -4,7 +4,7 @@ using System.Linq;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
-using static TaleWorlds.CampaignSystem.SandBox.Source.TournamentGames.TournamentMatch;
+using static TaleWorlds.CampaignSystem.TournamentGames.TournamentMatch;
 
 namespace ArenaOverhaul.TeamTournament.ViewModels
 {

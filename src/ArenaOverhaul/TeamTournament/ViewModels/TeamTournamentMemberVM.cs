@@ -35,7 +35,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
             IsInitialized = true;
             if (member != null)
             {
-                Name = member.Character.Name.ToString() + "'s Team";
+                Name = member.Team!.Name;
                 Character = new CharacterViewModel(CharacterViewModel.StanceTypes.CelebrateVictory);
                 Character.FillFrom(member.Character, -1);
                 Visual = new ImageIdentifierVM(CharacterCode.CreateFrom(member.Character));

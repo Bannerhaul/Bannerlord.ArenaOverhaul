@@ -1,16 +1,20 @@
 ﻿using HarmonyLib;
 
 using SandBox;
-using SandBox.Source.Missions;
+using SandBox.Missions.MissionLogics;
+using SandBox.Missions.MissionLogics.Arena;
+using SandBox.Tournaments;
 
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.Settlements;
+using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.Source.Missions;
 
 namespace ArenaOverhaul.TeamTournament.Patches
 {
-    [HarmonyPatch(typeof(MissionStarter), "OpenTournamentFightMission")]
-    class MissionStarterOpenTournamentFightMissionPatch
+    [HarmonyPatch(typeof(TournamentMissionStarter), "OpenTournamentFightMission")]
+    public static class MissionStarterOpenTournamentFightMissionPatch
     {
         public static bool Prefix(ref Mission __result, string scene, TournamentGame tournamentGame, Settlement settlement, CultureObject culture, bool isPlayerParticipating)
         {
@@ -27,11 +31,7 @@ namespace ArenaOverhaul.TeamTournament.Patches
                         new TeamTournamentBehavior(tournamentGame, settlement, tournamentMissionController, isPlayerParticipating), // this is patched!
                         new AgentVictoryLogic(),
                         new MissionAgentPanicHandler(),
-#if e165
-                        new AgentBattleAILogic(),
-#else
                         new AgentHumanAILogic(),
-#endif
                         new ArenaAgentStateDeciderLogic(),
                         new MissionHardBorderPlacer(),
                         new MissionBoundaryPlacer(),

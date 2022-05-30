@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-using SandBox;
+using SandBox.Tournaments.MissionLogics;
 
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
-using TaleWorlds.CampaignSystem.SandBox.Source.TournamentGames;
+using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.MountAndBlade;
 
 namespace ArenaOverhaul.Patches

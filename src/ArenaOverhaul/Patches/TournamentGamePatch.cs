@@ -10,6 +10,8 @@ using System.Reflection.Emit;
 using System.Text;
 
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.Settlements;
+using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Core;
 
 namespace ArenaOverhaul.Patches

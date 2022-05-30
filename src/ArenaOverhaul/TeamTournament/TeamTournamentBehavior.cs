@@ -1,4 +1,4 @@
-﻿using SandBox.TournamentMissions.Missions;
+﻿using SandBox.Tournaments;
 
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,10 @@ using System.Linq;
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
-using TaleWorlds.CampaignSystem.SandBox.Source.TournamentGames;
+using TaleWorlds.CampaignSystem.CharacterDevelopment;
+using TaleWorlds.CampaignSystem.Roster;
+using TaleWorlds.CampaignSystem.Settlements;
+using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
@@ -57,7 +60,7 @@ namespace ArenaOverhaul.TeamTournament
             foreach (var flattenedTroopRosterElement in CurrentInfo.SelectedRoster!.ToFlattenedRoster())
                 mainParticipants.Add(new TeamTournamentMember(flattenedTroopRosterElement.Troop));
             _teams = new List<TeamTournamentTeam>() {
-                new TeamTournamentTeam(mainParticipants, Hero.MainHero.ClanBanner, Hero.MainHero.ClanBanner.GetPrimaryColor())
+                new TeamTournamentTeam(mainParticipants, 0, Hero.MainHero.ClanBanner, Hero.MainHero.ClanBanner.GetPrimaryColor())
             };
 
             // create rest
@@ -69,6 +72,22 @@ namespace ArenaOverhaul.TeamTournament
             return _teams!.TrueForAll(x => x.Members.All(y => y.Character == c));
         }
 
+        private void AddTournamentTeam(IEnumerable<TeamTournamentMember> members, Banner? teamBanner = null, uint teamColor = 0, TeamTournamentMember? leader = null)
+        {
+            TeamTournamentMember? localLeader = leader;
+            if (localLeader is null)
+            {
+                localLeader =
+                  members.Where(x => x.Character.IsHero).OrderByDescending(x => x.Character.GetBattlePower()).FirstOrDefault()
+                  ?? members.OrderByDescending(x => x.Character.GetBattlePower()).First();
+            }
+
+            List<TeamTournamentTeam> similarTeams = _teams.Where(x => x.GetTeamLeader().Character.Name == localLeader.Character.Name).ToList();
+            int teamIndex = similarTeams.Any() ? similarTeams.Max(x => x.TeamIndex) + 1 : 0;
+
+            _teams!.Add(new TeamTournamentTeam(members, teamIndex, teamBanner, teamColor, leader));
+        }
+
         private void CreateTournamentTeams()
         {
             // check out if we can form teams locally from other heroes
@@ -77,9 +96,9 @@ namespace ArenaOverhaul.TeamTournament
               .Where(x => !CurrentInfo.SelectedRoster!.Contains(x));
 
             // first try to get teams of every local party, "they arrived just for this event"
-            foreach (var partyLeader in heroesInSettlement.Where(x => x.HeroObject.IsPartyLeader))
+            foreach (var partyLeader in heroesInSettlement.Where(x => x.HeroObject.IsPartyLeader && !x.HeroObject.IsNotable))
             {
-                var totalCount = partyLeader.HeroObject.PartyBelongedTo.MemberRoster.TotalManCount;
+                var totalCount = partyLeader.HeroObject.PartyBelongedTo.MemberRoster.TotalHealthyCount;
 
                 // if this party can't at least have a team full team, drop them
                 if (totalCount < CurrentInfo.TeamSize)
@@ -88,120 +107,123 @@ namespace ArenaOverhaul.TeamTournament
                 //var totalHeroes = partyLeader.HeroObject.PartyBelongedTo.MemberRoster.TotalHeroes;
                 var topHeroes = partyLeader.HeroObject.PartyBelongedTo.MemberRoster
                     .GetTroopRoster()
-                    .Where(x => x.Character.IsHero)
-#if e165
-                    .OrderByDescending(y => y.Character.GetPower())
-#else
+                    .Where(x => x.Character.IsHero && x.Character.CanBeAParticipant(true))
                     .OrderByDescending(y => y.Character.GetBattlePower())
-#endif
                     .Select(z => z.Character)
                     .Take(CurrentInfo.TeamSize)
                     .ToList();
 
                 if (topHeroes.Count == CurrentInfo.TeamSize)
                 {
-                    _teams!.Add(new TeamTournamentTeam(topHeroes.Select(x => new TeamTournamentMember(x))));
+                    AddTournamentTeam(topHeroes.Select(x => new TeamTournamentMember(x)));
                     continue;
                 }
 
                 // just heroes wasn't enough, fill up with soldiers from party
                 var strongestPartyTeam = partyLeader.HeroObject.PartyBelongedTo.MemberRoster
                     .GetTroopRoster()
-                    .Where(x => !x.Character.IsHero)
-#if e165
-                    .OrderByDescending(z => z.Character.GetPower())
-#else
+                    .Where(x => !x.Character.IsHero && x.WoundedNumber < x.Number && x.Character.CanBeAParticipant(true))
                     .OrderByDescending(z => z.Character.GetBattlePower())
-#endif
                     .Take(CurrentInfo.TeamSize - topHeroes.Count);
 
                 var flattenRoster = new FlattenedTroopRoster { strongestPartyTeam.ToList() };
 
-#if e165
-                foreach (var flattenedTroopRosterElement in flattenRoster.OrderByDescending(x => x.Troop.GetPower()))
-#else
                 foreach (var flattenedTroopRosterElement in flattenRoster.OrderByDescending(x => x.Troop.GetBattlePower()))
-#endif
                 {
                     topHeroes.Add(flattenedTroopRosterElement.Troop);
-
                     if (topHeroes.Count == CurrentInfo.TeamSize)
                         break;
                 }
 
                 if (topHeroes.Count() == CurrentInfo.TeamSize)
-#if e165
-                    _teams!.Add(new TeamTournamentTeam(topHeroes.OrderByDescending(x => x.GetPower()).Select(y => new TeamTournamentMember(y))));
-#else
-                    _teams!.Add(new TeamTournamentTeam(topHeroes.OrderByDescending(x => x.GetBattlePower()).Select(y => new TeamTournamentMember(y))));
-#endif
+                    AddTournamentTeam(topHeroes.OrderByDescending(x => x.GetBattlePower()).Select(y => new TeamTournamentMember(y)));
 
                 if (_teams!.Count == CurrentInfo.TeamsCount)
                     return;
             }
 
-            var currentTeam = new List<TeamTournamentMember>();
+            //Get soldiers in settlement, we'll use them in the rest of the team building
+            var garrisonTroopRoster = Settlement.Town.GarrisonParty?.MemberRoster?.GetTroopRoster();
+            List<CharacterObject> troopsAvailable;
+            if (garrisonTroopRoster != null && garrisonTroopRoster.Any())
+            {
+                troopsAvailable = garrisonTroopRoster.Where(x => x.Number > x.WoundedNumber && !x.Character.IsHero && x.Character.CanBeAParticipant(true)).Select(x => x.Character).ToList();
+            }
+            else
+            {
+                troopsAvailable = GetSimpletons(Settlement.Culture);
+                if (!troopsAvailable.Any())
+                {
+                    troopsAvailable = GetSimpletons().Where(x => x.CanBeAParticipant(true)).ToList();
+                }
+            }
 
             // if we are still not done, create teams with local heroes
             var possibleHeroes = heroesInSettlement.Where(x => !x.HeroObject.IsPartyLeader && !IsAlreadySelected(x)).ToList();
-            foreach (var localHero in possibleHeroes)
+            if (possibleHeroes.Count <= CurrentInfo.TeamsCount - _teams!.Count)
             {
-                currentTeam.Add(new TeamTournamentMember(localHero));
-
-                if (currentTeam.Count() >= CurrentInfo.TeamSize)
+                foreach (var localHero in possibleHeroes)
                 {
-                    _teams!.Add(new TeamTournamentTeam(currentTeam));
-                    currentTeam = new List<TeamTournamentMember>();
-                }
-
-                if (possibleHeroes.Count() - currentTeam.Count() <= 0 && currentTeam.Count() > 0) // fill up hero team if no more heroes left 
-                {
-                    var randomList = GetSimpletons(Settlement.Culture);
+                    List<TeamTournamentMember> currentTeam = new()
+                    {
+                        new TeamTournamentMember(localHero)
+                    };
+                    List<CharacterObject> randomList = new(troopsAvailable);
                     randomList.Shuffle();
                     var simpletonList = randomList.Take(CurrentInfo.TeamSize - currentTeam.Count()).Select(x => new TeamTournamentMember(x)).ToList();
                     currentTeam.AddRange(simpletonList);
-                    _teams!.Add(new TeamTournamentTeam(currentTeam));
-                    currentTeam = new List<TeamTournamentMember>();
+                    AddTournamentTeam(currentTeam);
                 }
+            }
+            else
+            {
+                while (possibleHeroes.Any() && _teams!.Count < CurrentInfo.TeamsCount)
+                {
+                    List<TeamTournamentMember> currentTeam = new();
+                    foreach (var localHero in possibleHeroes)
+                    {
+                        if (!currentTeam.Any(x => x.Character.IsHero && localHero.HeroObject.IsEnemy(x.Character.HeroObject)) || currentTeam.Any(x => x.Character.IsHero && localHero.HeroObject.IsFriend(x.Character.HeroObject)))
+                            currentTeam.Add(new TeamTournamentMember(localHero));
 
-                if (_teams!.Count == CurrentInfo.TeamsCount)
-                    return;
+                        if (currentTeam.Count() >= CurrentInfo.TeamSize)
+                        {
+                            AddTournamentTeam(currentTeam);
+                            if (_teams!.Count == CurrentInfo.TeamsCount)
+                                return;
+                            currentTeam = new();
+                        }
+                    }
+                    if (currentTeam.Count() > 0 && currentTeam.Count() < CurrentInfo.TeamSize) // fill up last hero team with troops
+                    {
+                        List<CharacterObject> randomList = new(troopsAvailable);
+                        randomList.Shuffle();
+                        var simpletonList = randomList.Take(CurrentInfo.TeamSize - currentTeam.Count()).Select(x => new TeamTournamentMember(x)).ToList();
+                        currentTeam.AddRange(simpletonList);
+                        AddTournamentTeam(currentTeam);
+                        if (_teams!.Count == CurrentInfo.TeamsCount)
+                            return;
+                        currentTeam = new();
+                    }
+                    possibleHeroes = heroesInSettlement.Where(x => !x.HeroObject.IsPartyLeader && !IsAlreadySelected(x)).ToList();
+                }
             }
 
             // still not done, just add troops to fill it
-            var possibleSimpletons = GetSimpletons(Settlement.Culture).ToList();
-            if (possibleSimpletons.Count > 0)
+            if (troopsAvailable.Count > 0)
             {
                 do
                 {
                     var teamToAdd = new List<CharacterObject>();
                     for (var i = 0; i < CurrentInfo.TeamSize; i++)
                     {
-                        teamToAdd.Add(possibleSimpletons.GetRandomElement());
+                        teamToAdd.Add(troopsAvailable.GetRandomElement());
                     }
-                    _teams!.Add(new TeamTournamentTeam(teamToAdd.Select(x => new TeamTournamentMember(x)).ToList()));
+                    AddTournamentTeam(teamToAdd.Select(x => new TeamTournamentMember(x)).ToList());
                 }
                 while (_teams!.Count < CurrentInfo.TeamsCount);
 
                 if (_teams!.Count == CurrentInfo.TeamsCount)
                     return;
-            }
-
-            // if not done here, something was really bad fill up with ALL possible troops
-            possibleSimpletons = GetSimpletons().ToList();
-            if (possibleSimpletons.Count > 0)
-            {
-                do
-                {
-                    var teamToAdd = new List<CharacterObject>();
-                    for (var i = 0; i < CurrentInfo.TeamSize; i++)
-                    {
-                        teamToAdd.Add(possibleSimpletons.GetRandomElement());
-                    }
-                    _teams!.Add(new TeamTournamentTeam(teamToAdd.Select(x => new TeamTournamentMember(x)).ToList()));
-                }
-                while (_teams!.Count < CurrentInfo.TeamsCount);
-                return;
             }
         }
 

@@ -11,8 +11,10 @@ using System.Reflection.Emit;
 using System.Text;
 
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.SandBox.GameComponents;
-using TaleWorlds.CampaignSystem.SandBox.Source.TournamentGames;
+using TaleWorlds.CampaignSystem.Extensions;
+using TaleWorlds.CampaignSystem.GameComponents;
+using TaleWorlds.CampaignSystem.Roster;
+using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Core;
 
 namespace ArenaOverhaul.Patches
@@ -233,6 +235,8 @@ namespace ArenaOverhaul.Patches
         /* service methods */
         internal static void AddPlayerParyToParticipantCharacters(FightTournamentGame instance, List<CharacterObject> participantCharacters)
         {
+            participantCharacters.Add(CharacterObject.PlayerCharacter); //Should be first, otherwize can be lost among the followers
+
             if (Hero.MainHero.PartyBelongedTo?.Party?.MemberRoster is null)
             {
                 return;
@@ -240,9 +244,9 @@ namespace ArenaOverhaul.Patches
 
             foreach (TroopRosterElement troopRosterElement in Hero.MainHero.PartyBelongedTo.Party.MemberRoster.GetTroopRoster())
             {
-                if (troopRosterElement.Character.IsHero)
+                if (troopRosterElement.Character.IsHero && !troopRosterElement.Character.IsPlayerCharacter)
                 {
-                    if (troopRosterElement.Character.IsPlayerCharacter || deCanNpcJoinTournament!(instance, troopRosterElement.Character.HeroObject, participantCharacters, true))
+                    if (deCanNpcJoinTournament!(instance, troopRosterElement.Character.HeroObject, participantCharacters, true))
                     {
                         participantCharacters.Add(troopRosterElement.Character);
                     }

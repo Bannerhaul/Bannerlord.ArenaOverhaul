@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using TaleWorlds.Core;
+using TaleWorlds.Localization;
 
 namespace ArenaOverhaul.TeamTournament
 {
@@ -10,6 +12,7 @@ namespace ArenaOverhaul.TeamTournament
         private List<TeamTournamentMember> _members;
         private int _score;
         private TeamTournamentMember? _leader;
+        private int _TeamIndex;
 
         public IEnumerable<TeamTournamentMember> Members { get => _members; }
         public int Score { get => _score; }
@@ -17,15 +20,20 @@ namespace ArenaOverhaul.TeamTournament
         public uint TeamColor { get; set; }
         public bool IsPlayerTeam => Members.Any(x => x.IsPlayer);
         public bool IsAlive { get; internal set; }
+        public string Name => GetName();
+        internal int TeamIndex {get => _TeamIndex; }
 
-        public TeamTournamentTeam(IEnumerable<TeamTournamentMember> members, Banner? teamBanner = null, uint teamColor = 0, TeamTournamentMember? leader = null)
+        public TeamTournamentTeam(IEnumerable<TeamTournamentMember> members, int teamIndex, Banner? teamBanner = null, uint teamColor = 0, TeamTournamentMember? leader = null)
         {
             _members = new List<TeamTournamentMember>(members);
             TeamBanner = teamBanner;
             TeamColor = teamColor;
+            _TeamIndex = teamIndex;
 
-            foreach (var el in _members)
-                el.SetTeam(this);
+            foreach (var member in _members)
+            {
+                member.SetTeam(this);
+            }
 
             _leader = leader;
         }
@@ -45,22 +53,41 @@ namespace ArenaOverhaul.TeamTournament
         public TeamTournamentMember GetTeamLeader()
         {
             if (_leader != null)
+            {
                 return _leader;
+            }
 
             if (IsPlayerTeam)
+            {
                 return Members.First(x => x.IsPlayer);
+            }
             else
             {
-#if e165
-                return
-                  Members.Where(x => x.Character.IsHero).OrderByDescending(x => x.Character.GetPower()).FirstOrDefault()
-                  ?? Members.OrderByDescending(x => x.Character.GetPower()).First();
-#else
                 return
                   Members.Where(x => x.Character.IsHero).OrderByDescending(x => x.Character.GetBattlePower()).FirstOrDefault()
                   ?? Members.OrderByDescending(x => x.Character.GetBattlePower()).First();
-#endif
             }
+        }
+
+        private string GetName()
+        {
+            TeamTournamentMember leader = GetTeamLeader();
+
+            TextObject teamName = new TextObject("{=gVZq43GDI}{LEADER_NAME}'s team {TEAM_CALL_SIGN}", null);
+            teamName.SetTextVariable("LEADER_NAME", GetTeamLeader().Character.Name);
+            if (!leader.Character.IsHero)
+            {
+                if (_TeamIndex <= 7)
+                {
+                    teamName.SetTextVariable("TEAM_CALL_SIGN", GameTexts.FindText("str_team_tournament_call_sign", _TeamIndex.ToString()));
+                }
+                else
+                {
+                    teamName.SetTextVariable("TEAM_CALL_SIGN", _TeamIndex.ToString());
+                }
+            }
+
+            return teamName.ToString().TrimEnd();
         }
     }
 }

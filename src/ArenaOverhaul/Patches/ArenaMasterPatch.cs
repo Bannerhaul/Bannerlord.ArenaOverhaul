@@ -3,8 +3,8 @@ using ArenaOverhaul.Helpers;
 
 using HarmonyLib;
 
-using SandBox;
-using SandBox.Source.Towns;
+using SandBox.CampaignBehaviors;
+using SandBox.Missions.MissionLogics.Arena;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +14,14 @@ using System.Text;
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
+using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 
 namespace ArenaOverhaul.Patches
 {
-    [HarmonyPatch(typeof(ArenaMaster))]
+    [HarmonyPatch(typeof(ArenaMasterCampaignBehavior))]
     public static class ArenaMasterPatch
     {
         private static readonly MethodInfo miSetStandardPracticeMode = AccessTools.Method(typeof(ArenaMasterPatch), "SetStandardPracticeMode");
@@ -148,7 +149,7 @@ namespace ArenaOverhaul.Patches
                 LogNoHooksIssue(indexToSetStandardPracticeMode, indexOfOnConsequenceNewobjOperand, indexToCheckRematchIsAffordable, indexOfOnClickableConditionNewobjOperand, numberOfEdits, codes);
                 if (numberOfEdits < 9)
                 {
-                    MessageHelper.ErrorMessage("Harmony transpiler for ArenaMaster. AddDialogs was not able to make all required changes!");
+                    MessageHelper.ErrorMessage("Harmony transpiler for ArenaMasterCampaignBehavior. AddDialogs was not able to make all required changes!");
                 }
             }
 
@@ -158,7 +159,7 @@ namespace ArenaOverhaul.Patches
             }
             else
             {
-                MessageHelper.ErrorMessage("Harmony transpiler for ArenaMaster. AddDialogs could not find code hooks for adding rematch affordability check!");
+                MessageHelper.ErrorMessage("Harmony transpiler for ArenaMasterCampaignBehavior. AddDialogs could not find code hooks for adding rematch affordability check!");
             }
             if (indexToSetStandardPracticeMode > 0 && indexOfOnConsequenceNewobjOperand > 0)
             {
@@ -166,14 +167,14 @@ namespace ArenaOverhaul.Patches
             }
             else
             {
-                MessageHelper.ErrorMessage("Harmony transpiler for ArenaMaster. AddDialogs could not find code hooks for setting standard practice mode!");
+                MessageHelper.ErrorMessage("Harmony transpiler for ArenaMasterCampaignBehavior. AddDialogs could not find code hooks for setting standard practice mode!");
             }
             return codes.AsEnumerable();
 
             //local methods
             static void LogNoHooksIssue(int indexToSetStandardPracticeMode, int indexOfOnConsequenceNewobjOperand, int indexToCheckRematchIsAffordable, int indexOfOnClickableConditionNewobjOperand, int numberOfEdits, List<CodeInstruction> codes)
             {
-                LoggingHelper.Log("Indexes:", "Transpiler for ArenaMaster.AddDialogs");
+                LoggingHelper.Log("Indexes:", "Transpiler for ArenaMasterCampaignBehavior.AddDialogs");
                 StringBuilder issueInfo = new("");
                 issueInfo.Append($"\tindexToSetStandardPracticeMode={indexToSetStandardPracticeMode}.\n\tindexOfOnConsequenceNewobjOperand={indexOfOnConsequenceNewobjOperand}." +
                                  $"\n\tindexToCheckRematchIsAffordable={indexToCheckRematchIsAffordable}.\n\tindexOfOnClickableConditionNewobjOperand={indexOfOnClickableConditionNewobjOperand}.");
