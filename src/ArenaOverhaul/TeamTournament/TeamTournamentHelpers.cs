@@ -55,7 +55,7 @@ namespace ArenaOverhaul.TeamTournament
         {
             if (!character.IsHero)
                 return !considerSkills || character.Tier >= 3;
-            
+
             Hero heroObject = character.HeroObject;
             return
                 !heroObject.IsChild && !heroObject.Noncombatant && !heroObject.IsWounded

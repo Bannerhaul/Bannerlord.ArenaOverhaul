@@ -21,7 +21,7 @@ namespace ArenaOverhaul.TeamTournament
         public bool IsPlayerTeam => Members.Any(x => x.IsPlayer);
         public bool IsAlive { get; internal set; }
         public string Name => GetName();
-        internal int TeamIndex {get => _TeamIndex; }
+        internal int TeamIndex { get => _TeamIndex; }
 
         public TeamTournamentTeam(IEnumerable<TeamTournamentMember> members, int teamIndex, Banner? teamBanner = null, uint teamColor = 0, TeamTournamentMember? leader = null)
         {
