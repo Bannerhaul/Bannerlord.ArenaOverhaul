@@ -83,7 +83,7 @@ namespace ArenaOverhaul.TeamTournament
                 }
                 else
                 {
-                    teamName.SetTextVariable("TEAM_CALL_SIGN", _TeamIndex.ToString());
+                    teamName.SetTextVariable("TEAM_CALL_SIGN", (_TeamIndex + 1).ToString());
                 }
             }
 
