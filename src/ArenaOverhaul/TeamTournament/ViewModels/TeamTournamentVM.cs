@@ -52,7 +52,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
             Tournament.MatchEnd += OnMatchEnd;
 
             PrizeVisual = (HasPrizeItem ? new ImageIdentifierVM(Tournament.TournamentGame.Prize) : new ImageIdentifierVM(ImageIdentifierType.Null));
-            SkipAllRoundsHint = new HintViewModel();
+            _skipAllRoundsHint = new HintViewModel();
             RefreshValues();
         }
 
