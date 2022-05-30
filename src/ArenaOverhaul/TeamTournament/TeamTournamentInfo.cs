@@ -88,7 +88,7 @@ namespace ArenaOverhaul.TeamTournament
             availableRoster.Add(flattenTroopRoster);
 
             // now also add own troops in party roster
-            availableRoster.Add( MobileParty.MainParty.MemberRoster.ToFlattenedRoster().Where(x => (!x.Troop.IsHero || !availableRoster.Contains(x.Troop)) && !x.IsWounded && x.Troop.CanBeAParticipant(false, false)) );
+            availableRoster.Add(MobileParty.MainParty.MemberRoster.ToFlattenedRoster().Where(x => (!x.Troop.IsHero || !availableRoster.Contains(x.Troop)) && !x.IsWounded && x.Troop.CanBeAParticipant(false, false)));
             return availableRoster;
         }
 
