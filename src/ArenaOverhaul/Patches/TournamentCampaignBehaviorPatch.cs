@@ -9,11 +9,10 @@ using System.Reflection.Emit;
 using System.Text;
 
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.SandBox.Source.TournamentGames;
+using TaleWorlds.CampaignSystem.TournamentGames;
 
 namespace ArenaOverhaul.Patches
 {
-#if !e165
     [HarmonyPatch(typeof(TournamentCampaignBehavior))]
     public static class TournamentCampaignBehaviorPatch
     {
@@ -64,5 +63,4 @@ namespace ArenaOverhaul.Patches
             }
         }
     }
-#endif
 }

@@ -5,7 +5,10 @@ using System.Linq;
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.GameMenus;
-using TaleWorlds.CampaignSystem.SandBox.Source.TournamentGames;
+using TaleWorlds.CampaignSystem.Party;
+using TaleWorlds.CampaignSystem.Roster;
+using TaleWorlds.CampaignSystem.Settlements;
+using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Core;
 
 namespace ArenaOverhaul.TeamTournament
@@ -85,11 +88,7 @@ namespace ArenaOverhaul.TeamTournament
             availableRoster.Add(flattenTroopRoster);
 
             // now also add own troops in party roster
-            availableRoster.Add(
-                MobileParty.MainParty.MemberRoster.ToFlattenedRoster()
-                    .Where(x => !x.Troop.IsHero || !availableRoster.Contains(x.Troop))
-            );
-
+            availableRoster.Add(MobileParty.MainParty.MemberRoster.ToFlattenedRoster().Where(x => (!x.Troop.IsHero || !availableRoster.Contains(x.Troop)) && !x.IsWounded && x.Troop.CanBeAParticipant(false, false)));
             return availableRoster;
         }
 

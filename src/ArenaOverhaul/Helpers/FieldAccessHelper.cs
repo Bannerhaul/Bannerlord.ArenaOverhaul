@@ -1,13 +1,13 @@
-﻿using SandBox;
-using SandBox.Source.Towns;
+﻿using SandBox.CampaignBehaviors;
+using SandBox.Missions.MissionLogics.Arena;
 using SandBox.ViewModelCollection;
 
 using System.Collections.Generic;
 using System.Reflection;
 
-using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.SandBox.GameComponents;
-using TaleWorlds.CampaignSystem.SandBox.Source.TournamentGames;
+using TaleWorlds.CampaignSystem.GameComponents;
+using TaleWorlds.CampaignSystem.Settlements;
+using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
@@ -19,8 +19,8 @@ namespace ArenaOverhaul.Helpers
     {
         private static readonly FieldInfo fiTierLowerRenownLimits = Field(typeof(DefaultClanTierModel), "TierLowerRenownLimits");
 
-        public static readonly FieldRef<ArenaMaster, bool> ArenaMasterKnowTournamentsByRef = FieldRefAccess<ArenaMaster, bool>("_knowTournaments");
-        public static readonly FieldRef<ArenaMaster, List<Settlement>> ArenaMasterHasMetInSettlementsByRef = FieldRefAccess<ArenaMaster, List<Settlement>>("_arenaMasterHasMetInSettlements");
+        public static readonly FieldRef<ArenaMasterCampaignBehavior, bool> ArenaMasterKnowTournamentsByRef = FieldRefAccess<ArenaMasterCampaignBehavior, bool>("_knowTournaments");
+        public static readonly FieldRef<ArenaMasterCampaignBehavior, List<Settlement>> ArenaMasterHasMetInSettlementsByRef = FieldRefAccess<ArenaMasterCampaignBehavior, List<Settlement>>("_arenaMasterHasMetInSettlements");
 
         public static readonly FieldRef<ArenaPracticeFightMissionController, int> APFMCSpawnedOpponentAgentCountByRef = FieldRefAccess<ArenaPracticeFightMissionController, int>("_spawnedOpponentAgentCount");
         public static readonly FieldRef<ArenaPracticeFightMissionController, int> APFMCAliveOpponentCountByRef = FieldRefAccess<ArenaPracticeFightMissionController, int>("_aliveOpponentCount");

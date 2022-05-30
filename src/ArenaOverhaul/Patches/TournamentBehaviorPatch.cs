@@ -2,7 +2,7 @@
 
 using HarmonyLib;
 
-using SandBox.TournamentMissions.Missions;
+using SandBox.Tournaments.MissionLogics;
 
 using System;
 using System.Collections.Generic;

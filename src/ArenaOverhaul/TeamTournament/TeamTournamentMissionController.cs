@@ -1,12 +1,17 @@
-﻿using SandBox.TournamentMissions.Missions;
+﻿using SandBox;
+using SandBox.Tournaments;
+using SandBox.Tournaments.MissionLogics;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.CharacterDevelopment.Managers;
-using TaleWorlds.CampaignSystem.SandBox.Source.TournamentGames;
+using TaleWorlds.CampaignSystem.AgentOrigins;
+using TaleWorlds.CampaignSystem.CharacterDevelopment;
+using TaleWorlds.CampaignSystem.ComponentInterfaces;
+using TaleWorlds.CampaignSystem.Encounters;
+using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Library;
@@ -137,11 +142,7 @@ namespace ArenaOverhaul.TeamTournament
                 foreach (Agent agent in Mission.Agents)
                 {
                     if (agent.IsAIControlled)
-#if e165
-                        Mission.GetMissionBehavior<AgentVictoryLogic>().SetTimersOfVictoryReactions(agent, 1f, 3f);
-#else
                         Mission.GetMissionBehavior<AgentVictoryLogic>().SetTimersOfVictoryReactionsOnTournamentVictoryForAgent(agent, 1f, 3f);
-#endif
                 }
 
                 return false;
@@ -173,7 +174,7 @@ namespace ArenaOverhaul.TeamTournament
 
         public void OnMatchEnded()
         {
-            SandBox.SandboxHelpers.Helpers.MissionHelper.FadeOutAgents(base.Mission.Agents, true, false);
+            SandBoxHelpers.MissionHelper.FadeOutAgents(base.Mission.Agents, true, false);
             Mission.ClearCorpses(false);
             Mission.Teams.Clear();
             Mission.RemoveSpawnedItemsAndMissiles();
@@ -221,7 +222,7 @@ namespace ArenaOverhaul.TeamTournament
 
         private void AddScoreToKillerTeam(int killerUniqueSeed)
         {
-            _aliveTeams.FirstOrDefault(x => x.Members.Any(m => m.IsCharWithDescriptor(killerUniqueSeed))).AddScore(1);
+            _aliveTeams.FirstOrDefault(x => x.Members.Any(m => m.IsCharWithDescriptor(killerUniqueSeed)))?.AddScore(1);
         }
 
         private void AddLastTeamScore()
@@ -254,17 +255,10 @@ namespace ArenaOverhaul.TeamTournament
         }
 
         public override void OnScoreHit(
-          Agent affectedAgent,
-          Agent affectorAgent,
-          WeaponComponentData attackerWeapon,
-          bool isBlocked,
-          float damage,
-          float damagedHp,
-          float movementSpeedDamageModifier,
-          float hitDistance,
-          AgentAttackType attackType,
-          float shotDifficulty,
-          BoneBodyPartType victimHitBodyPart)
+          Agent affectedAgent, Agent affectorAgent, WeaponComponentData attackerWeapon,
+          bool isBlocked, bool isSiegeEngineHit,
+          float damage, float damagedHp, float movementSpeedDamageModifier, float hitDistance,
+          AgentAttackType attackType, float shotDifficulty, BoneBodyPartType victimHitBodyPart)
         {
             if (affectorAgent != null)
             {
@@ -303,7 +297,7 @@ namespace ArenaOverhaul.TeamTournament
                   affectorAgent.MountAgent != null,
                   affectorAgent.Team == affectedAgent.Team,
                   false, damageAmount,
-                  affectedAgent.Health < 1f);
+                  affectedAgent.Health < 1f, false);
             }
             //NoticableTakedowns for renown reward
             if (affectedAgent.Origin == null || affectorAgent == null || affectorAgent.Origin == null)

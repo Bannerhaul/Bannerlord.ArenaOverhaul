@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Setup .NET Core
       uses: actions/setup-dotnet@master
@@ -38,7 +38,7 @@ jobs:
         # The folders are required to be created before executing the script
         New-Item -ItemType directory -Force -Path $impl;
         New-Item -ItemType directory -Force -Path $path;
-        $gameversions = Get-Content -Path supported-game-versions.txt;
+        [string[]]$gameversions = Get-Content -Path supported-game-versions.txt;
         # Process all implementations
         For ($i = 0; $i -le $gameversions.Length - 1; $i++)
         {
@@ -61,7 +61,7 @@ jobs:
       shell: pwsh
 
     - name: Upload bannerlord folder
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ArenaOverhaul
         path: ./bannerlord/Modules/
@@ -80,7 +80,7 @@ jobs:
         github-token: ${{secrets.GITHUB_TOKEN}}
 
     - name: Download stable bannerlord folder
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: ArenaOverhaul
         path: ./bannerlord/Modules/

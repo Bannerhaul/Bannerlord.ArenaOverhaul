@@ -1,4 +1,14 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.1.5
+Game Versions: e1.7.2
+* Compatibility with e1.7.2
+* Fixed a crash at Influence awarding
+* Fixed "Leave" and "SkipAll" button behaviour for the Team Tournaments
+* Fixed an issue that caused the wrong teams to advance to the next round of Team Tournaments
+* Improved team filling logic for the Team Tournaments
+* Made team naming for Team Tournaments more distinctive (and localizable)
+* Improved Team Tournaments stability
+---------------------------------------------------------------------------------------------------
 Version: 1.1.4
 Game Versions: e1.6.5,e1.7.0,e1.7.1
 * Hopefully fixed a TeamTournament OnAgentRemoved crash

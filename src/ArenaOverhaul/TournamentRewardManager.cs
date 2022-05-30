@@ -1,6 +1,6 @@
 ﻿using ArenaOverhaul.TeamTournament;
 
-using SandBox.TournamentMissions.Missions;
+using SandBox.Tournaments.MissionLogics;
 
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,8 @@ using System.Linq;
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
-using TaleWorlds.CampaignSystem.SandBox.Source.TournamentGames;
+using TaleWorlds.CampaignSystem.Settlements;
+using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
@@ -95,7 +96,7 @@ namespace ArenaOverhaul
             float affectedHeroRenown = affectedHero.Clan?.Renown ?? 0f;
             float affectorHeroRenown = affectorHero.Clan?.Renown ?? 0f;
 
-            if ((affectedHeroRenown > 0 && affectedHeroRenown >= (affectorHeroRenown * 0.85)) || (affectedHeroPosition > 1 && affectedHeroPosition > affectorHeroPosition))
+            if ((affectorHero.CurrentSettlement?.Town != null) && ((affectedHeroRenown > 0 && affectedHeroRenown >= (affectorHeroRenown * 0.85)) || (affectedHeroPosition > 1 && affectedHeroPosition > affectorHeroPosition)))
             {
                 _noticableTakedowns[affectorHero.CurrentSettlement.Town].Add((affectorHero, affectedHero));
             }
@@ -138,7 +139,7 @@ namespace ArenaOverhaul
 
         private static void GiveInfluenceReward(Hero winnerHero)
         {
-            if (winnerHero.MapFaction.IsKingdomFaction && winnerHero.IsNoble)
+            if (winnerHero.IsNoble && winnerHero.Clan?.Kingdom != null)
             {
                 GainKingdomInfluenceAction.ApplyForDefault(winnerHero, Settings.Instance!.TournamentInfluenceReward);
             }

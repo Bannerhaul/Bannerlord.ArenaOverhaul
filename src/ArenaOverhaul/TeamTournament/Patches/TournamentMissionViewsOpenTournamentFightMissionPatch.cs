@@ -16,9 +16,9 @@ using TaleWorlds.MountAndBlade.View.Missions;
 namespace ArenaOverhaul.TeamTournament.Patches
 {
     [HarmonyPatch(typeof(TournamentMissionViews), "OpenTournamentFightMission")]
-    class TournamentMissionViewsOpenTournamentFightMissionPatch
+    public static class TournamentMissionViewsOpenTournamentFightMissionPatch
     {
-        static bool Prefix(ref MissionView[] __result, Mission mission)
+        public static bool Prefix(ref MissionView[] __result, Mission mission)
         {
             if (TeamTournamentInfo.Current != null && TeamTournamentInfo.Current.IsStarted)
             {
@@ -28,7 +28,7 @@ namespace ArenaOverhaul.TeamTournament.Patches
                     new ConversationCameraView(),
                     ViewCreator.CreateMissionSingleplayerEscapeMenu(CampaignOptions.IsIronmanMode),
                     ViewCreator.CreateOptionsUIHandler(),
-                    ViewCreator.CreateMissionMainAgentGamepadEquipDropView(mission),
+                    ViewCreator.CreateMissionMainAgentEquipDropView(mission),
                     ViewCreatorManager.CreateMissionView<MissionGauntletTeamTournamentView>(false, null, Array.Empty<object>()), // this is patched!
                     new MissionAudienceHandler(0.4f + (MBRandom.RandomFloat * 0.6f)),
                     ViewCreator.CreateMissionAgentStatusUIHandler(mission),
@@ -41,6 +41,7 @@ namespace ArenaOverhaul.TeamTournament.Patches
                     new MusicMissionView(new MusicBaseComponent[] { new MusicMissionTournamentComponent() }),
                     ViewCreator.CreateMissionAgentLabelUIHandler(mission),
                     new MissionItemContourControllerView(),
+                    new CampaignBattleSpectatorView(),
                     ViewCreator.CreatePhotoModeView()
                 }.ToArray();
                 return false;

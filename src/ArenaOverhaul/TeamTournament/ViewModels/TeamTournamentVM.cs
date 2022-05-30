@@ -5,7 +5,10 @@ using System.Collections.Generic;
 using System.Linq;
 
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.Settlements;
+using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Core;
+using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
@@ -49,6 +52,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
             Tournament.MatchEnd += OnMatchEnd;
 
             PrizeVisual = (HasPrizeItem ? new ImageIdentifierVM(Tournament.TournamentGame.Prize) : new ImageIdentifierVM(ImageIdentifierType.Null));
+            _skipAllRoundsHint = new HintViewModel();
             RefreshValues();
         }
 
@@ -82,6 +86,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
             MBTextManager.SetTextVariable("SETTLEMENT_NAME", Tournament.Settlement.Name, false);
             TournamentTitle = GameTexts.FindText("str_tournament", null).ToString();
             CurrentWagerText = GameTexts.FindText("str_tournament_current_wager", null).ToString();
+            SkipAllRoundsHint.HintText = new TextObject("{=GaOE4bdd}Skip All Rounds");
 
             if (_round1 != null)
                 _round1.RefreshValues();
@@ -165,7 +170,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
 
             if (TournamentWinner.IsMainHero)
             {
-                GameTexts.SetVariable("TOURNAMENT_FINAL_OPPONENT", $"{(firstTeamLeader == TournamentWinner ? secondTeamLeader : firstTeamLeader).Name}'s Team");
+                GameTexts.SetVariable("TOURNAMENT_FINAL_OPPONENT", (firstTeamLeader == TournamentWinner ? secondTeamLeader : firstTeamLeader).Name);
                 WinnerIntro = GameTexts.FindText("str_tournament_result_won", null).ToString();
 
                 if (Tournament.TournamentGame.TournamentWinRenown > 0f)
@@ -173,7 +178,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
                     GameTexts.SetVariable("RENOWN", Tournament.TournamentGame.TournamentWinRenown.ToString("F1"));
                     BattleRewards!.Add(new TournamentRewardVM(GameTexts.FindText("str_tournament_renown", null).ToString()));
                 }
-#if !e165
+
                 if (Tournament.TournamentGame.TournamentWinInfluence > 0f)
                 {
                     float tournamentWinInfluence = Tournament.TournamentGame.TournamentWinInfluence;
@@ -182,7 +187,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
                     textObject.SetTextVariable("INFLUENCE_ICON", "{=!}<img src=\"General\\Icons\\Influence@2x\" extend=\"7\">");
                     BattleRewards!.Add(new TournamentRewardVM(textObject.ToString()));
                 }
-#endif
+
                 if (Tournament.TournamentGame.Prize != null)
                 {
                     GameTexts.SetVariable("REWARD", Tournament.TournamentGame.Prize.Name.ToString());
@@ -202,13 +207,13 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
             {
                 if (firstTeamLeader.IsMainHero || secondTeamLeader.IsMainHero)
                 {
-                    GameTexts.SetVariable("TOURNAMENT_FINAL_OPPONENT", $"{(firstTeamLeader == TournamentWinner ? firstTeamLeader : secondTeamLeader).Name}'s Team");
+                    GameTexts.SetVariable("TOURNAMENT_FINAL_OPPONENT", (firstTeamLeader == TournamentWinner ? firstTeamLeader : secondTeamLeader).Name);
                     WinnerIntro = GameTexts.FindText("str_tournament_result_eliminated_at_final", null).ToString();
                 }
                 else
                 {
-                    GameTexts.SetVariable("TOURNAMENT_FINAL_PARTICIPANT_A", $"{(firstTeamLeader == TournamentWinner ? firstTeamLeader : secondTeamLeader).Name}'s Team");
-                    GameTexts.SetVariable("TOURNAMENT_FINAL_PARTICIPANT_B", $"{(firstTeamLeader == TournamentWinner ? secondTeamLeader : firstTeamLeader).Name}'s Team");
+                    GameTexts.SetVariable("TOURNAMENT_FINAL_PARTICIPANT_A", (firstTeamLeader == TournamentWinner ? firstTeamLeader : secondTeamLeader).Name);
+                    GameTexts.SetVariable("TOURNAMENT_FINAL_PARTICIPANT_B", (firstTeamLeader == TournamentWinner ? secondTeamLeader : firstTeamLeader).Name);
 
                     if (_isPlayerParticipating)
                     {
@@ -271,11 +276,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
             {
                 InformationManager.AddTooltipInformation(typeof(ItemObject), new object[]
                 {
-#if e165
-                    new EquipmentElement(Tournament.TournamentGame.Prize, null, null)
-#else
                     new EquipmentElement(Tournament.TournamentGame.Prize, null, null, false)
-#endif
                 });
             }
         }
@@ -329,6 +330,18 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         /// <summary>
         /// DO NOT REMOVE
         /// </summary>
+        public void ExecuteSkipAllRounds()
+        {
+            int num = 0;
+            for (int index = Tournament.Rounds.Sum(r => r.Matches.Count()); !CanPlayerJoin && Tournament.CurrentRound != null && Tournament.CurrentRound.CurrentMatch != null && num < index; ++num)
+            {
+                ExecuteSkipRound();
+            }
+        }
+
+        /// <summary>
+        /// DO NOT REMOVE
+        /// </summary>
         private void ExecuteWatchRound()
         {
             if (!PlayerCanJoinMatch())
@@ -349,24 +362,46 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         {
             if (CurrentMatch != null)
             {
-                InformationManager.ShowInquiry(new InquiryData(
-                  GameTexts.FindText("str_forfeit", null).ToString(),
-                  new TextObject("Are you sure?").ToString(),
-                  true,
-                  true,
-                  GameTexts.FindText("str_yes", null).ToString(),
-                  GameTexts.FindText("str_no", null).ToString(),
-                  ExitFinishTournament,
-                  null),
-                true);
+                List<TeamTournamentMatch> forthcomingMatches = new List<TeamTournamentMatch>();
+                for (int currentRoundIndex = Tournament.CurrentRoundIndex; currentRoundIndex < Tournament.Rounds.Length; ++currentRoundIndex)
+                {
+                    forthcomingMatches.AddRange(Tournament.Rounds[currentRoundIndex].Matches.Where(x => x.State != TournamentMatch.MatchState.Finished));
+                }
+                if (forthcomingMatches.Any(x => x.IsPlayerParticipating))
+                {
+                    InformationManager.ShowInquiry(new InquiryData(
+                      GameTexts.FindText("str_forfeit", null).ToString(),
+                      GameTexts.FindText("str_tournament_forfeit_game").ToString(),
+                      true,
+                      true,
+                      GameTexts.FindText("str_yes", null).ToString(),
+                      GameTexts.FindText("str_no", null).ToString(),
+                      ExitFinishTournament,
+                      null),
+                    true);
+                    return; //do nothing on "No" answer
+                }
             }
-            Mission.Current.EndMission();
+            ExitFinishTournament();
         }
 
         private void ExitFinishTournament()
         {
             Tournament.EndTournamentViaLeave();
             Mission.Current.EndMission();
+        }
+
+        [DataSourceProperty]
+        public HintViewModel SkipAllRoundsHint
+        {
+            get => _skipAllRoundsHint;
+            set
+            {
+                if (value == _skipAllRoundsHint)
+                    return;
+                _skipAllRoundsHint = value;
+                OnPropertyChangedWithValue(value, nameof(SkipAllRoundsHint));
+            }
         }
 
 #pragma warning restore IDE0051 // Remove unused private members
@@ -988,5 +1023,6 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         private ImageIdentifierVM? _prizeVisual;
         private ImageIdentifierVM? _winnerBanner;
         private MBBindingList<TournamentRewardVM>? _battleRewards;
+        private HintViewModel _skipAllRoundsHint;
     }
 }

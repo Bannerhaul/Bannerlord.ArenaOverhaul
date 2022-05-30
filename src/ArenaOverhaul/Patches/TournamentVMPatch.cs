@@ -6,6 +6,7 @@ using SandBox.ViewModelCollection.Tournament;
 using System.Linq;
 
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Core;
 
 namespace ArenaOverhaul.Patches

@@ -97,6 +97,18 @@
 		<string id="83tebCrzc" text="And you get a reward for rounds won: {PER_ROUND_REWARD}" />
 		<string id="aV0PTEzbW" text="Your reward for rounds won: {PER_ROUND_REWARD}" />
 		<string id="16t7gwMmW" text="Your monetary reward as a champion: {TOTAL_GOLD_REWARD}" />
+        <!--
+		|||||||||||||||||||||||||||| Team Naming ||||||||||||||||||||||||||||
+		-->
+        <string id="gVZq43GDI" text="{LEADER_NAME}'s team {TEAM_CALL_SIGN}" />
+        <string id="WA82hgPoO" text="Alpha" />
+        <string id="bpGxcmlP6" text="Beta" />
+        <string id="bmOsWMVsk" text="Gamma" />
+        <string id="Tyl2ufxxy" text="Delta" />
+        <string id="OKSzdZMr8" text="Epsilon" />
+        <string id="zsXVSOB4t" text="Zeta" />
+        <string id="fePbjEFQI" text="Eta" />
+        <string id="9OZjTDg61" text="Theta" />
 		<!--
 		|||||||||||||||||||||||||||| Mod Options ||||||||||||||||||||||||||||
 		-->

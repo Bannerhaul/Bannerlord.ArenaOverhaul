@@ -1,6 +1,6 @@
 ﻿using ArenaOverhaul.TeamTournament.ViewModels;
 
-using TaleWorlds.CampaignSystem.SandBox.Source.TournamentGames;
+using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;

@@ -3,27 +3,27 @@
 
     <!--Module Version-->
     <PropertyGroup>
-        <Version>1.1.4</Version>
+        <Version>1.1.5</Version>
     </PropertyGroup>
 
     <!-- Versions of Major Dependencies (for Package References & SubModule.xml Substitution) -->
     <PropertyGroup>
         <!--Harmony Version-->
-        <HarmonyVersion>2.1.1</HarmonyVersion>
+        <HarmonyVersion>2.2.1</HarmonyVersion>
         <!--ButterLib Version-->
-        <ButterLibVersion>1.0.31</ButterLibVersion>
+        <ButterLibVersion>2.1.2</ButterLibVersion>
         <!--BuildResources Version-->
-        <BuildResourcesVersion>1.0.0.39</BuildResourcesVersion>
+        <BuildResourcesVersion>1.0.1.68</BuildResourcesVersion>
         <!--MCM Version-->
-        <MCMVersion>4.3.17</MCMVersion>
+        <MCMVersion>4.6.0</MCMVersion>
         <!--BUTRShared Version-->
-        <BUTRSharedVersion>2.0.0.78</BUTRSharedVersion>
+        <BUTRSharedVersion>2.0.0.82</BUTRSharedVersion>
         <!--BUTRModuleManager Version-->
-        <BUTRModuleManagerVersion>3.0.87</BUTRModuleManagerVersion>
+        <BUTRModuleManagerVersion>3.0.94</BUTRModuleManagerVersion>
         <!--ModuleLoader Version-->
-        <BUTRModuleLoaderVersion>1.0.1.18</BUTRModuleLoaderVersion>
+        <BUTRModuleLoaderVersion>1.0.1.24</BUTRModuleLoaderVersion>
         <!--Harmony Extensions Version-->
-        <HarmonyExtensionsVersion>2.0.0.53</HarmonyExtensionsVersion>
+        <HarmonyExtensionsVersion>2.0.0.56</HarmonyExtensionsVersion>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -31,7 +31,8 @@
         <Platforms>x64</Platforms>
         <LangVersion>9.0</LangVersion>
         <Nullable>enable</Nullable>
-        <ModuleName>ArenaOverhaul</ModuleName>
+        <ModuleId>ArenaOverhaul</ModuleId>
+        <ModuleName>$(ModuleId)</ModuleName>
         <DisplayName>Arena Overhaul</DisplayName>
         <RootNamespace>$(ModuleName)</RootNamespace>
     </PropertyGroup>
@@ -64,10 +65,17 @@
         <!--Parsing  supported-game-versions.txt-->
         <SGVLineCount>$([System.Text.RegularExpressions.Regex]::Split($(SGVFile), `\r\n|\r|\n`).Length)</SGVLineCount>
         <SGVLastEntryIndex>$([MSBuild]::Subtract($(SGVLineCount), 1))</SGVLastEntryIndex>
-        <!--First enrty is Beta, second Stable, last Minimal-->
-        <GameBetaVersion>$([System.Text.RegularExpressions.Regex]::Split($(SGVFile), `\r\n|\r|\n`)[0])</GameBetaVersion>
-        <GameStableVersion>$([System.Text.RegularExpressions.Regex]::Split($(SGVFile), `\r\n|\r|\n`)[1])</GameStableVersion>
-        <GameMinimalVersion>$([System.Text.RegularExpressions.Regex]::Split($(SGVFile), `\r\n|\r|\n`)[$(SGVLastEntryIndex)])</GameMinimalVersion>
+        <!-- First enrty is Beta, second Stable, last Minimal -->
+        <FirstLine  Condition="'$(SGVLineCount)' &gt; 0">$([System.Text.RegularExpressions.Regex]::Split($(SGVFile), `\r\n|\r|\n`)[0])</FirstLine>
+        <SecondLine Condition="'$(SGVLineCount)' &gt; 1">$([System.Text.RegularExpressions.Regex]::Split($(SGVFile), `\r\n|\r|\n`)[1])</SecondLine>
+        <LastLine   Condition="'$(SGVLineCount)' &gt; 0">$([System.Text.RegularExpressions.Regex]::Split($(SGVFile), `\r\n|\r|\n`)[$(SGVLastEntryIndex)])</LastLine>
+        <!-- -->
+        <SecondLine Condition="'$(SecondLine)' == ''">$(FirstLine)</SecondLine>
+        <LastLine Condition="'$(LastLine)' == ''">$(SecondLine)</LastLine>
+        <!-- -->
+        <GameBetaVersion>$(FirstLine)</GameBetaVersion>
+        <GameStableVersion>$(SecondLine)</GameStableVersion>
+        <GameMinimalVersion>$(LastLine)</GameMinimalVersion>
         <!-- -->
         <GameVersionWithPrefix>e1.1.0</GameVersionWithPrefix>
         <GameVersionWithPrefix Condition="$(IsMinimal)">$(GameMinimalVersion)</GameVersionWithPrefix>
