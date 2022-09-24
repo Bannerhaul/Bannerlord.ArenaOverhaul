@@ -8,7 +8,11 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Core;
+#if e172
 using TaleWorlds.Core.ViewModelCollection;
+#else
+using TaleWorlds.Core.ViewModelCollection.Information;
+#endif
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
@@ -265,7 +269,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
             }
         }
 
-        #region view commands
+#region view commands
 #pragma warning disable IDE0051 // Remove unused private members
         /// <summary>
         /// DO NOT REMOVE
@@ -274,7 +278,11 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         {
             if (HasPrizeItem)
             {
+#if e172
                 InformationManager.AddTooltipInformation(typeof(ItemObject), new object[]
+#else
+                InformationManager.ShowTooltip(typeof(ItemObject), new object[]
+#endif
                 {
                     new EquipmentElement(Tournament.TournamentGame.Prize, null, null, false)
                 });
@@ -286,7 +294,11 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         /// </summary>
         private void ExecuteHidePrizeItemTooltip()
         {
+#if e172
             InformationManager.HideInformations();
+#else
+            InformationManager.HideTooltip();
+#endif
         }
 
         /// <summary>
@@ -405,9 +417,9 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         }
 
 #pragma warning restore IDE0051 // Remove unused private members
-        #endregion
+#endregion
 
-        #region view properties
+#region view properties
         [DataSourceProperty]
         public string TournamentWinnerTitle
         {
@@ -980,7 +992,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
             }
         }
 
-        #endregion view properties
+#endregion view properties
 
         private readonly List<TeamTournamentRoundVM> _rounds;
         private int _thisRoundBettedAmount;

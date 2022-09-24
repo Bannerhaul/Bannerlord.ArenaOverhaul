@@ -31,13 +31,13 @@ namespace ArenaOverhaul.TeamTournament
             // TODO: if a need arises to show tournament information beforehand, extract creation into upper chain
             //       e.g. when tournaments are generated in the world, also replace "Current" instance
             Town = Settlement.CurrentSettlement.Town;
-            TeamSize = MBRandom.Random.Next(2, Settings.Instance!.TeamSizeMax + 1);
+            TeamSize = MBRandom.RandomInt(2, Settings.Instance!.TeamSizeMax + 1);
 
             // 8, 16, 32 teams possible -> also 4 but needs more testing and fixing 
-            TeamsCount = (int) Math.Pow(2, MBRandom.Random.Next(3, (int) Math.Log(Settings.Instance!.TeamsCountMax.SelectedValue, 2) + 1));
+            TeamsCount = (int) Math.Pow(2, MBRandom.RandomInt(3, (int) Math.Log(Settings.Instance!.TeamsCountMax.SelectedValue, 2) + 1));
 
             // if full (32) => 8 rounds, else can be 4 or 8
-            FirstRoundMatches = TeamsCount == 32 ? 8 : (TeamsCount / (MBRandom.Random.Next(2) * 2 + 2));
+            FirstRoundMatches = TeamsCount == 32 ? 8 : (TeamsCount / (MBRandom.RandomInt(2) * 2 + 2));
 
             // simple log2 round progression (members/2 in every round)
             Rounds = (int) Math.Min(Math.Log(TeamsCount, 2), 4);

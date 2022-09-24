@@ -1,4 +1,6 @@
-﻿using SandBox.Tournaments;
+﻿using ArenaOverhaul.Helpers;
+
+using SandBox.Tournaments;
 
 using System;
 using System.Collections.Generic;
@@ -317,7 +319,7 @@ namespace ArenaOverhaul.TeamTournament
                 {
                     // done with Tournament
                     CalculateBet();
-                    InformationManager.AddQuickInformation(new TextObject("{=tWzLqegB}Tournament is over.", null), 0, null, "");
+                    MessageHelper.QuickInformationMessage(new TextObject("{=tWzLqegB}Tournament is over.", null), 0, null, "");
                     Winner = LastMatch.Winners?.FirstOrDefault()?.GetTeamLeader();
                     if (Winner?.Character.IsHero ?? false)
                     {
@@ -391,7 +393,7 @@ namespace ArenaOverhaul.TeamTournament
                 if (r < R)
                 {
                     T = W * M;
-                    TPM = Math.Max(Math.Min(MBRandom.Random.Next(0, 2) * 2 + 2, T / 2), 2);
+                    TPM = Math.Max(Math.Min(MBRandom.RandomInt(0, 2) * 2 + 2, T / 2), 2);
                     M = T / TPM;
                     W = TPM / 2;
                 }

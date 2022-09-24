@@ -3,13 +3,13 @@
 
     <!--Module Version-->
     <PropertyGroup>
-        <Version>1.1.5</Version>
+        <Version>1.1.6</Version>
     </PropertyGroup>
 
     <!-- Versions of Major Dependencies (for Package References & SubModule.xml Substitution) -->
     <PropertyGroup>
         <!--Harmony Version-->
-        <HarmonyVersion>2.2.1</HarmonyVersion>
+        <HarmonyVersion>2.2.2</HarmonyVersion>
         <!--ButterLib Version-->
         <ButterLibVersion>2.2.3</ButterLibVersion>
         <!--BuildResources Version-->

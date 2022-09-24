@@ -2,7 +2,11 @@
 
 using HarmonyLib;
 
+#if e172
 using SandBox.ViewModelCollection;
+#else
+using SandBox.ViewModelCollection.Missions;
+#endif
 
 using TaleWorlds.Core;
 

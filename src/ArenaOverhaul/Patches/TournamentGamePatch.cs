@@ -21,7 +21,11 @@ namespace ArenaOverhaul.Patches
     {
         private static readonly MethodInfo miTownSetter = AccessTools.PropertySetter(typeof(TournamentGame), "Town");
         private static readonly MethodInfo miCreationTimeSetter = AccessTools.PropertySetter(typeof(TournamentGame), "CreationTime");
+#if e172
         private static readonly FieldInfo fiLastRecordedNobleCountForTournamentPrize = AccessTools.Field(typeof(TournamentGame), "_lastRecordedNobleCountForTournamentPrize");
+#else
+        private static readonly FieldInfo fiLastRecordedNobleCountForTournamentPrize = AccessTools.Field(typeof(TournamentGame), "_lastRecordedLordCountForTournamentPrize");
+#endif
 
         [HarmonyTranspiler]
         [HarmonyPatch(typeof(TournamentGame), MethodType.Constructor, new Type[] { typeof(Town), typeof(ItemObject) })]

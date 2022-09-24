@@ -32,7 +32,7 @@ namespace ArenaOverhaul.TeamTournament
                     matchNum = _matches.FindIndex(x => !x.IsFullMatch);
                     break;
                 }
-                matchNum = MBRandom.Random.Next(_matches.Count);
+                matchNum = MBRandom.RandomInt(_matches.Count);
             } while (_matches[matchNum].IsFullMatch);
 
             _matches[matchNum].AddTeam(team);

@@ -1,4 +1,6 @@
-﻿using SandBox;
+﻿using ArenaOverhaul.Helpers;
+
+using SandBox;
 using SandBox.Tournaments;
 using SandBox.Tournaments.MissionLogics;
 
@@ -160,16 +162,16 @@ namespace ArenaOverhaul.TeamTournament
         public void OnMatchResultsReady()
         {
             if (!_match!.IsPlayerParticipating)
-                InformationManager.AddQuickInformation(new TextObject("{=UBd0dEPp}Match is over", null), 0, null, "");
+                MessageHelper.QuickInformationMessage(new TextObject("{=UBd0dEPp}Match is over", null), 0, null, "");
             else if (_match.IsPlayerTeamWinner)
             {
                 if (_isLastRound)
-                    InformationManager.AddQuickInformation(new TextObject("{=wOqOQuJl}Round is over, your team survived the final round of the tournament.", null), 0, null, "");
+                    MessageHelper.QuickInformationMessage(new TextObject("{=wOqOQuJl}Round is over, your team survived the final round of the tournament.", null), 0, null, "");
                 else
-                    InformationManager.AddQuickInformation(new TextObject("{=fkOYvnVG}Round is over, your team is qualified for the next stage of the tournament.", null), 0, null, "");
+                    MessageHelper.QuickInformationMessage(new TextObject("{=fkOYvnVG}Round is over, your team is qualified for the next stage of the tournament.", null), 0, null, "");
             }
             else
-                InformationManager.AddQuickInformation(new TextObject("{=MLyBN51z}Round is over, your team is disqualified from the tournament.", null), 0, null, "");
+                MessageHelper.QuickInformationMessage(new TextObject("{=MLyBN51z}Round is over, your team is disqualified from the tournament.", null), 0, null, "");
         }
 
         public void OnMatchEnded()
@@ -254,20 +256,33 @@ namespace ArenaOverhaul.TeamTournament
             }
         }
 
+#if e172
         public override void OnScoreHit(
           Agent affectedAgent, Agent affectorAgent, WeaponComponentData attackerWeapon,
           bool isBlocked, bool isSiegeEngineHit,
           float damage, float damagedHp, float movementSpeedDamageModifier, float hitDistance,
           AgentAttackType attackType, float shotDifficulty, BoneBodyPartType victimHitBodyPart)
+#else
+        public override void OnScoreHit(
+            Agent affectedAgent, Agent affectorAgent, WeaponComponentData attackerWeapon,
+            bool isBlocked, bool isSiegeEngineHit, in Blow blow, in AttackCollisionData collisionData,
+            float damagedHp, float hitDistance, float shotDifficulty)
+#endif
         {
+
             if (affectorAgent != null)
             {
                 if (affectorAgent.Character != null && affectedAgent.Character != null)
                 {
+#if !e172
+                    float damage = blow.InflictedDamage;
+                    float movementSpeedDamageModifier = blow.MovementSpeedDamageModifier;
+                    AgentAttackType attackType = blow.AttackType;
+#endif
                     if (damage > affectedAgent.HealthLimit)
                         damage = affectedAgent.HealthLimit;
 
-                    EnemyHitReward(affectedAgent, affectorAgent, movementSpeedDamageModifier, shotDifficulty, attackerWeapon, XpShareForDamage * damage / affectedAgent.HealthLimit, damage);
+                    EnemyHitReward(affectedAgent, affectorAgent, movementSpeedDamageModifier, shotDifficulty, attackerWeapon, attackType, XpShareForDamage * damage / affectedAgent.HealthLimit, damage);
                 }
             }
         }
@@ -278,6 +293,7 @@ namespace ArenaOverhaul.TeamTournament
           float lastSpeedBonus,
           float lastShotDifficulty,
           WeaponComponentData lastAttackerWeapon,
+          AgentAttackType attackType,
           float hitpointRatio,
           float damageAmount)
         {
@@ -285,19 +301,24 @@ namespace ArenaOverhaul.TeamTournament
             CharacterObject affectorCharacter = (CharacterObject) affectorAgent.Character;
             if (affectedAgent.Origin != null && affectorAgent != null && affectorAgent.Origin != null)
             {
-                SkillLevelingManager.OnCombatHit(affectorCharacter,
-                  affectedCharacter,
-                  null,
-                  null,
-                  lastSpeedBonus,
-                  lastShotDifficulty,
-                  lastAttackerWeapon,
-                  hitpointRatio,
-                  CombatXpModel.MissionTypeEnum.Tournament,
-                  affectorAgent.MountAgent != null,
-                  affectorAgent.Team == affectedAgent.Team,
-                  false, damageAmount,
-                  affectedAgent.Health < 1f, false);
+#if e172
+                SkillLevelingManager.OnCombatHit(
+                    affectorCharacter, affectedCharacter,
+                    null, null,
+                    lastSpeedBonus, lastShotDifficulty, lastAttackerWeapon,
+                    hitpointRatio, CombatXpModel.MissionTypeEnum.Tournament,
+                    affectorAgent.MountAgent != null, affectorAgent.Team == affectedAgent.Team,
+                    false, damageAmount, affectedAgent.Health < 1f, false);
+#else
+                bool isHorseCharge = affectorAgent.MountAgent != null && attackType == AgentAttackType.Collision;
+                SkillLevelingManager.OnCombatHit(
+                    affectorCharacter, affectedCharacter,
+                    null, null,
+                    lastSpeedBonus, lastShotDifficulty, lastAttackerWeapon,
+                    hitpointRatio, CombatXpModel.MissionTypeEnum.Tournament,
+                    affectorAgent.MountAgent != null, affectorAgent.Team == affectedAgent.Team,
+                    false, damageAmount, affectedAgent.Health < 1f, false, isHorseCharge);
+#endif
             }
             //NoticableTakedowns for renown reward
             if (affectedAgent.Origin == null || affectorAgent == null || affectorAgent.Origin == null)
@@ -409,7 +430,7 @@ namespace ArenaOverhaul.TeamTournament
                         if (base.Mission.IsPlayerCloseToAnEnemy(5f))
                         {
                             canPlayerLeave = false;
-                            InformationManager.AddQuickInformation(GameTexts.FindText("str_can_not_retreat", null), 0, null, "");
+                            MessageHelper.QuickInformationMessage(GameTexts.FindText("str_can_not_retreat", null), 0, null, "");
                         }
                         else if (CheckIfIsThereAnyEnemies())
                         {
