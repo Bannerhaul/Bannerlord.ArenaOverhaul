@@ -235,7 +235,16 @@ namespace ArenaOverhaul.Patches
             List<CodeInstruction> codes = new(instructions);
             for (int i = 0; i < codes.Count; ++i)
             {
+#if e172
                 if (codes[i + 1].opcode == OpCodes.Stloc_0 && codes[i].opcode == OpCodes.Newobj)
+#else
+                if (codes[i].opcode == OpCodes.Ldc_I4_S && (sbyte) codes[i].operand == 30)
+                {
+                    codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetTotalParticipantsCount);
+                }
+                else if (codes[i + 1].opcode == OpCodes.Stloc_1 && codes[i].opcode == OpCodes.Newobj)
+                if (codes[i + 1].opcode == OpCodes.Stloc_1 && codes[i].opcode == OpCodes.Newobj)
+#endif
                 {
                     codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetParticipantCharacters);
                     break;

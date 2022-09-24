@@ -1,5 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
 	<strings>
 		<string id="str_arena_reward_overhauled" text="{=gaJDVkvHa}{VALOR_PRIZES_DESCRIPTION}{CHAMPION_PRIZE_DESCRIPTION} Sounds good, eh?[if:convo_nonchalant]" />
 		<!-- valor -->
@@ -43,14 +42,13 @@
 		<string id="str_tournament_gold_reward.1" text="{=83tebCrzc}And you get a reward for rounds won: {PER_ROUND_REWARD}" />
 		<string id="str_tournament_gold_reward.2" text="{=aV0PTEzbW}Your reward for rounds won: {PER_ROUND_REWARD}" />
 		<string id="str_tournament_gold_reward.3" text="{=16t7gwMmW}Your monetary reward as a champion: {TOTAL_GOLD_REWARD}" />
-        <!-- team tournament teams -->
-        <string id="str_team_tournament_call_sign.0" text="{=WA82hgPoO}Alpha" />
-        <string id="str_team_tournament_call_sign.1" text="{=bpGxcmlP6}Beta" />
-        <string id="str_team_tournament_call_sign.2" text="{=bmOsWMVsk}Gamma" />
-        <string id="str_team_tournament_call_sign.3" text="{=Tyl2ufxxy}Delta" />
-        <string id="str_team_tournament_call_sign.4" text="{=OKSzdZMr8}Epsilon" />
-        <string id="str_team_tournament_call_sign.5" text="{=zsXVSOB4t}Zeta" />
-        <string id="str_team_tournament_call_sign.6" text="{=fePbjEFQI}Eta" />
-        <string id="str_team_tournament_call_sign.7" text="{=9OZjTDg61}Theta" />
+		<!-- team tournament teams -->
+		<string id="str_team_tournament_call_sign.0" text="{=WA82hgPoO}Alpha" />
+		<string id="str_team_tournament_call_sign.1" text="{=bpGxcmlP6}Beta" />
+		<string id="str_team_tournament_call_sign.2" text="{=bmOsWMVsk}Gamma" />
+		<string id="str_team_tournament_call_sign.3" text="{=Tyl2ufxxy}Delta" />
+		<string id="str_team_tournament_call_sign.4" text="{=OKSzdZMr8}Epsilon" />
+		<string id="str_team_tournament_call_sign.5" text="{=zsXVSOB4t}Zeta" />
+		<string id="str_team_tournament_call_sign.6" text="{=fePbjEFQI}Eta" />
+		<string id="str_team_tournament_call_sign.7" text="{=9OZjTDg61}Theta" />
 	</strings>
-</base>

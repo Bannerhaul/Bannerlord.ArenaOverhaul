@@ -1,21 +1,24 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Module>
-	<Name value="$displayname$" />
+<Module xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/BUTR/Bannerlord.XmlSchemas/master/SubModule.xsd" >
 	<Id value="$modulename$" />
+	<Name value="$displayname$" />	
 	<Version value="v$version$" />
 	<Official value="false" />
 	<DefaultModule value="false" />
 	<SingleplayerModule value="true" />
 	<MultiplayerModule value="false" />
+	<ModuleCategory value="Singleplayer" />
+	<Url value="https://www.nexusmods.com/mountandblade2bannerlord/mods/3477" />    
 	<DependedModules>
-		<DependedModule Id="Bannerlord.Harmony" />
-		<DependedModule Id="Bannerlord.ButterLib" />
-		<DependedModule Id="Bannerlord.MBOptionScreen" />
-		<DependedModule Id="Native" />
-		<DependedModule Id="SandBoxCore" />
-		<DependedModule Id="Sandbox" />
-		<DependedModule Id="StoryMode" />
+		<DependedModule Id="Bannerlord.Harmony" DependentVersion="v$harmonyversion$" />
+		<DependedModule Id="Bannerlord.ButterLib" DependentVersion="v$butterlibversion$" />
+		<DependedModule Id="Bannerlord.MBOptionScreen" DependentVersion="v$mcmversion$" />
+		<DependedModule Id="Native" DependentVersion="e$gameversion$" />
+		<DependedModule Id="SandBoxCore" DependentVersion="e$gameversion$" />
+		<DependedModule Id="Sandbox" DependentVersion="e$gameversion$" />
+		<DependedModule Id="StoryMode" DependentVersion="e$gameversion$" />
 	</DependedModules>
+	<!-- Community Dependency Metadata -->
 	<DependedModuleMetadatas>
 		<DependedModuleMetadata id="Bannerlord.Harmony" order="LoadBeforeThis" version="v$harmonyversion$" />
 		<DependedModuleMetadata id="Bannerlord.ButterLib" order="LoadBeforeThis" version="v$butterlibversion$" />
@@ -25,6 +28,7 @@
 		<DependedModuleMetadata id="Sandbox" order="LoadBeforeThis" version="e$gameversion$.*" />
 		<DependedModuleMetadata id="StoryMode" order="LoadBeforeThis" version="e$gameversion$.*" />
 		<DependedModuleMetadata id="CustomBattle" order="LoadBeforeThis" version="e$gameversion$.*" optional="true" />
+		<DependedModuleMetadata id="BirthAndDeath" order="LoadBeforeThis" version="e$gameversion$.*" optional="true" />
 	</DependedModuleMetadatas>
 	<SubModules>
 		<!-- Bannerlord Module Loader. Do not change the name! -->
@@ -37,4 +41,9 @@
 			</Tags>
 		</SubModule>
 	</SubModules>
+	<Xmls>
+		<XmlNode>
+			<XmlName id="GameText" path="module_strings"/>
+		</XmlNode>
+	</Xmls>
 </Module>

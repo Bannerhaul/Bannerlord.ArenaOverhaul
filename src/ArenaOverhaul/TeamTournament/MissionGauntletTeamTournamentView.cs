@@ -7,7 +7,12 @@ using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.GauntletUI.Data;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
+#if e172
 using TaleWorlds.MountAndBlade.View.Missions;
+#else
+using TaleWorlds.MountAndBlade.View;
+using TaleWorlds.MountAndBlade.View.MissionViews;
+#endif
 
 namespace ArenaOverhaul.TeamTournament
 {
