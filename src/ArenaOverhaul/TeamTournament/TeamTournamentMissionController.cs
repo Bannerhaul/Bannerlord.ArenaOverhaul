@@ -209,10 +209,10 @@ namespace ArenaOverhaul.TeamTournament
 
         private void AddRandomClothes(TeamTournamentMember member)
         {
-            var randomBattleEquipment = member.Character.RandomBattleEquipment;
+            var participantArmor = Campaign.Current.Models.TournamentModel.GetParticipantArmor(member.Character);
             for (int i = 5; i < 10; i++)
             {
-                var equipmentFromSlot = randomBattleEquipment.GetEquipmentFromSlot((EquipmentIndex) i);
+                var equipmentFromSlot = participantArmor.GetEquipmentFromSlot((EquipmentIndex) i);
                 if (equipmentFromSlot.Item != null)
                 {
                     member.MatchEquipment!.AddEquipmentToSlotWithoutAgent((EquipmentIndex) i, equipmentFromSlot);
