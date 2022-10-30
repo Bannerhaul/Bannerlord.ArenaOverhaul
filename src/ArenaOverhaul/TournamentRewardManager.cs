@@ -139,11 +139,7 @@ namespace ArenaOverhaul
 
         private static void GiveInfluenceReward(Hero winnerHero)
         {
-#if e172
-            if (winnerHero.IsNoble && winnerHero.Clan?.Kingdom != null)
-#else
             if (winnerHero.IsLord && winnerHero.Clan?.Kingdom != null)
-#endif
             {
                 GainKingdomInfluenceAction.ApplyForDefault(winnerHero, Settings.Instance!.TournamentInfluenceReward);
             }

@@ -1,7 +1,8 @@
 ﻿using MCM.Abstractions.Attributes;
 using MCM.Abstractions.Attributes.v2;
-using MCM.Abstractions.Dropdown;
-using MCM.Abstractions.Settings.Base.Global;
+using MCM.Abstractions.Base.Global;
+
+using MCM.Common;
 
 using TaleWorlds.Localization;
 
@@ -85,7 +86,7 @@ namespace ArenaOverhaul
 
         [SettingPropertyDropdown("{=rQHQBnmZL}Champion prize calculation", Order = 5, RequireRestart = false, HintText = "{=8mGYZd0fL}Specify how last man standing in the Arena Practice should be rewarded. Standard - with a special prize. Additive - with a special prize and any valor reward earned. Multiplicative - with a special prize for each valor class earned. Native is [Standard]. Default is [Additive].")]
         [SettingPropertyGroup(HeadingPracticeRewards, GroupOrder = 0)]
-        public DropdownDefault<string> PracticeChampionPrizeCalculation { get; set; } = new DropdownDefault<string>(new string[]
+        public Dropdown<string> PracticeChampionPrizeCalculation { get; set; } = new Dropdown<string>(new string[]
         {
             DropdownValueStandard,
             DropdownValueAdditive,
@@ -147,7 +148,7 @@ namespace ArenaOverhaul
 
         [SettingPropertyDropdown("{=rQHQBnmZL}Champion prize calculation", Order = 5, RequireRestart = false, HintText = "{=aUEgf6bh5}Specify how last man standing in the Expansive Arena Practice should be rewarded. Standard - with a special prize. Additive - with a special prize and any valor reward earned. Multiplicative - with a special prize for each valor class earned. Default is [Additive].")]
         [SettingPropertyGroup(HeadingExpansivePracticeRewards, GroupOrder = 0)]
-        public DropdownDefault<string> ExpansivePracticeChampionPrizeCalculation { get; set; } = new DropdownDefault<string>(new string[]
+        public Dropdown<string> ExpansivePracticeChampionPrizeCalculation { get; set; } = new Dropdown<string>(new string[]
         {
             DropdownValueStandard,
             DropdownValueAdditive,
@@ -177,7 +178,7 @@ namespace ArenaOverhaul
 
         [SettingPropertyDropdown("{=cCAOeRdmt}Prize reroll condition", Order = 2, RequireRestart = false, HintText = "{=CDGmDeYii}Specify when and if tournament prizes should be rerolled. Normally prizes are rerolled when player joins the tournament - if the nubmber of participating nobles changed since the tournament was created (affects prize quality). Native is [When situation changed]. Default is [When prize tier can be improved].")]
         [SettingPropertyGroup(HeadingTournaments, GroupOrder = 2)]
-        public DropdownDefault<string> TournamentPrizeRerollCondition { get; set; } = new DropdownDefault<string>(new string[]
+        public Dropdown<string> TournamentPrizeRerollCondition { get; set; } = new Dropdown<string>(new string[]
         {
             DropdownValueNever,
             DropdownValueOnPrizeTierImprovement,
@@ -228,7 +229,7 @@ namespace ArenaOverhaul
 
         [SettingPropertyDropdown("{=6o45aTuZi}Maximum number of teams", RequireRestart = false, HintText = "{=34r9jsdJq}The maximum number of teams in a tournament. A tournament has to have at least 8 teams.", Order = 10)]
         [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
-        public DropdownDefault<int> TeamsCountMax { get; set; } = new DropdownDefault<int>(new int[]
+        public Dropdown<int> TeamsCountMax { get; set; } = new Dropdown<int>(new int[]
         {
             8,
             16,

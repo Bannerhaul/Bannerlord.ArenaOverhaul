@@ -1,10 +1,6 @@
 ﻿using SandBox.CampaignBehaviors;
 using SandBox.Missions.MissionLogics.Arena;
-#if e172
-using SandBox.ViewModelCollection;
-#else
 using SandBox.ViewModelCollection.Missions;
-#endif
 
 using System.Collections.Generic;
 using System.Reflection;

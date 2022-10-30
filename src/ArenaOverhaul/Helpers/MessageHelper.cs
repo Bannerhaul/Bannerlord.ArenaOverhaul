@@ -8,11 +8,7 @@ namespace ArenaOverhaul.Helpers
     {
         public static void QuickInformationMessage(TextObject message, int priorty = 0, BasicCharacterObject? announcerCharacter = null, string soundEventPath = "")
         {
-#if e172
-            InformationManager.AddQuickInformation(message, priorty, announcerCharacter, soundEventPath);
-#else
             MBInformationManager.AddQuickInformation(message, priorty, announcerCharacter, soundEventPath);
-#endif
         }
 
         public static void SimpleMessage(string message)

@@ -209,11 +209,7 @@ namespace ArenaOverhaul.TeamTournament
 
         private void AddRandomClothes(TeamTournamentMember member)
         {
-#if e172
-            var participantArmor = member.Character.RandomBattleEquipment;
-#else
             var participantArmor = Campaign.Current.Models.TournamentModel.GetParticipantArmor(member.Character);
-#endif
             for (int i = 5; i < 10; i++)
             {
                 var equipmentFromSlot = participantArmor.GetEquipmentFromSlot((EquipmentIndex) i);
@@ -260,29 +256,19 @@ namespace ArenaOverhaul.TeamTournament
             }
         }
 
-#if e172
-        public override void OnScoreHit(
-          Agent affectedAgent, Agent affectorAgent, WeaponComponentData attackerWeapon,
-          bool isBlocked, bool isSiegeEngineHit,
-          float damage, float damagedHp, float movementSpeedDamageModifier, float hitDistance,
-          AgentAttackType attackType, float shotDifficulty, BoneBodyPartType victimHitBodyPart)
-#else
         public override void OnScoreHit(
             Agent affectedAgent, Agent affectorAgent, WeaponComponentData attackerWeapon,
             bool isBlocked, bool isSiegeEngineHit, in Blow blow, in AttackCollisionData collisionData,
             float damagedHp, float hitDistance, float shotDifficulty)
-#endif
         {
 
             if (affectorAgent != null)
             {
                 if (affectorAgent.Character != null && affectedAgent.Character != null)
                 {
-#if !e172
                     float damage = blow.InflictedDamage;
                     float movementSpeedDamageModifier = blow.MovementSpeedDamageModifier;
                     AgentAttackType attackType = blow.AttackType;
-#endif
                     if (damage > affectedAgent.HealthLimit)
                         damage = affectedAgent.HealthLimit;
 
@@ -305,15 +291,6 @@ namespace ArenaOverhaul.TeamTournament
             CharacterObject affectorCharacter = (CharacterObject) affectorAgent.Character;
             if (affectedAgent.Origin != null && affectorAgent != null && affectorAgent.Origin != null)
             {
-#if e172
-                SkillLevelingManager.OnCombatHit(
-                    affectorCharacter, affectedCharacter,
-                    null, null,
-                    lastSpeedBonus, lastShotDifficulty, lastAttackerWeapon,
-                    hitpointRatio, CombatXpModel.MissionTypeEnum.Tournament,
-                    affectorAgent.MountAgent != null, affectorAgent.Team == affectedAgent.Team,
-                    false, damageAmount, affectedAgent.Health < 1f, false);
-#else
                 bool isHorseCharge = affectorAgent.MountAgent != null && attackType == AgentAttackType.Collision;
                 SkillLevelingManager.OnCombatHit(
                     affectorCharacter, affectedCharacter,
@@ -322,7 +299,6 @@ namespace ArenaOverhaul.TeamTournament
                     hitpointRatio, CombatXpModel.MissionTypeEnum.Tournament,
                     affectorAgent.MountAgent != null, affectorAgent.Team == affectedAgent.Team,
                     false, damageAmount, affectedAgent.Health < 1f, false, isHorseCharge);
-#endif
             }
             //NoticableTakedowns for renown reward
             if (affectedAgent.Origin == null || affectorAgent == null || affectorAgent.Origin == null)
