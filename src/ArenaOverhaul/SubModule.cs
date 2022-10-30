@@ -74,27 +74,7 @@ namespace ArenaOverhaul
                 CampaignGameStarter gameStarter = (CampaignGameStarter) gameStarterObject;
                 //Behaviors
                 gameStarter.AddBehavior(new AOArenaBehavior());
-#if e172
-                //Texts
-                RestoreOldModuleStringsFormat();
-                gameStarter.LoadGameTexts(BasePath.Name + "Modules/ArenaOverhaul/ModuleData/module_strings_e172.xml");
-#endif
             }
-
-#if e172
-            static void RestoreOldModuleStringsFormat()
-            {
-                var xDoc = new XmlDocument();
-                xDoc.Load(BasePath.Name + "Modules/ArenaOverhaul/ModuleData/module_strings.xml");
-                XmlNode node = xDoc.DocumentElement;
-                XmlElement clone = (XmlElement) node.Clone();
-                XmlNode parent = node.ParentNode;
-                XmlElement xElement = xDoc.CreateElement("base");
-                xElement.AppendChild(clone);
-                parent.ReplaceChild(xElement, node);
-                xDoc.Save(BasePath.Name + "Modules/ArenaOverhaul/ModuleData/module_strings_e172.xml");
-            }
-#endif
         }
     }
 }

@@ -8,11 +8,7 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Core;
-#if e172
-using TaleWorlds.Core.ViewModelCollection;
-#else
 using TaleWorlds.Core.ViewModelCollection.Information;
-#endif
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
@@ -278,11 +274,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         {
             if (HasPrizeItem)
             {
-#if e172
-                InformationManager.AddTooltipInformation(typeof(ItemObject), new object[]
-#else
                 InformationManager.ShowTooltip(typeof(ItemObject), new object[]
-#endif
                 {
                     new EquipmentElement(Tournament.TournamentGame.Prize, null, null, false)
                 });
@@ -294,11 +286,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         /// </summary>
         private void ExecuteHidePrizeItemTooltip()
         {
-#if e172
-            InformationManager.HideInformations();
-#else
             InformationManager.HideTooltip();
-#endif
         }
 
         /// <summary>
