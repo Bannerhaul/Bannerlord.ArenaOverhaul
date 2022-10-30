@@ -15,7 +15,7 @@
         <!--BuildResources Version-->
         <BuildResourcesVersion>1.0.1.68</BuildResourcesVersion>
         <!--MCM Version-->
-        <MCMVersion>4.7.9</MCMVersion>
+        <MCMVersion>5.0.0</MCMVersion>
         <!--BUTRShared Version-->
         <BUTRSharedVersion>3.0.0.118</BUTRSharedVersion>
         <!--BUTRModuleManager Version-->
