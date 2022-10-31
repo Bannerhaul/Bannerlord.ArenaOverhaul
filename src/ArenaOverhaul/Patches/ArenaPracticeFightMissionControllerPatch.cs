@@ -240,11 +240,11 @@ namespace ArenaOverhaul.Patches
                     codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetTotalParticipantsCount);
                 }
                 else if (codes[i + 1].opcode == OpCodes.Stloc_1 && codes[i].opcode == OpCodes.Newobj)
-                if (codes[i + 1].opcode == OpCodes.Stloc_1 && codes[i].opcode == OpCodes.Newobj)
-                {
-                    codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetParticipantCharacters);
-                    break;
-                }
+                    if (codes[i + 1].opcode == OpCodes.Stloc_1 && codes[i].opcode == OpCodes.Newobj)
+                    {
+                        codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetParticipantCharacters);
+                        break;
+                    }
             }
             return codes.AsEnumerable();
         }
