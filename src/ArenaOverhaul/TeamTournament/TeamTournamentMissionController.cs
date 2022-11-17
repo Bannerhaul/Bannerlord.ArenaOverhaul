@@ -163,7 +163,7 @@ namespace ArenaOverhaul.TeamTournament
         {
             if (!_match!.IsPlayerParticipating)
                 MessageHelper.QuickInformationMessage(new TextObject("{=UBd0dEPp}Match is over", null), 0, null, "");
-            else if (_match.IsPlayerTeamWinner)
+            else if (_match.IsPlayerTeamQualified)
             {
                 if (_isLastRound)
                     MessageHelper.QuickInformationMessage(new TextObject("{=wOqOQuJl}Round is over, your team survived the final round of the tournament.", null), 0, null, "");

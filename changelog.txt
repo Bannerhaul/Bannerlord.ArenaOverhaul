@@ -5,9 +5,10 @@ Game Versions: v1.0.0, v1.0.1
 * Fixed some of prize rerolling options working inversively
 * Fixed elite pool rewards for clan tier 3 and higher when scaling is on
 * Fixed localization files having outdated format
+* Fixed wrong "disqualified" message after winning a Team Tournament round
 * Changed logging path to the %USERPROFILE%\Documents\Mount and Blade II Bannerlord\Configs\ModLogs\
 * Hopefully fixed a rare crash happening when two last fighters in Team Tournament match strike down each other simultaneously
-* Team generation for Team Tournaments has been rewritten from scratch
+* Team generation for Team Tournaments has been rewritten from scratch (thanks to Ivan Ulianov for contribution and ideas)
 ---------------------------------------------------------------------------------------------------
 Version: 1.2.0
 Game Versions: v1.0.0

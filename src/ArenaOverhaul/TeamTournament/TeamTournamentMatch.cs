@@ -83,6 +83,7 @@ namespace ArenaOverhaul.TeamTournament
         public IEnumerable<TeamTournamentMember> MatchMembers => Teams.SelectMany(x => x.Members);
         public bool IsPlayerParticipating => Teams.Any(x => x.IsPlayerTeam);
         public bool IsPlayerTeamWinner => GetWinners().Any(x => x.IsPlayerTeam);
+        internal bool IsPlayerTeamQualified => Teams.OrderByDescending(x => x.Score).Take(_winnerTeamsPerMatch).Any(x => x.IsPlayerTeam);
 
         public bool IsFullMatch => _teams.Count == _teams.Capacity;
 
