@@ -45,7 +45,6 @@ namespace ArenaOverhaul.Patches
         private static readonly SelectRandomAiTeamDelegate? deSelectRandomAiTeam = AccessTools2.GetDelegate<SelectRandomAiTeamDelegate>(typeof(ArenaPracticeFightMissionController), "SelectRandomAiTeam");
         private static readonly GetSpawnFrameDelegate? deGetSpawnFrame = AccessTools2.GetDelegate<GetSpawnFrameDelegate>(typeof(ArenaPracticeFightMissionController), "GetSpawnFrame");
 
-
         [HarmonyPostfix]
         [HarmonyPatch("RemainingOpponentCount", MethodType.Getter)]
         public static void RemainingOpponentCountPosfix(ref int __result, ArenaPracticeFightMissionController __instance)
