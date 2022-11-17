@@ -16,6 +16,7 @@ using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.CampaignSystem.Roster;
 using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Core;
+using TaleWorlds.Library;
 
 namespace ArenaOverhaul.Patches
 {
@@ -188,41 +189,22 @@ namespace ArenaOverhaul.Patches
                 FieldAccessHelper.FTGPossibleEliteRewardItemObjectsCacheByRef(__instance) = new List<ItemObject>();
             }
             List<ItemObject> itemObjectList = new();
-            if (Clan.PlayerClan.Tier <= 5)
-            {
-                if (Clan.PlayerClan.Tier == 5)
-                {
-                    var itemObjectCandidates = Items.All.Where(itemObject => itemObject.Tier == ItemObject.ItemTiers.Tier6 && itemObject.Value <= 75000 && !itemObject.NotMerchandise && (itemObject.IsCraftedWeapon || itemObject.IsMountable || itemObject.ArmorComponent != null) && !itemObject.IsCraftedByPlayer).ToList();
-                    itemObjectList.AddRange(itemObjectCandidates);
-                    if (Settings.Instance!.EnableUnobtainablePrizes)
-                    {
-                        var uniqueitemObjects = Items.All.Where(itemObject => itemObject.Tier == ItemObject.ItemTiers.Tier6 && itemObject.NotMerchandise && itemObject.Value <= 75000 && (itemObject.IsCraftedWeapon || itemObject.IsMountable || itemObject.ArmorComponent != null) && !itemObject.IsCraftedByPlayer).ToList();
-                        itemObjectList.AddRange(uniqueitemObjects);
-                    }
-                }
-                else
-                {
-                    var itemObjectCandidates = Items.All.Where(itemObject => (int) itemObject.Tier == Clan.PlayerClan.Tier && !itemObject.NotMerchandise && (itemObject.IsCraftedWeapon || itemObject.IsMountable || itemObject.ArmorComponent != null) && !itemObject.IsCraftedByPlayer).ToList();
-                    itemObjectList.AddRange(itemObjectCandidates);
-                }
-            }
-            else
-            {
-                //Get top 3 most valued Tier6 items by type and culture
-                var itemObjectCandidates =
-                    Items.All.Where(itemObject => itemObject.Tier == ItemObject.ItemTiers.Tier6 && !itemObject.NotMerchandise && (itemObject.IsCraftedWeapon || itemObject.IsMountable || itemObject.ArmorComponent != null) && !itemObject.IsCraftedByPlayer).ToList()
-                    .GroupBy(itemObject => (itemObject.Type, itemObject.Culture))
-                    .Select(accessGroup => (GroupKey: accessGroup.Key, TopThreeItems: accessGroup.OrderByDescending(subg => subg.Value).Take(3)))
-                    .SelectMany(x => x.TopThreeItems.Select(y => (x.GroupKey, Item: y)))
-                    .Select(x => x.Item).ToList();
-                itemObjectList.AddRange(itemObjectCandidates);
 
-                if (Settings.Instance!.EnableUnobtainablePrizes)
-                {
-                    var uniqueitemObjects = Items.All.Where(itemObject => itemObject.Tier == ItemObject.ItemTiers.Tier6 && itemObject.NotMerchandise && (itemObject.IsCraftedWeapon || itemObject.IsMountable || itemObject.ArmorComponent != null) && !itemObject.IsCraftedByPlayer).ToList();
-                    itemObjectList.AddRange(uniqueitemObjects);
-                }
-            }
+            //Get top 3 most valued Tier6 items by type and culture
+            var itemObjectCandidates =
+                Items.All.Where(itemObject => itemObject.Tier == ItemObject.ItemTiers.Tier6 && itemObject.Value <= GetMaxItemValueForElitePrize() && !itemObject.NotMerchandise && (itemObject.IsCraftedWeapon || itemObject.IsMountable || itemObject.ArmorComponent != null) && !itemObject.IsCraftedByPlayer).ToList()
+                .GroupBy(itemObject => (itemObject.Type, itemObject.Culture))
+                .Select(accessGroup => (GroupKey: accessGroup.Key, TopThreeItems: accessGroup.OrderByDescending(subg => subg.Value).Take(3)))
+                .SelectMany(x => x.TopThreeItems.Select(y => (x.GroupKey, Item: y)))
+                .Select(x => x.Item).ToList();
+            itemObjectList.AddRange(itemObjectCandidates);
+
+            //Add unique weapons and mounts 
+            var uniqueItemObjects = Items.All.Where(itemObject => itemObject.NotMerchandise && (int) itemObject.Tier >= MBMath.ClampInt(Clan.PlayerClan.Tier - 1, 2, 5) && (itemObject.IsCraftedWeapon || itemObject.IsMountable) && !itemObject.IsCraftedByPlayer).ToList();
+            itemObjectList.AddRange(uniqueItemObjects);
+            //Add unique armors
+            var uniqueArmors = Items.All.Where(itemObject => itemObject.NotMerchandise && (int) itemObject.Tier >= MBMath.ClampInt(Clan.PlayerClan.Tier - 1, 2, 5) && itemObject.ArmorComponent != null && !itemObject.IsCraftedByPlayer && itemObject.Culture != null && !itemObject.StringId.StartsWith("dummy_")).ToList();
+            itemObjectList.AddRange(uniqueArmors);
 
             if (FieldAccessHelper.FTGPossibleEliteRewardItemObjectsCacheByRef(__instance).IsEmpty())
             {
@@ -258,8 +240,8 @@ namespace ArenaOverhaul.Patches
             Settings.Instance!.TournamentPrizeRerollCondition.SelectedIndex switch
             {
                 0 => false, //Never
-                1 => lastRecordedNobleCountForTournamentPrize >= 4 && participantingNoblesCount < 4, //When prize tier can be improved
-                2 => lastRecordedNobleCountForTournamentPrize > participantingNoblesCount, //When chances for better prize are improved
+                1 => lastRecordedNobleCountForTournamentPrize < 4 && participantingNoblesCount >= 4, //When prize tier can be improved
+                2 => lastRecordedNobleCountForTournamentPrize < participantingNoblesCount, //When chances for better prize are improved
                 3 => lastRecordedNobleCountForTournamentPrize != participantingNoblesCount, //When situation changed
                 _ => true,
             };
@@ -288,5 +270,15 @@ namespace ArenaOverhaul.Patches
                 _ => isForMinValue ? 3400 : 5000 + Math.Max(playerRenown - (Campaign.Current.Models.ClanTierModel is DefaultClanTierModel clanTierModel ? FieldAccessHelper.DCTMTierLowerRenownLimitsByRef()[6] : 6000), 0) * 10
             };
         }
+
+        private static int GetMaxItemValueForElitePrize() =>
+            Clan.PlayerClan.Tier switch
+            {
+                < 3 => 0,
+                3 => 50000,
+                4 => 75000,
+                5 => 100000,
+                _ => 500000,
+            };
     }
 }

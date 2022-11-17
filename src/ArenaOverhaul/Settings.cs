@@ -39,6 +39,21 @@ namespace ArenaOverhaul
         internal const string DropdownValueOnImprovement = "{=oVADnv9sb}When chances for better prize are improved";
         internal const string DropdownValueOnChange = "{=MwOn3n7yC}When situation changed";
 
+        /*
+        internal const string DropdownValuePartyBased = "{=}Party based";
+        internal const string DropdownValueClanBased = "{=}Clan based";
+        internal const string DropdownValueGlobal = "{=}Global";
+        internal const string DropdownValueRandom = "{=}Random";
+
+        internal const string DropdownValueEnsuresPower = "{=}Ensures highest power";
+        internal const string DropdownValueEnsuresEquality = "{=}Ensures teams equality";
+        internal const string DropdownValueEnsuresVariety = "{=}Ensures variety";
+
+        internal const string DropdownValueNoControll = "{=}No controll";
+        internal const string DropdownValueOwnTeam = "{=}Only own team";
+        internal const string DropdownValueAffiliatedTeams = "{=}All affiliated teams";
+        */
+
         //Arena Practice settings
         [SettingPropertyInteger("{=wtKB2udZJ}Total participants", 10, 150, Order = 0, RequireRestart = false, HintText = "{=89f5zrS7i}The total number of participants in the Arena Practice. It is recommended to be a multiple of 3. Default = 30.")]
         [SettingPropertyGroup(HeadingPractice, GroupOrder = 0)]
@@ -194,10 +209,6 @@ namespace ArenaOverhaul
         [SettingPropertyGroup(HeadingTournamentsMaterialRewards, GroupOrder = 0)]
         public bool EnableTournamentPrizeScaling { get; set; } = true;
 
-        [SettingPropertyBool("{=DXiVYMIUL}Enable unobtainable prizes", Order = 2, RequireRestart = false, HintText = "{=YxVkSN8sn}When this option is enabled, elite tournament prizes can include otherwize unobtainable items and animals. Only works with prize scaling and at player clan tier 5 or 6.")]
-        [SettingPropertyGroup(HeadingTournamentsMaterialRewards, GroupOrder = 0)]
-        public bool EnableUnobtainablePrizes { get; set; } = true;
-
         [SettingPropertyInteger("{=DyNe9qH4v}Reward for the won round", 0, 1000, Order = 3, RequireRestart = false, HintText = "{=aAquVsgYJ}The amount of gold that participants receive for each round of the tournament they won. Native = 0. Default = 0.")]
         [SettingPropertyGroup(HeadingTournamentsMaterialRewards, GroupOrder = 0)]
         public int TournamentRoundWonReward { get; set; } = 0;
@@ -236,19 +247,51 @@ namespace ArenaOverhaul
             32
         }, 1);
 
-        [SettingPropertyInteger("{=l2FTrzzXX}Team 1 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 15)]
+        /*
+        [SettingPropertyDropdown("{=}Teams genesis", Order = 15, RequireRestart = false, HintText = "{=} Default is [Clan based].")]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        public Dropdown<string> TeamGenesis { get; set; } = new Dropdown<string>(new string[]
+        {
+            DropdownValuePartyBased,
+            DropdownValueClanBased,
+            DropdownValueGlobal,
+            DropdownValueRandom
+        }, 1);
+
+        [SettingPropertyDropdown("{=}Teams composition", Order = 16, RequireRestart = false, HintText = "{=} Default is [Ensures highest power].")]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        public Dropdown<string> TeamComposition { get; set; } = new Dropdown<string>(new string[]
+        {
+            DropdownValueEnsuresPower,
+            DropdownValueEnsuresEquality,
+            DropdownValueEnsuresVariety,
+            DropdownValueRandom
+        }, 0);
+
+        [SettingPropertyDropdown("{=}Player controll over teams composition", Order = 17, RequireRestart = false, HintText = "{=} Default is [Only own team].")]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        public Dropdown<string> PlayerControllOverComposition { get; set; } = new Dropdown<string>(new string[]
+        {
+            DropdownValueNoControll,
+            DropdownValueOwnTeam,
+            DropdownValueAffiliatedTeams,
+            DropdownValueRandom
+        }, 0);
+        */
+
+        [SettingPropertyInteger("{=l2FTrzzXX}Team 1 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 25)]
         [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
         public int TeamOneColor { get; set; } = 83;
 
-        [SettingPropertyInteger("{=jWYXBiEZp}Team 2 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 16)]
+        [SettingPropertyInteger("{=jWYXBiEZp}Team 2 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 26)]
         [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
         public int TeamTwoColor { get; set; } = 119;
 
-        [SettingPropertyInteger("{=iRvUExaRI}Team 3 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 17)]
+        [SettingPropertyInteger("{=iRvUExaRI}Team 3 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 27)]
         [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
         public int TeamThreeColor { get; set; } = 88;
 
-        [SettingPropertyInteger("{=F6qBgeAOk}Team 4 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 18)]
+        [SettingPropertyInteger("{=F6qBgeAOk}Team 4 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 28)]
         [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
         public int TeamFourColor { get; set; } = 84;
     }

@@ -8,13 +8,17 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 
+using TaleWorlds.Engine;
 using TaleWorlds.Library;
 
 namespace ArenaOverhaul.Helpers
 {
     internal static class LoggingHelper
     {
-        public static readonly string AOLogFile = Path.Combine(BasePath.Name, "Modules", "ArenaOverhaul", "ArenaOverhaul.log");
+        private static readonly PlatformDirectoryPath ModLogsPath = EngineFilePaths.ConfigsPath + "/ModLogs";
+        private static readonly PlatformFilePath ModLogsFilePath = new PlatformFilePath(ModLogsPath, "ArenaOverhaul.log");
+        public static readonly string AOLogFile = ModLogsFilePath.FileFullPath;
+
         public static void Log(string message)
         {
             lock (AOLogFile)

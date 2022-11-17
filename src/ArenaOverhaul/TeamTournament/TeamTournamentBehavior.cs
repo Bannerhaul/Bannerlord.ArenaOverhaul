@@ -84,8 +84,12 @@ namespace ArenaOverhaul.TeamTournament
                   ?? members.OrderByDescending(x => x.Character.GetBattlePower()).First();
             }
 
-            List<TeamTournamentTeam> similarTeams = _teams.Where(x => x.GetTeamLeader().Character.Name == localLeader.Character.Name).ToList();
-            int teamIndex = similarTeams.Any() ? similarTeams.Max(x => x.TeamIndex) + 1 : 0;
+            int teamIndex = 0;
+            if (!localLeader.Character.IsHero)
+            {
+                List<TeamTournamentTeam> similarTeams = _teams.Where(x => x.GetTeamLeader().Character.Name == localLeader.Character.Name).ToList();
+                teamIndex = similarTeams.Any() ? similarTeams.Max(x => x.TeamIndex) + 1 : 0;
+            }
 
             _teams!.Add(new TeamTournamentTeam(members, teamIndex, teamBanner, teamColor, leader));
         }
