@@ -45,7 +45,6 @@ namespace ArenaOverhaul.Patches
         private static readonly SelectRandomAiTeamDelegate? deSelectRandomAiTeam = AccessTools2.GetDelegate<SelectRandomAiTeamDelegate>(typeof(ArenaPracticeFightMissionController), "SelectRandomAiTeam");
         private static readonly GetSpawnFrameDelegate? deGetSpawnFrame = AccessTools2.GetDelegate<GetSpawnFrameDelegate>(typeof(ArenaPracticeFightMissionController), "GetSpawnFrame");
 
-
         [HarmonyPostfix]
         [HarmonyPatch("RemainingOpponentCount", MethodType.Getter)]
         public static void RemainingOpponentCountPosfix(ref int __result, ArenaPracticeFightMissionController __instance)
@@ -240,11 +239,11 @@ namespace ArenaOverhaul.Patches
                     codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetTotalParticipantsCount);
                 }
                 else if (codes[i + 1].opcode == OpCodes.Stloc_1 && codes[i].opcode == OpCodes.Newobj)
-                if (codes[i + 1].opcode == OpCodes.Stloc_1 && codes[i].opcode == OpCodes.Newobj)
-                {
-                    codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetParticipantCharacters);
-                    break;
-                }
+                    if (codes[i + 1].opcode == OpCodes.Stloc_1 && codes[i].opcode == OpCodes.Newobj)
+                    {
+                        codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetParticipantCharacters);
+                        break;
+                    }
             }
             return codes.AsEnumerable();
         }

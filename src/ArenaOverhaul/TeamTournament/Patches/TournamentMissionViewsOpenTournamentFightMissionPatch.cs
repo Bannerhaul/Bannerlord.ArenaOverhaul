@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
 
 using SandBox.View.Missions;
-using SandBox.View.Missions.Tournaments;
 using SandBox.View.Missions.Sound.Components;
+using SandBox.View.Missions.Tournaments;
 
 using System;
 using System.Collections.Generic;

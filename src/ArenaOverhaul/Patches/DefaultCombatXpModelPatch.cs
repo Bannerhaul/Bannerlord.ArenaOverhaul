@@ -45,7 +45,6 @@ namespace ArenaOverhaul.Patches
         internal static double GetTournamentXPRate()
         {
             return Settings.Instance!.TournamentExperienceRate;
-
         }
 
         internal static double GetPracticeFightXPRate()
