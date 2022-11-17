@@ -61,7 +61,7 @@ jobs:
         # Delete Implementations folder
         Remove-Item -Recurse $impl;
       shell: pwsh
-      
+
     - name: Install and Run ChangelogParser
       id: changelog
       run: |
@@ -72,7 +72,7 @@ jobs:
         desc="${desc//'%'/'%25'}"
         desc="${desc//$'\n'/'%0A'}"
         desc="${desc//$'\r'/'%0D'}"
-        echo "::set-output name=mod_description::$desc"      
+        echo "::set-output name=mod_description::$desc"
 
     - name: Upload bannerlord folder
       uses: actions/upload-artifact@v3
