@@ -119,7 +119,7 @@ namespace ArenaOverhaul.TeamTournament
                 Where(x => x.HeroObject.IsPartyLeader && !x.HeroObject.IsPrisoner))
             {
                 garrisonTroops.AddRange(hero.HeroObject.PartyBelongedTo.MemberRoster.GetTroopRoster().
-                    Where(y=>!y.Character.IsHero && y.WoundedNumber < y.Number && y.Character.CanBeAParticipant(true)).
+                    Where(y => !y.Character.IsHero && y.WoundedNumber < y.Number && y.Character.CanBeAParticipant(true)).
                     Select(y => y.Character));
             }
             var distinctTroops = garrisonTroops.
@@ -132,11 +132,11 @@ namespace ArenaOverhaul.TeamTournament
                 Concat(distinctTroops.Take(totalTroopsNeeded - combatantHeroes.Count()));
 
             //Keep adding troops until we have enough to fill the tournament
-            while(charsToUse.Count() < totalTroopsNeeded)
+            while (charsToUse.Count() < totalTroopsNeeded)
                 charsToUse = charsToUse.Concat(distinctTroops.Take(totalTroopsNeeded - charsToUse.Count()));
 
             //Now create the Teams
-            List<List<TeamTournamentMember>> teams = new ();
+            List<List<TeamTournamentMember>> teams = new();
             for (int n = 0; n < CurrentInfo.TeamsCount - 1; n++) teams.Add(new List<TeamTournamentMember>());
 
             //Place troops in teams in a zig-zag pattern to try to make the team strength as even as possible
@@ -145,7 +145,7 @@ namespace ArenaOverhaul.TeamTournament
             foreach (var troop in charsToUse)
             {
                 teams[teamNum].Add(new TeamTournamentMember(troop));
-                teamNum+=increment;
+                teamNum += increment;
 
                 if (teamNum == -1)
                 {
@@ -159,7 +159,7 @@ namespace ArenaOverhaul.TeamTournament
                 }
             }
 
-            teams.ForEach(curTeam => AddTournamentTeam(curTeam,curTeam.First().Character?.HeroObject?.ClanBanner,0,curTeam.First()));
+            teams.ForEach(curTeam => AddTournamentTeam(curTeam, curTeam.First().Character?.HeroObject?.ClanBanner, 0, curTeam.First()));
         }
 
         private List<CharacterObject> GetSimpletons(CultureObject? culture = null, CharacterObject? baseChar = null)
