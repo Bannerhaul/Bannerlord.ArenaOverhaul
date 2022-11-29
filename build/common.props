@@ -17,7 +17,7 @@
         <!--MCM Version-->
         <MCMVersion>5.3.1</MCMVersion>
         <!--BUTRShared Version-->
-        <BUTRSharedVersion>3.0.0.121</BUTRSharedVersion>
+        <BUTRSharedVersion>3.0.0.123</BUTRSharedVersion>
         <!--BUTRModuleManager Version-->
         <BUTRModuleManagerVersion>4.0.150</BUTRModuleManagerVersion>
         <!--ModuleLoader Version-->
