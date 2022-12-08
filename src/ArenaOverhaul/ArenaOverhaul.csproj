@@ -43,7 +43,7 @@
         <PackageReference Include="Bannerlord.ReferenceAssemblies.StoryMode" Version="$(GameVersion).*" PrivateAssets="All" />
         <PackageReference Include="Bannerlord.ReferenceAssemblies.SandBox" Version="$(GameVersion).*" PrivateAssets="All" />
         <PackageReference Include="Bannerlord.ReferenceAssemblies.CustomBattle" Version="$(GameVersion).*" PrivateAssets="All" />
-        <PackageReference Include="Newtonsoft.Json" Version="11.0.2">
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>compile</IncludeAssets>
         </PackageReference>
