@@ -7,12 +7,14 @@ using SandBox.Tournaments.MissionLogics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.AgentOrigins;
 using TaleWorlds.CampaignSystem.CharacterDevelopment;
 using TaleWorlds.CampaignSystem.ComponentInterfaces;
 using TaleWorlds.CampaignSystem.Encounters;
+using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
@@ -193,7 +195,11 @@ namespace ArenaOverhaul.TeamTournament
             var character = member.Character;
             var agentBuildData = new AgentBuildData(new SimpleAgentOrigin(character, -1, null, member.Descriptor)).Team(team).InitialPosition(frame.origin);
             agentBuildData = agentBuildData.InitialDirection(frame.rotation.f.AsVec2.Normalized()).Equipment(member.MatchEquipment).ClothingColor1(team.Color).Banner(team.Banner).Controller(character.IsPlayerCharacter ? Agent.ControllerType.Player : Agent.ControllerType.AI);
+#if v100 || v101 || v102 || v103
             var agent = Mission.SpawnAgent(agentBuildData, false, 0);
+#else
+            var agent = Mission.SpawnAgent(agentBuildData, false);
+#endif
 
             if (character.IsPlayerCharacter)
             {
