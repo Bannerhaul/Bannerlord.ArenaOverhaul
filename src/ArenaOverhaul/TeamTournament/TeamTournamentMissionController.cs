@@ -57,7 +57,7 @@ namespace ArenaOverhaul.TeamTournament
                 {
                     tournamentMember.MatchEquipment = teamWeaponEquipmentList[num].Clone(false);
                     AddRandomClothes(tournamentMember);
-                    num = num++ % numMembers;
+                    num = ++num % numMembers;
                 }
             }
         }
@@ -178,7 +178,7 @@ namespace ArenaOverhaul.TeamTournament
 
         public void OnMatchEnded()
         {
-            SandBoxHelpers.MissionHelper.FadeOutAgents(base.Mission.Agents, true, false);
+            SandBoxHelpers.MissionHelper.FadeOutAgents(Mission.Agents.Where(a => a.IsActive() && (a.Team is null || a.Team.TeamIndex >= 0)), true, false);
             Mission.ClearCorpses(false);
             Mission.Teams.Clear();
             Mission.RemoveSpawnedItemsAndMissiles();
@@ -317,7 +317,7 @@ namespace ArenaOverhaul.TeamTournament
         public bool CheckIfIsThereAnyEnemies()
         {
             Team? team = null;
-            foreach (var agent in Mission.Agents.Where(x => x.IsHuman && x.Team != null))
+            foreach (var agent in Mission.Agents.Where(x => x.IsHuman && x.Team != null && x.Team.TeamIndex >= 0))
             {
                 if (team == null)
                     team = agent.Team;

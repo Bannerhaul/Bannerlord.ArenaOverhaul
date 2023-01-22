@@ -9,7 +9,6 @@ using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.CharacterDevelopment;
-using TaleWorlds.CampaignSystem.Roster;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Core;
@@ -449,6 +448,8 @@ namespace ArenaOverhaul.TeamTournament
                 BetOdd = (int) (MathF.Clamp(MathF.Pow(1f / ((playerTeamRating + playerRating) / totalParticipantsRating * (playerRating / (playerTeamRating + playerRating + 0.5f * (totalParticipantsRating - (playerTeamRating + otherTeamsRating))))), 0.75f) * randomFactor, 1.1f, MaximumOdd) * 10.0) / 10f;
             }
         }
+
+        internal List<CharacterObject> GetAllPossibleParticipants() => _teams.SelectMany(t => t.Members.Select(m => m.Character)).ToList();
 
         public event Action? TournamentEnd;
         public event Action<TeamTournamentMatch>? MatchEnd;

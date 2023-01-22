@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 
+using SandBox.View;
 using SandBox.View.Missions;
 using SandBox.View.Missions.Sound.Components;
 using SandBox.View.Missions.Tournaments;
@@ -45,8 +46,8 @@ namespace ArenaOverhaul.TeamTournament.Patches
                     ViewCreator.CreateMissionAgentLabelUIHandler(mission),
                     new MissionItemContourControllerView(),
                     new MissionCampaignBattleSpectatorView(),
-                    ViewCreator.CreatePhotoModeView()/*,
-                    new ArenaPreloadView()*/
+                    ViewCreator.CreatePhotoModeView(),
+                    new ArenaPreloadView(),
                 }.ToArray();
                 return false;
             }
