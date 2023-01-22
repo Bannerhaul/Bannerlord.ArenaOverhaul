@@ -30,10 +30,18 @@ namespace ArenaOverhaul.TeamTournament
 
         public override void OnSceneRenderingStarted() => _helperInstance.WaitForMeshesToBeLoaded();
 
+#if v100 || v101 || v102 || v103
+        public override void OnMissionDeactivate()
+        {
+            base.OnMissionDeactivate();
+            _helperInstance.Clear();
+        }
+#else
         public override void OnMissionStateDeactivated()
         {
             base.OnMissionStateDeactivated();
             _helperInstance.Clear();
         }
+#endif
     }
 }
