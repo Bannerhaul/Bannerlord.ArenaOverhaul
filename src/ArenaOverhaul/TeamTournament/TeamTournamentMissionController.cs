@@ -7,14 +7,12 @@ using SandBox.Tournaments.MissionLogics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.AgentOrigins;
 using TaleWorlds.CampaignSystem.CharacterDevelopment;
 using TaleWorlds.CampaignSystem.ComponentInterfaces;
 using TaleWorlds.CampaignSystem.Encounters;
-using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
@@ -47,8 +45,9 @@ namespace ArenaOverhaul.TeamTournament
 
         private void PrepareForMatch() // also called from skip SkipMatch
         {
-            var numMembers = Math.Max(Math.Min(_match!.Teams.Max(x => x.Members.Count()), 4), 2);
+            var numMembers = MBMath.ClampInt(_match!.Teams.Max(x => x.Members.Count()), 1, 4);
             var teamWeaponEquipmentList = GetTeamWeaponEquipmentList(numMembers);
+            numMembers = Math.Min(numMembers, teamWeaponEquipmentList.Count);
 
             foreach (var team in _match.Teams)
             {
