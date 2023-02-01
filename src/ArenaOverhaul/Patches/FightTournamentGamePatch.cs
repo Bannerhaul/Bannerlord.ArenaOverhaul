@@ -258,7 +258,7 @@ namespace ArenaOverhaul.Patches
 
         private static int GetRenownRegularRewardItemValueIncrease(bool isForMinValue = false)
         {
-            int playerRenown = (int) Clan.PlayerClan.Renown;
+            int playerRenown = MathHelper.GetSoftCappedValue(Clan.PlayerClan.Renown);
             return Clan.PlayerClan.Tier switch
             {
                 0 => isForMinValue ? 0 : 0,

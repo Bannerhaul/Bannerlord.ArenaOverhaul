@@ -1,4 +1,8 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.3.4
+Game Versions: v1.0.0,v1.0.1,v1.0.2,v1.0.3,v1.1.0
+* Added some sanity checks on Tournament reward calculation for modded games.
+---------------------------------------------------------------------------------------------------
 Version: 1.3.3
 Game Versions: v1.0.0,v1.0.1,v1.0.2,v1.0.3,v1.1.0
 * Fixed a rare crash that occurred while preparing for a Team Tournament match.

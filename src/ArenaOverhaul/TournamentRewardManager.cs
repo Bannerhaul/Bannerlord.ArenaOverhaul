@@ -1,4 +1,5 @@
-﻿using ArenaOverhaul.TeamTournament;
+﻿using ArenaOverhaul.Helpers;
+using ArenaOverhaul.TeamTournament;
 
 using SandBox.Tournaments.MissionLogics;
 
@@ -104,7 +105,7 @@ namespace ArenaOverhaul
 
         public static int GetTournamentGoldPrize(Town tournamentTown)
         {
-            return (int) (Math.Floor((Settings.Instance!.EnableTournamentGoldPrizes ? tournamentTown.Settlement.Prosperity + (Settings.Instance!.EnableTournamentPrizeScaling ? Clan.PlayerClan.Renown : 0.0) : 0.0) / 50.0) * 50.0);
+            return (int) (Math.Floor((Settings.Instance!.EnableTournamentGoldPrizes ? MathHelper.GetSoftCappedValue(tournamentTown.Settlement.Prosperity) + (Settings.Instance!.EnableTournamentPrizeScaling ? MathHelper.GetSoftCappedValue(Clan.PlayerClan.Renown) : 0.0) : 0.0) / 50.0) * 50.0);
         }
 
         public static void ResolveTournament(CharacterObject winner, MBReadOnlyList<CharacterObject> participants, Town town)
