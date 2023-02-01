@@ -104,7 +104,14 @@ namespace ArenaOverhaul
 
         public static int GetTournamentGoldPrize(Town tournamentTown)
         {
-            return (int) (Math.Floor((Settings.Instance!.EnableTournamentGoldPrizes ? tournamentTown.Settlement.Prosperity + (Settings.Instance!.EnableTournamentPrizeScaling ? Clan.PlayerClan.Renown : 0.0) : 0.0) / 50.0) * 50.0);
+            int softCap = 10000;
+            return (int) (Math.Floor((Settings.Instance!.EnableTournamentGoldPrizes ? GetSoftCappedValue(tournamentTown.Settlement.Prosperity, softCap) + (Settings.Instance!.EnableTournamentPrizeScaling ? GetSoftCappedValue(Clan.PlayerClan.Renown, softCap) : 0.0) : 0.0) / 50.0) * 50.0);
+
+            static int GetSoftCappedValue(float value, int softCap)
+            {
+                int baseLog = (int) Math.Max(Math.Log10(softCap) - 1, 0);
+                return (int) (value <= softCap ? value : (softCap * (Math.Log10(value) - baseLog)));
+            }
         }
 
         public static void ResolveTournament(CharacterObject winner, MBReadOnlyList<CharacterObject> participants, Town town)
