@@ -151,13 +151,15 @@ namespace ArenaOverhaul.CampaignBehaviors
 
         protected void AddLoadoutDialogues(CampaignGameStarter campaignGameStarter, Settlement settlement)
         {
-            if (!_visitedCultures.Contains(settlement.MapFaction.Culture))
+            if (settlement is null) return;
+            var settlementCulture = settlement.MapFaction?.Culture ?? settlement.Culture;
+
+            if (!_visitedCultures.Contains(settlementCulture) && settlementCulture != null)
             {
                 for (int practiceStage = 1; practiceStage < 4; practiceStage++)
                 {
                     CharacterObject characterObject =
-                        Game.Current.ObjectManager.GetObject<CharacterObject>("weapon_practice_stage_" + practiceStage.ToString() + "_" + settlement.MapFaction.Culture.StringId)
-                        ?? Game.Current.ObjectManager.GetObject<CharacterObject>("weapon_practice_stage_" + practiceStage.ToString() + "_empire");
+                        Game.Current.ObjectManager.GetObject<CharacterObject>("weapon_practice_stage_" + practiceStage.ToString() + "_" + settlementCulture.StringId.ToLower());
 
                     List<(int EquipmentStage, string Loadout)> listOfExistingLoadouts = new();
                     for (int i = 0; i < characterObject.BattleEquipments.Count(); i++)
@@ -185,11 +187,11 @@ namespace ArenaOverhaul.CampaignBehaviors
                         if (!listOfExistingLoadouts.Contains(equipmentEntry))
                         {
                             listOfExistingLoadouts.Add(equipmentEntry);
-                            campaignGameStarter.AddPlayerLine(dialogueID, "arena_master_practice_weapons_list", "close_window", dialogueText, new ConversationSentence.OnConditionDelegate(() => conversation_town_arena_culture_match_on_condition(settlement.MapFaction.Culture, equipmentStage)), new ConversationSentence.OnConsequenceDelegate(() => conversation_arena_join_fight_with_selected_loadout_on_consequence(loadout)), 100, new ConversationSentence.OnClickableConditionDelegate((out TextObject? explanation) => conversation_town_arena_afford_loadout_choice_on_condition(out explanation, equipmentStage)), null);
+                            campaignGameStarter.AddPlayerLine(dialogueID, "arena_master_practice_weapons_list", "close_window", dialogueText, new ConversationSentence.OnConditionDelegate(() => conversation_town_arena_culture_match_on_condition(settlementCulture, equipmentStage)), new ConversationSentence.OnConsequenceDelegate(() => conversation_arena_join_fight_with_selected_loadout_on_consequence(loadout)), 100, new ConversationSentence.OnClickableConditionDelegate((out TextObject? explanation) => conversation_town_arena_afford_loadout_choice_on_condition(out explanation, equipmentStage)), null);
                         }
                     }
                 }
-                _visitedCultures.Add(settlement.MapFaction.Culture);
+                _visitedCultures.Add(settlementCulture);
             }
         }
 
@@ -200,7 +202,7 @@ namespace ArenaOverhaul.CampaignBehaviors
 
         private bool conversation_arena_return_to_default_choice_allowed_on_condition() => conversation_arena_weapon_choice_allowed_on_condition() && _chosenLoadout >= 0;
 
-        private bool conversation_town_arena_culture_match_on_condition(CultureObject culture, int stage) => culture.Equals(Settlement.CurrentSettlement.MapFaction.Culture) && stage == _currentLoadoutStage;
+        private bool conversation_town_arena_culture_match_on_condition(CultureObject culture, int stage) => culture.Equals(Settlement.CurrentSettlement.MapFaction?.Culture ?? Settlement.CurrentSettlement.Culture) && stage == _currentLoadoutStage;
 
         private bool conversation_town_arena_weapon_choice_request_confirm_on_condition()
         {

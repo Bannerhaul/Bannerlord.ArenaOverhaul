@@ -99,7 +99,14 @@ namespace ArenaOverhaul
 
             if ((affectorHero.CurrentSettlement?.Town != null) && ((affectedHeroRenown > 0 && affectedHeroRenown >= (affectorHeroRenown * 0.85)) || (affectedHeroPosition > 1 && affectedHeroPosition > affectorHeroPosition)))
             {
-                _noticableTakedowns[affectorHero.CurrentSettlement.Town].Add((affectorHero, affectedHero));
+                if (_noticableTakedowns.TryGetValue(affectorHero.CurrentSettlement.Town, out var listOfTakedowns) && listOfTakedowns != null)
+                {
+                    listOfTakedowns.Add((affectorHero, affectedHero));
+                }
+                else
+                {
+                    _noticableTakedowns[affectorHero.CurrentSettlement.Town] = new List<(Hero AffectorHero, Hero AffectedHero)> { (affectorHero, affectedHero) };
+                }
             }
         }
 
