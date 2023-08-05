@@ -2,9 +2,9 @@
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
-using TaleWorlds.MountAndBlade.View.MissionViews;
-using TaleWorlds.MountAndBlade.View;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.View;
+using TaleWorlds.MountAndBlade.View.MissionViews;
 
 namespace ArenaOverhaul.TeamTournament
 {
