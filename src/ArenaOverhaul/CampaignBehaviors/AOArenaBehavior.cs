@@ -457,7 +457,11 @@ namespace ArenaOverhaul.CampaignBehaviors
         private bool game_menu_enter_expansive_practice_fight_on_condition(MenuCallbackArgs args)
         {
             Settlement currentSettlement = Settlement.CurrentSettlement;
+#if v100 || v101 || v102 || v103
             args.optionLeaveType = GameMenuOption.LeaveType.HostileAction;
+#else
+            args.optionLeaveType = GameMenuOption.LeaveType.PracticeFight;
+#endif
             if (!FieldAccessHelper.ArenaMasterKnowTournamentsByRef(_arenaMasterBehavior!))
             {
                 args.Tooltip = new TextObject("{=Sph9Nliz}You need to learn more about the arena by talking with the arena master.", null);
