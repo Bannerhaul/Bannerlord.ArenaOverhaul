@@ -31,15 +31,26 @@ jobs:
 
     - name: Build Arena Overhaul
       run: |
-        $impl = $PWD.Path + '/bannerlord-implementations';
         $path = $PWD.Path + '/bannerlord';
-        $final = $path + '/Modules/ArenaOverhaul/bin/Win64_Shipping_Client/';
+
+        $implFX = $PWD.Path + '/bannerlord-implementationsFX';
+        $implCore = $PWD.Path + '/bannerlord-implementationsCore';
+
+        $finalFX = $path + '/Modules/ArenaOverhaul/bin/Win64_Shipping_Client/';
+        $finalCore = $path + '/Modules/ArenaOverhaul/bin/Gaming.Desktop.x64_Shipping_Client/';
+        
         $proj = 'src/ArenaOverhaul/ArenaOverhaul.csproj';
-        $pdll = $path + '/Modules/ArenaOverhaul/bin/Win64_Shipping_Client/ArenaOverhaul*.dll';
-        $ppdb = $path + '/Modules/ArenaOverhaul/bin/Win64_Shipping_Client/ArenaOverhaul*.pdb';
+
+        $pdllFX = $path + '/Modules/ArenaOverhaul/bin/Win64_Shipping_Client/ArenaOverhaul*.dll';
+        $ppdbFX = $path + '/Modules/ArenaOverhaul/bin/Win64_Shipping_Client/ArenaOverhaul*.pdb';
+        $pdllCore = $path + '/Modules/ArenaOverhaul/bin/Gaming.Desktop.x64_Shipping_Client/ArenaOverhaul*.dll';
+        $ppdbCore = $path + '/Modules/ArenaOverhaul/bin/Gaming.Desktop.x64_Shipping_Client/ArenaOverhaul*.pdb';
+
         # The folders are required to be created before executing the script
-        New-Item -ItemType directory -Force -Path $impl;
         New-Item -ItemType directory -Force -Path $path;
+        New-Item -ItemType directory -Force -Path $implFX;
+        New-Item -ItemType directory -Force -Path $implCore;
+
         [string[]]$gameversions = Get-Content -Path supported-game-versions.txt;
         # Process all implementations
         For ($i = 0; $i -le $gameversions.Length - 1; $i++)
@@ -51,15 +62,22 @@ jobs:
             echo "Start building for gameversion = $gameversion"
             dotnet clean $proj --configuration Release;
             dotnet build $proj --configuration Release -p:OverrideGameVersion=$gameversion -p:GameFolder="$path" -p:ConstGameVersionWithPrefix="$constgameversion";
+
             # Copy Implementations to the Implementations folder
-            Copy-Item $pdll $impl/;
-            Copy-Item $ppdb $impl/;
+            Copy-Item $pdllFX $implFX/;
+            Copy-Item $ppdbFX $implFX/;
+            Copy-Item $pdllCore $implCore/;
+            Copy-Item $ppdbCore $implCore/;
+
             echo "::endgroup::"
         }
         # Copy Implementations and Loader to the Module
-        Copy-Item $impl/* $final;
+        Copy-Item $implFX/* $finalFX;
+        Copy-Item $implCore/* $finalCore;
+
         # Delete Implementations folder
-        Remove-Item -Recurse $impl;
+        Remove-Item -Recurse $implFX;
+        Remove-Item -Recurse $implCore;
       shell: pwsh
 
     - name: Install and Run ChangelogParser

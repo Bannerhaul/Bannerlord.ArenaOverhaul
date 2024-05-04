@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31729.503
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArenaOverhaul", "ArenaOverhaul\ArenaOverhaul.csproj", "{8DBCDF43-F035-4E37-B53D-70B52431A73E}"
 EndProject
@@ -24,8 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{AE56
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{8CBC023C-EB40-415D-8A78-B6B7F82523E9}"
 	ProjectSection(SolutionItems) = preProject
-		..\.github\workflows\build.yml = ..\.github\workflows\build.yml
 		..\.github\workflows\dotnet-format-daily.yml = ..\.github\workflows\dotnet-format-daily.yml
+		..\.github\workflows\Publish.yml = ..\.github\workflows\Publish.yml
 		..\.github\workflows\TestBuild.yml = ..\.github\workflows\TestBuild.yml
 	EndProjectSection
 EndProject

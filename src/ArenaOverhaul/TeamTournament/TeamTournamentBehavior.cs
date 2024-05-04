@@ -16,6 +16,8 @@ using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 
+using MathF= TaleWorlds.Library.MathF;
+
 namespace ArenaOverhaul.TeamTournament
 {
     public class TeamTournamentBehavior : MissionLogic, ICameraModeLogic

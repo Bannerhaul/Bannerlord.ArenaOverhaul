@@ -112,7 +112,7 @@ namespace ArenaOverhaul
 
         public static int GetTournamentGoldPrize(Town tournamentTown)
         {
-#if v100 || v101 || v102 || v103 || v110 || v111 || v112 || v113 || v114 || v115
+#if v100 || v101 || v102 || v103 || v110 || v111 || v112 || v113 || v114 || v115 || v116
             return (int) (Math.Floor((Settings.Instance!.EnableTournamentGoldPrizes ? MathHelper.GetSoftCappedValue(tournamentTown.Settlement.Prosperity) + (Settings.Instance!.EnableTournamentPrizeScaling ? MathHelper.GetSoftCappedValue(Clan.PlayerClan.Renown) : 0.0) : 0.0) / 50.0) * 50.0);
 #else
             return (int) (Math.Floor((Settings.Instance!.EnableTournamentGoldPrizes ? MathHelper.GetSoftCappedValue(tournamentTown.Settlement.Town.Prosperity) + (Settings.Instance!.EnableTournamentPrizeScaling ? MathHelper.GetSoftCappedValue(Clan.PlayerClan.Renown) : 0.0) : 0.0) / 50.0) * 50.0);

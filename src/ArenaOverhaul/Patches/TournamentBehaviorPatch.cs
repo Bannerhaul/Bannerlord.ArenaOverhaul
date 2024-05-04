@@ -12,8 +12,9 @@ using System.Reflection.Emit;
 using System.Text;
 
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.Core;
-using TaleWorlds.Library;
+using TaleWorlds.Core;  
+
+using MathF = TaleWorlds.Library.MathF;
 
 namespace ArenaOverhaul.Patches
 {
