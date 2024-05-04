@@ -229,12 +229,12 @@ namespace ArenaOverhaul.TeamTournament
 
         private void AddScoreToKillerTeam(int killerUniqueSeed)
         {
-            _aliveTeams.FirstOrDefault(x => x.Members.Any(m => m.IsCharWithDescriptor(killerUniqueSeed)))?.AddScore(1);
+            _aliveTeams!.FirstOrDefault(x => x.Members.Any(m => m.IsCharWithDescriptor(killerUniqueSeed)))?.AddScore(1);
         }
 
         private void AddLastTeamScore()
         {
-            _aliveTeams.First().AddScore(_match!.Teams.Count());
+            _aliveTeams!.First().AddScore(_match!.Teams.Count());
         }
 
         public override void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow killingBlow)
@@ -242,6 +242,10 @@ namespace ArenaOverhaul.TeamTournament
             if (!IsMatchEnded() && affectorAgent != null && affectedAgent != affectorAgent && affectedAgent.IsHuman && affectorAgent.IsHuman)
             {
                 var member = _match!.MatchMembers.FirstOrDefault(x => x.IsCharWithDescriptor(affectedAgent.Origin.UniqueSeed));
+                if (member is null)
+                {
+                    return;
+                }
 
                 _aliveMembers!.Remove(member);
                 member.Team!.IsAlive = _aliveMembers.Any(x => x.Team == member.Team);
@@ -359,7 +363,7 @@ namespace ArenaOverhaul.TeamTournament
             }
 
             int runningIndex = 0;
-            while (_aliveMembers.Count() > 1 && _aliveTeams.Count() > 1)
+            while (_aliveMembers.Count() > 1 && _aliveTeams!.Count() > 1)
             {
                 runningIndex = ++runningIndex % _aliveMembers.Count();
                 var currentFighter = _aliveMembers[runningIndex];

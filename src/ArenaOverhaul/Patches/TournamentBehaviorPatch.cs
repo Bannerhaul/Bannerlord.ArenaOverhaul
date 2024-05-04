@@ -105,7 +105,7 @@ namespace ArenaOverhaul.Patches
                 issueInfo.Append($"\nMethodInfos:");
                 issueInfo.Append($"\n\tmiGetNextRound={(miGetNextRound != null ? miGetNextRound.ToString() : "not found")}");
                 issueInfo.Append($"\n\tmiUpdateRoundWinnings={(miUpdateRoundWinnings != null ? miUpdateRoundWinnings.ToString() : "not found")}");
-                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod());
+                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod()!);
                 LoggingHelper.Log(issueInfo.ToString());
             }
         }
@@ -156,7 +156,7 @@ namespace ArenaOverhaul.Patches
                 issueInfo.Append($"\nMethodInfos:");
                 issueInfo.Append($"\n\tmiGetMainHero={(miGetMainHero != null ? miGetMainHero.ToString() : "not found")}");
                 issueInfo.Append($"\n\tmiGetOverallExpectedDenars={(miGetOverallExpectedDenars != null ? miGetOverallExpectedDenars.ToString() : "not found")}");
-                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod());
+                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod()!);
                 LoggingHelper.Log(issueInfo.ToString());
             }
         }

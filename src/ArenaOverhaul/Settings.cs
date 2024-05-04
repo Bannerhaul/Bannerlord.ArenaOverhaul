@@ -11,7 +11,7 @@ namespace ArenaOverhaul
     public class Settings : AttributeGlobalSettings<Settings>
     {
         public override string Id => "ArenaOverhaul_v1";
-        public override string DisplayName => $"{new TextObject("{=n3lrq7FfM}Arena Overhaul")} {typeof(Settings).Assembly.GetName().Version.ToString(3)}";
+        public override string DisplayName => $"{new TextObject("{=n3lrq7FfM}Arena Overhaul")} {typeof(Settings).Assembly.GetName().Version!.ToString(3)}";
         public override string FolderName => "Arena Overhaul";
         public override string FormatType => "json2";
 

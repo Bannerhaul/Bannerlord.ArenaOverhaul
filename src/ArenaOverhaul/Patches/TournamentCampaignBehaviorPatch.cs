@@ -58,7 +58,7 @@ namespace ArenaOverhaul.Patches
                 issueInfo.Append($"\trenownAwardStartIndex={renownAwardStartIndex}.\n\trenownAwardEndIndex={renownAwardEndIndex}.");
                 issueInfo.Append($"\nMethodInfos:");
                 issueInfo.Append($"\n\tmiAddRenown={(miAddRenown != null ? miAddRenown.ToString() : "not found")}");
-                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod());
+                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod()!);
                 LoggingHelper.Log(issueInfo.ToString());
             }
         }

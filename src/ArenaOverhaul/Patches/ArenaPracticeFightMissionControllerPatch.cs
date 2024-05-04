@@ -80,7 +80,7 @@ namespace ArenaOverhaul.Patches
                 {
                     spawnStartIndex = i;
                 }
-                else if (numberOfEdits == 3 && spawnStartIndex > 0 && spawnEndIndex == 0 && codes[i].opcode == OpCodes.Stfld && codes[i].operand.ToString().Contains("_nextSpawnTime"))
+                else if (numberOfEdits == 3 && spawnStartIndex > 0 && spawnEndIndex == 0 && codes[i].opcode == OpCodes.Stfld && codes[i].operand.ToString()!.Contains("_nextSpawnTime"))
                 {
                     spawnEndIndex = i;
                     ++numberOfEdits;
@@ -127,7 +127,7 @@ namespace ArenaOverhaul.Patches
                 issueInfo.Append($"\n\tmiSpawnArenaAgents={(miSpawnArenaAgents != null ? miSpawnArenaAgents.ToString() : "not found")}");
                 issueInfo.Append($"\n\tmiSelectRandomAiTeam={(miSelectRandomAiTeam != null ? miSelectRandomAiTeam.ToString() : "not found")}");
                 issueInfo.Append($"\n\tmiGetSpawnFrame={(miGetSpawnFrame != null ? miGetSpawnFrame.ToString() : "not found")}");
-                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod());
+                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod()!);
                 LoggingHelper.Log(issueInfo.ToString());
             }
         }
@@ -199,7 +199,7 @@ namespace ArenaOverhaul.Patches
                 issueInfo.Append($"\nMethodInfos:");
                 issueInfo.Append($"\n\tmiGetChosenEquipmentStage={(miGetChosenEquipmentStage != null ? miGetChosenEquipmentStage.ToString() : "not found")}");
                 issueInfo.Append($"\n\tmiGetChosenEquipment={(miGetChosenEquipment != null ? miGetChosenEquipment.ToString() : "not found")}");
-                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod());
+                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod()!);
                 LoggingHelper.Log(issueInfo.ToString());
             }
         }

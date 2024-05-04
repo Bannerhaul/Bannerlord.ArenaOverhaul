@@ -262,7 +262,13 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
 
             var teamVM = _currentMatch.Teams.FirstOrDefault(x => x.Team!.Members.Any(m => m.Descriptor.CompareTo(agent.Origin.UniqueSeed) == 0));
             if (teamVM?.Team != null && !teamVM.Team.IsAlive)
-                teamVM.GetTeamLeader().IsDead = true;
+            {
+                var leaderVM = teamVM.GetTeamLeader();
+                if (leaderVM != null)
+                {
+                    leaderVM.IsDead = true;
+                }
+            }
         }
 
         #region view commands

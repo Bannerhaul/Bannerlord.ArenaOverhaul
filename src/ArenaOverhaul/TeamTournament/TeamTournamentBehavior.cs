@@ -88,7 +88,7 @@ namespace ArenaOverhaul.TeamTournament
             int teamIndex = 0;
             if (!localLeader.Character.IsHero)
             {
-                List<TeamTournamentTeam> similarTeams = _teams.Where(x => x.GetTeamLeader().Character.Name == localLeader.Character.Name).ToList();
+                List<TeamTournamentTeam> similarTeams = _teams!.Where(x => x.GetTeamLeader().Character.Name == localLeader.Character.Name).ToList();
                 teamIndex = similarTeams.Any() ? similarTeams.Max(x => x.TeamIndex) + 1 : 0;
             }
 
@@ -263,7 +263,7 @@ namespace ArenaOverhaul.TeamTournament
                         Campaign.Current.TournamentManager.GivePrizeToWinner(TournamentGame, Winner.Character.HeroObject, true);
                         Campaign.Current.TournamentManager.AddLeaderboardEntry(Winner.Character.HeroObject);
                     }
-                    var list = new List<CharacterObject>(_teams.SelectMany(x => x.Members).Select(y => y.Character));
+                    var list = new List<CharacterObject>(_teams!.SelectMany(x => x.Members).Select(y => y.Character));
 #if v100 || v101 || v102 || v103
                     CampaignEventDispatcher.Instance.OnTournamentFinished(Winner?.Character, list.GetReadOnlyList<CharacterObject>(), Settlement.Town, TournamentGame.Prize);
 #else   
@@ -451,7 +451,7 @@ namespace ArenaOverhaul.TeamTournament
             }
         }
 
-        internal List<CharacterObject> GetAllPossibleParticipants() => _teams.SelectMany(t => t.Members.Select(m => m.Character)).ToList();
+        internal List<CharacterObject> GetAllPossibleParticipants() => _teams!.SelectMany(t => t.Members.Select(m => m.Character)).ToList();
 
         public event Action? TournamentEnd;
         public event Action<TeamTournamentMatch>? MatchEnd;

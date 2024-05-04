@@ -88,7 +88,7 @@ namespace ArenaOverhaul.Patches
                 issueInfo.Append($"\n\tmiTownSetter={(miTownSetter != null ? miTownSetter.ToString() : "not found")}");
                 issueInfo.Append($"\n\tmiCreationTimeSetter={(miCreationTimeSetter != null ? miCreationTimeSetter.ToString() : "not found")}");
                 issueInfo.Append($"\n\tfiLastRecordedNobleCountForTournamentPrize={(fiLastRecordedNobleCountForTournamentPrize != null ? fiLastRecordedNobleCountForTournamentPrize.ToString() : "not found")}");
-                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod());
+                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod()!);
                 LoggingHelper.Log(issueInfo.ToString());
             }
         }

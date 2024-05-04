@@ -89,7 +89,7 @@ namespace ArenaOverhaul.Patches
                 issueInfo.Append($"\nMethodInfos:");
                 issueInfo.Append($"\n\tmiListAdd={(miListAdd != null ? miListAdd.ToString() : "not found")}");
                 issueInfo.Append($"\n\tmiAddPlayerParyToParticipantCharacters={(miAddPlayerParyToParticipantCharacters != null ? miAddPlayerParyToParticipantCharacters.ToString() : "not found")}");
-                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod());
+                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod()!);
                 LoggingHelper.Log(issueInfo.ToString());
             }
         }
@@ -143,7 +143,7 @@ namespace ArenaOverhaul.Patches
                 issueInfo.Append($"\nNumberOfEdits: {numberOfEdits}");
                 issueInfo.Append($"\nMethodInfos:");
                 issueInfo.Append($"\n\tmiShouldPrizeBeRerolled={(miShouldPrizeBeRerolled != null ? miShouldPrizeBeRerolled.ToString() : "not found")}");
-                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod());
+                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod()!  );
                 LoggingHelper.Log(issueInfo.ToString());
             }
         }
