@@ -16,7 +16,7 @@ using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 
-using MathF= TaleWorlds.Library.MathF;
+using MathF = TaleWorlds.Library.MathF;
 
 namespace ArenaOverhaul.TeamTournament
 {

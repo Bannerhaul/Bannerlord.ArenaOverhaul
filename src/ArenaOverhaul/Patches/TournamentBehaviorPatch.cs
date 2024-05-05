@@ -12,7 +12,7 @@ using System.Reflection.Emit;
 using System.Text;
 
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.Core;  
+using TaleWorlds.Core;
 
 using MathF = TaleWorlds.Library.MathF;
 
