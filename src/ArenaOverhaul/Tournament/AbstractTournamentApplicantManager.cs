@@ -57,7 +57,6 @@ namespace ArenaOverhaul.Tournament
             AddPlayerParyToApplicants(settlement, applicantCharacters, includePlayer);
             AddOtherPartiesToApplicants(settlement, applicantCharacters);
             AddPartylessHeroesToApplicants(settlement, applicantCharacters);
-            AddGarrisonPartyToApplicants(settlement, applicantCharacters);
             FillUpWithRandomTroops(settlement, applicantCharacters, requiredCount);
 
             return applicantCharacters.OrderByDescending(x => x.Importance).ToList();
@@ -128,21 +127,6 @@ namespace ArenaOverhaul.Tournament
                         Debug.Print(hero.StringId + " is in settlement.HeroesWithoutParty list but current settlement is not, tournament settlement: " + settlement.StringId);
                     }
                     applicantCharacters.Add(GetApplicant(characterObject, null, false));
-                }
-            }
-        }
-
-        public virtual void AddGarrisonPartyToApplicants(Settlement settlement, List<Ta> applicantCharacters)
-        {
-            if (settlement.Town.GarrisonParty != null)
-            {
-                foreach (TroopRosterElement troopRosterElement in settlement.Town.GarrisonParty.MemberRoster.GetTroopRoster())
-                {
-                    var characterObject = troopRosterElement.Character;
-                    if (CanBeAParticipant(characterObject, applicantCharacters, true))
-                    {
-                        applicantCharacters.Add(GetApplicant(characterObject, null, false));
-                    }
                 }
             }
         }
