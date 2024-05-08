@@ -22,7 +22,7 @@ namespace ArenaOverhaul.Tournament
 
             int maximumParticipantCount = instance.MaximumParticipantCount;
             var applicantCharacters = GetAllApplicants(settlement, includePlayer);
-            
+
             var applicantGroups = applicantCharacters.GroupBy(x => x.GrouppingObject).Select(group => (group.Key, Importance: (int) group.Average(item => item.Importance))).OrderByDescending(x => x.Importance).Take(maximumParticipantCount).ToList();
             var totalImportance = applicantGroups.Sum(x => x.Importance);
 
