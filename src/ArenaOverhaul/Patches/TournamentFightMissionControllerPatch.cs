@@ -49,9 +49,9 @@ namespace ArenaOverhaul.Patches
                 }
                 else if (num == 1 && codes[i].opcode == OpCodes.Ldarg_0 && codes[i - 1].opcode == OpCodes.Pop && codes[i - 2].Calls(miListRemove) && codes[i - 3].opcode == OpCodes.Ldloc_S)
                 {
-                    codes.InsertRange(i, [ new CodeInstruction(opcode: OpCodes.Ldloc_S, operand: codes[aliveParticipant1LoadIndex].operand),
-                                           new CodeInstruction(opcode: OpCodes.Ldloc_S, operand: codes[i - 3].operand),
-                                           new CodeInstruction(opcode: OpCodes.Call, operand: miUpdateNoticableTakedowns) ]);
+                    codes.InsertRange(i, [new CodeInstruction(opcode: OpCodes.Ldloc_S, operand: codes[aliveParticipant1LoadIndex].operand),
+                        new CodeInstruction(opcode: OpCodes.Ldloc_S, operand: codes[i - 3].operand),
+                        new CodeInstruction(opcode: OpCodes.Call, operand: miUpdateNoticableTakedowns)]);
                     break;
                 }
             }
