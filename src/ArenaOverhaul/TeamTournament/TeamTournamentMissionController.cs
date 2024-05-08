@@ -402,7 +402,7 @@ namespace ArenaOverhaul.TeamTournament
             _isSimulated = true;
         }
 
-        private bool IsThereAnyPlayerAgent() => Mission.MainAgent != null && base.Mission.MainAgent.IsActive() || Mission.Agents.Any(agent => agent.IsPlayerControlled);
+        private bool IsThereAnyPlayerAgent() => (Mission.MainAgent != null && base.Mission.MainAgent.IsActive()) || Mission.Agents.Any(agent => agent.IsPlayerControlled);
 
         public override InquiryData? OnEndMissionRequest(out bool canPlayerLeave)
         {

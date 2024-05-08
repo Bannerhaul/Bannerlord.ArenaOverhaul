@@ -46,7 +46,6 @@ namespace ArenaOverhaul.Tournament
         }
     }
 
-
     public abstract class AbstractTournamentApplicantManager<Ta, Tg> : AbstractTournamentApplicantManager
         where Ta : AbstractTournamentApplicant<Tg>
         where Tg : MBObjectBase
@@ -179,7 +178,7 @@ namespace ArenaOverhaul.Tournament
         public bool CanBeAParticipant(CharacterObject character, List<Ta> applicantCharacters, bool considerSkills, bool allowNotables = false)
         {
             if (!character.IsHero)
-                return (!considerSkills || character.Tier >= 3) /*&& !applicantCharacters.Any(participant => participant.CharacterObject == character)*/; ;
+                return (!considerSkills || character.Tier >= 3) /*&& !applicantCharacters.Any(participant => participant.CharacterObject == character)*/;
 
             Hero hero = character.HeroObject;
             return
