@@ -57,7 +57,7 @@ namespace ArenaOverhaul
                                 ? GetLMSPrizeCalculationTypeIndex() switch
                                 {
                                     1 => 7 + (valorCat > 3 ? 2 : Math.Min(valorCat, 1)),
-                                    2 => valorCat > 1 ? 10 + valorCat - 1 : 7,
+                                    2 => valorCat > 1 ? 10 + valorCat - 2 : 7,
                                     _ => 7,
                                 }
                                 : baseCat + valorCat;
@@ -69,7 +69,7 @@ namespace ArenaOverhaul
             int calculationTypeIndex = GetLMSPrizeCalculationTypeIndex();
             return calculationTypeIndex switch
             {
-                2 => (1 + GetValorCategory(countBeatenByPlayer)) * GetLastManStandingBasePrize(),
+                2 => Math.Max(GetValorCategory(countBeatenByPlayer) - 1, 1) * GetLastManStandingBasePrize(),
                 1 => GetLastManStandingBasePrize() + GetValorPrizeAmount(countBeatenByPlayer),
                 _ => GetLastManStandingBasePrize()
             };

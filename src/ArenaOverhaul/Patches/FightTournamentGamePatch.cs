@@ -1,7 +1,7 @@
 ﻿using ArenaOverhaul.Helpers;
+using ArenaOverhaul.Tournament;
 
 using HarmonyLib;
-using HarmonyLib.BUTR.Extensions;
 
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using System.Text;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Extensions;
 using TaleWorlds.CampaignSystem.GameComponents;
-using TaleWorlds.CampaignSystem.Roster;
+using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
@@ -25,73 +25,21 @@ namespace ArenaOverhaul.Patches
     {
         private static readonly MethodInfo miGetRegularRewardItemMinValue = AccessTools.Method(typeof(FightTournamentGamePatch), "GetRegularRewardItemMinValue");
         private static readonly MethodInfo miGetRegularRewardItemMaxValue = AccessTools.Method(typeof(FightTournamentGamePatch), "GetRegularRewardItemMaxValue");
-        private static readonly MethodInfo miAddPlayerParyToParticipantCharacters = AccessTools.Method(typeof(FightTournamentGamePatch), "AddPlayerParyToParticipantCharacters");
         private static readonly MethodInfo miShouldPrizeBeRerolled = AccessTools.Method(typeof(FightTournamentGamePatch), "ShouldPrizeBeRerolled");
 
-        private static readonly MethodInfo miListAdd = AccessTools.Method(typeof(List<CharacterObject>), "Add");
+        private static readonly FightTournamentApplicantManager _applicantManager = new FightTournamentApplicantManager();
 
-        private static readonly MethodInfo miCanNpcJoinTournament = AccessTools.Method(typeof(FightTournamentGame), "CanNpcJoinTournament");
-        private delegate bool CanNpcJoinTournamentDelegate(FightTournamentGame instance, Hero hero, List<CharacterObject> participantCharacters, bool considerSkills);
-        private static readonly CanNpcJoinTournamentDelegate? deCanNpcJoinTournament = AccessTools2.GetDelegate<CanNpcJoinTournamentDelegate>(miCanNpcJoinTournament);
-
-        [HarmonyTranspiler]
+        [HarmonyPrefix]
         [HarmonyPatch("GetParticipantCharacters")]
-        public static IEnumerable<CodeInstruction> GetParticipantCharactersTranspiler(IEnumerable<CodeInstruction> instructions)
+#if v100 || v101 || v102 || v103
+        public static bool GetParticipantCharactersPrefix(FightTournamentGame __instance, ref List<CharacterObject> __result, Settlement settlement, bool includePlayer = true)
+#else
+        public static bool GetParticipantCharactersPrefix(FightTournamentGame __instance, ref MBList<CharacterObject> __result, Settlement settlement, bool includePlayer = true)
+#endif
         {
-            List<CodeInstruction> codes = new(instructions);
-            int numberOfEdits = 0;
-            int includePlayerStartIndex = 0;
-            int includePlayerEndIndex = 0;
-            for (int i = 2; i < codes.Count; ++i)
-            {
-                if (numberOfEdits == 0 && codes[i].opcode == OpCodes.Ldloc_0 && codes[i - 1].opcode == OpCodes.Brfalse_S && codes[i - 2].opcode == OpCodes.Ldarg_2)
-                {
-                    includePlayerStartIndex = i;
-                    ++numberOfEdits;
-                }
-                else if (numberOfEdits == 1 && codes[i].Calls(miListAdd))
-                {
-                    includePlayerEndIndex = i;
-                    ++numberOfEdits;
-                    break;
-
-                }
-            }
-
-            //Logging
-            if (includePlayerStartIndex == 0 || includePlayerEndIndex == 0 || numberOfEdits < 2)
-            {
-                LogNoHooksIssue(includePlayerStartIndex, includePlayerEndIndex, numberOfEdits, codes);
-                if (numberOfEdits < 2)
-                {
-                    MessageHelper.ErrorMessage("Harmony transpiler for FightTournamentGame. GetParticipantCharacters was not able to make all required changes!");
-                }
-            }
-            if (includePlayerStartIndex > 0 && includePlayerEndIndex > 0)
-            {
-                codes.RemoveRange(includePlayerStartIndex, includePlayerEndIndex - includePlayerStartIndex + 1);
-                codes.InsertRange(includePlayerStartIndex, new CodeInstruction[] { new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(OpCodes.Ldloc_0), new CodeInstruction(opcode: OpCodes.Call, operand: miAddPlayerParyToParticipantCharacters) });
-            }
-            else
-            {
-                MessageHelper.ErrorMessage("Harmony transpiler for FightTournamentGame. GetParticipantCharacters could not find code hooks for player injection!");
-            }
-
-            return codes.AsEnumerable();
-
-            //local methods
-            static void LogNoHooksIssue(int includePlayerStartIndex, int includePlayerEndIndex, int numberOfEdits, List<CodeInstruction> codes)
-            {
-                LoggingHelper.Log("Indexes:", "Transpiler for FightTournamentGame.GetParticipantCharacters");
-                StringBuilder issueInfo = new("");
-                issueInfo.Append($"\tincludePlayerStartIndex={includePlayerStartIndex}.\n\tincludePlayerEndIndex={includePlayerEndIndex}.");
-                issueInfo.Append($"\nNumberOfEdits: {numberOfEdits}");
-                issueInfo.Append($"\nMethodInfos:");
-                issueInfo.Append($"\n\tmiListAdd={(miListAdd != null ? miListAdd.ToString() : "not found")}");
-                issueInfo.Append($"\n\tmiAddPlayerParyToParticipantCharacters={(miAddPlayerParyToParticipantCharacters != null ? miAddPlayerParyToParticipantCharacters.ToString() : "not found")}");
-                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod()!);
-                LoggingHelper.Log(issueInfo.ToString());
-            }
+            __result = _applicantManager.GetParticipantCharacters(__instance, settlement, includePlayer);
+            
+            return false;
         }
 
         [HarmonyTranspiler]
@@ -125,7 +73,7 @@ namespace ArenaOverhaul.Patches
             if (ldarg2Index > 0 && continueIndex > 0)
             {
                 codes[continueIndex].opcode = OpCodes.Brtrue;
-                codes.InsertRange(continueIndex, new CodeInstruction[] { new CodeInstruction(opcode: OpCodes.Call, operand: miShouldPrizeBeRerolled) });
+                codes.InsertRange(continueIndex, [new CodeInstruction(opcode: OpCodes.Call, operand: miShouldPrizeBeRerolled)]);
             }
             else
             {
@@ -215,27 +163,6 @@ namespace ArenaOverhaul.Patches
         }
 
         /* service methods */
-        internal static void AddPlayerParyToParticipantCharacters(FightTournamentGame instance, List<CharacterObject> participantCharacters)
-        {
-            participantCharacters.Add(CharacterObject.PlayerCharacter); //Should be first, otherwize can be lost among the followers
-
-            if (Hero.MainHero.PartyBelongedTo?.Party?.MemberRoster is null)
-            {
-                return;
-            }
-
-            foreach (TroopRosterElement troopRosterElement in Hero.MainHero.PartyBelongedTo.Party.MemberRoster.GetTroopRoster())
-            {
-                if (troopRosterElement.Character.IsHero && !troopRosterElement.Character.IsPlayerCharacter)
-                {
-                    if (deCanNpcJoinTournament!(instance, troopRosterElement.Character.HeroObject, participantCharacters, true))
-                    {
-                        participantCharacters.Add(troopRosterElement.Character);
-                    }
-                }
-            }
-        }
-
         internal static bool ShouldPrizeBeRerolled(int lastRecordedNobleCountForTournamentPrize, int participantingNoblesCount) =>
             Settings.Instance!.TournamentPrizeRerollCondition.SelectedIndex switch
             {

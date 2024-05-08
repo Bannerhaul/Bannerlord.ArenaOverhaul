@@ -1,4 +1,5 @@
 ﻿using ArenaOverhaul.Helpers;
+using ArenaOverhaul.Tournament;
 
 using HarmonyLib;
 
@@ -24,7 +25,7 @@ namespace ArenaOverhaul.Patches
         private static readonly FieldInfo fiLastRecordedNobleCountForTournamentPrize = AccessTools.Field(typeof(TournamentGame), "_lastRecordedLordCountForTournamentPrize");
 
         [HarmonyTranspiler]
-        [HarmonyPatch(typeof(TournamentGame), MethodType.Constructor, new Type[] { typeof(Town), typeof(ItemObject) })]
+        [HarmonyPatch(typeof(TournamentGame), MethodType.Constructor, [typeof(Town), typeof(ItemObject)])]
         public static IEnumerable<CodeInstruction> TournamentGameTranspiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> codes = new(instructions);
@@ -68,7 +69,7 @@ namespace ArenaOverhaul.Patches
             if (initializeNobleCountIndexNew > 0 && initializeNobleCountIndexOldStart > 0 && initializeNobleCountIndexOldEnd > 0)
             {
                 codes.RemoveRange(initializeNobleCountIndexOldStart, initializeNobleCountIndexOldEnd - initializeNobleCountIndexOldStart);
-                codes.InsertRange(initializeNobleCountIndexNew + 1, new CodeInstruction[] { new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(OpCodes.Ldc_I4_0), new CodeInstruction(opcode: OpCodes.Stfld, operand: fiLastRecordedNobleCountForTournamentPrize) });
+                codes.InsertRange(initializeNobleCountIndexNew + 1, [new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(OpCodes.Ldc_I4_0), new CodeInstruction(opcode: OpCodes.Stfld, operand: fiLastRecordedNobleCountForTournamentPrize)]);
             }
             else
             {

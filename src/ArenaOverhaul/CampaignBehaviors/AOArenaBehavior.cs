@@ -1,5 +1,6 @@
 ﻿using ArenaOverhaul.Helpers;
 using ArenaOverhaul.TeamTournament;
+using ArenaOverhaul.Tournament;
 
 using Bannerlord.ButterLib.Common.Helpers;
 
@@ -151,15 +152,23 @@ namespace ArenaOverhaul.CampaignBehaviors
 
         protected void AddLoadoutDialogues(CampaignGameStarter campaignGameStarter, Settlement settlement)
         {
-            if (settlement is null) return;
+            if (settlement is null || !settlement.IsTown)
+            {
+                return;
+            }
+
             var settlementCulture = settlement.MapFaction?.Culture ?? settlement.Culture;
 
             if (!_visitedCultures.Contains(settlementCulture) && settlementCulture != null)
             {
-                for (int practiceStage = 1; practiceStage < 4; practiceStage++)
+                int practiceLoadoutStages = Settings.Instance!.PracticeLoadoutStages;
+                for (int practiceStage = 1; practiceStage <= practiceLoadoutStages; practiceStage++)
                 {
-                    CharacterObject characterObject =
-                        Game.Current.ObjectManager.GetObject<CharacterObject>("weapon_practice_stage_" + practiceStage.ToString() + "_" + settlementCulture.StringId.ToLower());
+                    CharacterObject? characterObject = Game.Current.ObjectManager.GetObject<CharacterObject>("weapon_practice_stage_" + practiceStage.ToString() + "_" + settlementCulture.StringId.ToLower());
+                    if (characterObject is null)
+                    {
+                        continue;
+                    }
 
                     List<(int EquipmentStage, string Loadout)> listOfExistingLoadouts = new();
                     for (int i = 0; i < characterObject.BattleEquipments.Count(); i++)
@@ -218,7 +227,7 @@ namespace ArenaOverhaul.CampaignBehaviors
         }
 
 
-        private bool conversation_town_arena_weapons_list_on_condition() => _currentLoadoutStage < 3;
+        private bool conversation_town_arena_weapons_list_on_condition() => _currentLoadoutStage < Settings.Instance!.PracticeLoadoutStages;
 
         private bool conversation_town_arena_fight_join_check_on_condition(out TextObject? explanation)
         {

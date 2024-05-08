@@ -1,4 +1,6 @@
-﻿using SandBox.ViewModelCollection;
+﻿using ArenaOverhaul.Tournament;
+
+using SandBox.ViewModelCollection;
 
 using System;
 using System.Collections.Generic;

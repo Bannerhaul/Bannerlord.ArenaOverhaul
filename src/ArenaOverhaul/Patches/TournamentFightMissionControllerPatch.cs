@@ -1,4 +1,6 @@
-﻿using HarmonyLib;
+﻿using ArenaOverhaul.Tournament;
+
+using HarmonyLib;
 
 using SandBox.Tournaments.MissionLogics;
 
@@ -18,7 +20,7 @@ namespace ArenaOverhaul.Patches
     {
         private static readonly MethodInfo miListRemove = AccessTools.Method(typeof(List<TournamentParticipant>), "Remove");
         private static readonly MethodInfo miTupleItem2Getter = AccessTools.PropertyGetter(typeof(Tuple<float, float>), "Item2");
-        private static readonly MethodInfo miUpdateNoticableTakedowns = AccessTools.Method(typeof(TournamentRewardManager), "UpdateNoticableTakedowns", new Type[] { typeof(TournamentParticipant), typeof(TournamentParticipant) });
+        private static readonly MethodInfo miUpdateNoticableTakedowns = AccessTools.Method(typeof(TournamentRewardManager), "UpdateNoticableTakedowns", [typeof(TournamentParticipant), typeof(TournamentParticipant)]);
 
         [HarmonyPostfix]
         [HarmonyPatch("EnemyHitReward")]
@@ -47,9 +49,9 @@ namespace ArenaOverhaul.Patches
                 }
                 else if (num == 1 && codes[i].opcode == OpCodes.Ldarg_0 && codes[i - 1].opcode == OpCodes.Pop && codes[i - 2].Calls(miListRemove) && codes[i - 3].opcode == OpCodes.Ldloc_S)
                 {
-                    codes.InsertRange(i, new CodeInstruction[] { new CodeInstruction(opcode: OpCodes.Ldloc_S, operand: codes[aliveParticipant1LoadIndex].operand),
-                                                                 new CodeInstruction(opcode: OpCodes.Ldloc_S, operand: codes[i - 3].operand),
-                                                                 new CodeInstruction(opcode: OpCodes.Call, operand: miUpdateNoticableTakedowns) });
+                    codes.InsertRange(i, [ new CodeInstruction(opcode: OpCodes.Ldloc_S, operand: codes[aliveParticipant1LoadIndex].operand),
+                                           new CodeInstruction(opcode: OpCodes.Ldloc_S, operand: codes[i - 3].operand),
+                                           new CodeInstruction(opcode: OpCodes.Call, operand: miUpdateNoticableTakedowns) ]);
                     break;
                 }
             }

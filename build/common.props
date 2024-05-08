@@ -25,15 +25,6 @@
         <!--Harmony Extensions Version-->
         <HarmonyExtensionsVersion>3.2.0.77</HarmonyExtensionsVersion>
     </PropertyGroup>
-
-    <PropertyGroup>
-        <TargetFrameworks>net472;net6</TargetFrameworks>
-        <LangVersion>latest</LangVersion>
-        <Nullable>enable</Nullable>
-        <Platforms>x64</Platforms>
-        <BuildForWindows>false</BuildForWindows>
-        <BuildForWindowsStore>false</BuildForWindowsStore>
-    </PropertyGroup>    
     
     <PropertyGroup>
         <ModuleId>ArenaOverhaul</ModuleId>

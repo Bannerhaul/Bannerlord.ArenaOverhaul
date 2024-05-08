@@ -14,7 +14,7 @@ using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
-namespace ArenaOverhaul
+namespace ArenaOverhaul.Tournament
 {
     public static class TournamentRewardManager
     {
@@ -97,7 +97,7 @@ namespace ArenaOverhaul
             float affectedHeroRenown = affectedHero.Clan?.Renown ?? 0f;
             float affectorHeroRenown = affectorHero.Clan?.Renown ?? 0f;
 
-            if ((affectorHero.CurrentSettlement?.Town != null) && ((affectedHeroRenown > 0 && affectedHeroRenown >= (affectorHeroRenown * 0.85)) || (affectedHeroPosition > 1 && affectedHeroPosition > affectorHeroPosition)))
+            if (affectorHero.CurrentSettlement?.Town != null && (affectedHeroRenown > 0 && affectedHeroRenown >= affectorHeroRenown * 0.85 || affectedHeroPosition > 1 && affectedHeroPosition > affectorHeroPosition))
             {
                 if (_noticableTakedowns.TryGetValue(affectorHero.CurrentSettlement.Town, out var listOfTakedowns) && listOfTakedowns != null)
                 {

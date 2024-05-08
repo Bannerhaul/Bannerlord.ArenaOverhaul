@@ -1,4 +1,5 @@
 ﻿using ArenaOverhaul.Helpers;
+using ArenaOverhaul.Tournament;
 
 using HarmonyLib;
 
@@ -54,7 +55,7 @@ namespace ArenaOverhaul.Patches
             {
                 if (codes[i].LoadsConstant(1.1f) && codes[i - 1].Calls(miMathFPow))
                 {
-                    codes.InsertRange(i, new CodeInstruction[] { new CodeInstruction(opcode: OpCodes.Call, operand: miGetBettingOddRandomFactor), new CodeInstruction(OpCodes.Mul) });
+                    codes.InsertRange(i, [new CodeInstruction(opcode: OpCodes.Call, operand: miGetBettingOddRandomFactor), new CodeInstruction(OpCodes.Mul)]);
                     break;
                 }
             }
@@ -91,7 +92,7 @@ namespace ArenaOverhaul.Patches
             else
             {
                 codes[updateRoundWinningsIndex].opcode = OpCodes.Nop;
-                codes.InsertRange(updateRoundWinningsIndex + 1, new CodeInstruction[] { new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(opcode: OpCodes.Call, operand: miUpdateRoundWinnings), new CodeInstruction(OpCodes.Ldarg_0) });
+                codes.InsertRange(updateRoundWinningsIndex + 1, [new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(opcode: OpCodes.Call, operand: miUpdateRoundWinnings), new CodeInstruction(OpCodes.Ldarg_0)]);
             }
 
             return codes.AsEnumerable();

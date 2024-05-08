@@ -1,5 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+    <PropertyGroup>
+        <TargetFrameworks>net472;net6</TargetFrameworks>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <Platforms>x64</Platforms>
+        <BuildForWindows>false</BuildForWindows>
+        <BuildForWindowsStore>false</BuildForWindowsStore>
+    </PropertyGroup>        
+    
     <PropertyGroup Condition="$(TargetFramework) == 'net472'">
         <BuildForWindows>true</BuildForWindows>
     </PropertyGroup>
