@@ -210,7 +210,6 @@ namespace ArenaOverhaul.Tournament
                 && !applicantCharacters.Any(applicant => applicant.CharacterObject == hero.CharacterObject);
         }
 
-
         private void AddApplicantsFromRoster(Settlement settlement, List<Ta> applicantCharacters, MobileParty party)
         {
             List<CharacterObject> upgradeTargets = new();
