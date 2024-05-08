@@ -35,7 +35,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
 
         public IEnumerable<TeamTournamentMemberVM> GetMembers() => Members.Where(x => x.IsValid);
 
-        public TeamTournamentMemberVM GetTeamLeader() => Members.FirstOrDefault(x => x.Member == Team!.GetTeamLeader());
+        public TeamTournamentMemberVM? GetTeamLeader() => Members.FirstOrDefault(x => x.Member == Team!.GetTeamLeader());
 
         public override void RefreshValues()
         {

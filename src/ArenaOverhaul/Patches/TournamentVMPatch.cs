@@ -1,4 +1,6 @@
-﻿using HarmonyLib;
+﻿using ArenaOverhaul.Tournament;
+
+using HarmonyLib;
 
 using SandBox.ViewModelCollection;
 using SandBox.ViewModelCollection.Tournament;

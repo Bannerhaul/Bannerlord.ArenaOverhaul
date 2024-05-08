@@ -1,4 +1,5 @@
 ﻿using ArenaOverhaul.Helpers;
+using ArenaOverhaul.Tournament;
 
 using HarmonyLib;
 
@@ -13,7 +14,8 @@ using System.Text;
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
-using TaleWorlds.Library;
+
+using MathF = TaleWorlds.Library.MathF;
 
 namespace ArenaOverhaul.Patches
 {
@@ -53,7 +55,7 @@ namespace ArenaOverhaul.Patches
             {
                 if (codes[i].LoadsConstant(1.1f) && codes[i - 1].Calls(miMathFPow))
                 {
-                    codes.InsertRange(i, new CodeInstruction[] { new CodeInstruction(opcode: OpCodes.Call, operand: miGetBettingOddRandomFactor), new CodeInstruction(OpCodes.Mul) });
+                    codes.InsertRange(i, [new CodeInstruction(opcode: OpCodes.Call, operand: miGetBettingOddRandomFactor), new CodeInstruction(OpCodes.Mul)]);
                     break;
                 }
             }
@@ -90,7 +92,7 @@ namespace ArenaOverhaul.Patches
             else
             {
                 codes[updateRoundWinningsIndex].opcode = OpCodes.Nop;
-                codes.InsertRange(updateRoundWinningsIndex + 1, new CodeInstruction[] { new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(opcode: OpCodes.Call, operand: miUpdateRoundWinnings), new CodeInstruction(OpCodes.Ldarg_0) });
+                codes.InsertRange(updateRoundWinningsIndex + 1, [new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(opcode: OpCodes.Call, operand: miUpdateRoundWinnings), new CodeInstruction(OpCodes.Ldarg_0)]);
             }
 
             return codes.AsEnumerable();
@@ -104,7 +106,7 @@ namespace ArenaOverhaul.Patches
                 issueInfo.Append($"\nMethodInfos:");
                 issueInfo.Append($"\n\tmiGetNextRound={(miGetNextRound != null ? miGetNextRound.ToString() : "not found")}");
                 issueInfo.Append($"\n\tmiUpdateRoundWinnings={(miUpdateRoundWinnings != null ? miUpdateRoundWinnings.ToString() : "not found")}");
-                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod());
+                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod()!);
                 LoggingHelper.Log(issueInfo.ToString());
             }
         }
@@ -155,7 +157,7 @@ namespace ArenaOverhaul.Patches
                 issueInfo.Append($"\nMethodInfos:");
                 issueInfo.Append($"\n\tmiGetMainHero={(miGetMainHero != null ? miGetMainHero.ToString() : "not found")}");
                 issueInfo.Append($"\n\tmiGetOverallExpectedDenars={(miGetOverallExpectedDenars != null ? miGetOverallExpectedDenars.ToString() : "not found")}");
-                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod());
+                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod()!);
                 LoggingHelper.Log(issueInfo.ToString());
             }
         }

@@ -11,7 +11,7 @@ namespace ArenaOverhaul
     public class Settings : AttributeGlobalSettings<Settings>
     {
         public override string Id => "ArenaOverhaul_v1";
-        public override string DisplayName => $"{new TextObject("{=n3lrq7FfM}Arena Overhaul")} {typeof(Settings).Assembly.GetName().Version.ToString(3)}";
+        public override string DisplayName => $"{new TextObject("{=n3lrq7FfM}Arena Overhaul")} {typeof(Settings).Assembly.GetName().Version!.ToString(3)}";
         public override string FolderName => "Arena Overhaul";
         public override string FormatType => "json2";
 
@@ -28,6 +28,8 @@ namespace ArenaOverhaul
         private const string HeadingTournamentsIntangibleRewards = HeadingTournaments + "/{=BCzO2WGq9}Intangible rewards";
         private const string HeadingTournamentsExperience = HeadingTournaments + "/{=oywDR1MSm}Experience";
         private const string HeadingTournamentsTeamGame = HeadingTournaments + "/{=h6sPrqfax}Team Tournaments";
+
+        private const string HeadingCompatibility = "{=WnQ4qOI7d}Compatibility settings";
 
         //Reused settings, hints and values
         internal const string DropdownValueStandard = "{=gknaSzMr6}Standard";
@@ -99,14 +101,14 @@ namespace ArenaOverhaul
         [SettingPropertyGroup(HeadingPracticeRewards, GroupOrder = 0)]
         public int PracticeValorReward5 { get; set; } = 150;
 
-        [SettingPropertyDropdown("{=rQHQBnmZL}Champion prize calculation", Order = 5, RequireRestart = false, HintText = "{=8mGYZd0fL}Specify how last man standing in the Arena Practice should be rewarded. Standard - with a special prize. Additive - with a special prize and any valor reward earned. Multiplicative - with a special prize for each valor class earned. Native is [Standard]. Default is [Additive].")]
+        [SettingPropertyDropdown("{=rQHQBnmZL}Champion prize calculation", Order = 5, RequireRestart = false, HintText = "{=8mGYZd0fL}Specify how last man standing in the Arena Practice should be rewarded. Standard - with a special prize. Additive - with a special prize and any valor reward earned. Multiplicative - with a special prize for each valor class earned above class I. Native is [Standard]. Default is [Additive].")]
         [SettingPropertyGroup(HeadingPracticeRewards, GroupOrder = 0)]
-        public Dropdown<string> PracticeChampionPrizeCalculation { get; set; } = new Dropdown<string>(new string[]
-        {
+        public Dropdown<string> PracticeChampionPrizeCalculation { get; set; } = new Dropdown<string>(
+        [
             DropdownValueStandard,
             DropdownValueAdditive,
             DropdownValueMultiplicative
-        }, 1);
+        ], 1);
 
         [SettingPropertyInteger("{=oTOFfuU2c}Champion prize", 0, 2500, Order = 6, RequireRestart = false, HintText = "{=2ovQejh10}Base prize for being the last man standing in the Arena Practice. Default = 250.")]
         [SettingPropertyGroup(HeadingPracticeRewards, GroupOrder = 0)]
@@ -161,14 +163,14 @@ namespace ArenaOverhaul
         [SettingPropertyGroup(HeadingExpansivePracticeRewards, GroupOrder = 0)]
         public int ExpansivePracticeValorReward5 { get; set; } = 300;
 
-        [SettingPropertyDropdown("{=rQHQBnmZL}Champion prize calculation", Order = 5, RequireRestart = false, HintText = "{=aUEgf6bh5}Specify how last man standing in the Expansive Arena Practice should be rewarded. Standard - with a special prize. Additive - with a special prize and any valor reward earned. Multiplicative - with a special prize for each valor class earned. Default is [Additive].")]
+        [SettingPropertyDropdown("{=rQHQBnmZL}Champion prize calculation", Order = 5, RequireRestart = false, HintText = "{=aUEgf6bh5}Specify how last man standing in the Expansive Arena Practice should be rewarded. Standard - with a special prize. Additive - with a special prize and any valor reward earned. Multiplicative - with a special prize for each valor class earned above class I. Default is [Additive].")]
         [SettingPropertyGroup(HeadingExpansivePracticeRewards, GroupOrder = 0)]
-        public Dropdown<string> ExpansivePracticeChampionPrizeCalculation { get; set; } = new Dropdown<string>(new string[]
-        {
+        public Dropdown<string> ExpansivePracticeChampionPrizeCalculation { get; set; } = new Dropdown<string>(
+        [
             DropdownValueStandard,
             DropdownValueAdditive,
             DropdownValueMultiplicative
-        }, 1);
+        ], 1);
 
         [SettingPropertyInteger("{=oTOFfuU2c}Champion prize", 0, 2500, Order = 6, RequireRestart = false, HintText = "{=FP34ZZ1b0}Base prize for being the last man standing in the Expansive Arena Practice. Default = 500.")]
         [SettingPropertyGroup(HeadingExpansivePracticeRewards, GroupOrder = 0)]
@@ -191,15 +193,19 @@ namespace ArenaOverhaul
         [SettingPropertyGroup(HeadingTournaments, GroupOrder = 2)]
         public bool EnableRandomizedBettingOdds { get; set; } = true;
 
-        [SettingPropertyDropdown("{=cCAOeRdmt}Prize reroll condition", Order = 2, RequireRestart = false, HintText = "{=CDGmDeYii}Specify when and if tournament prizes should be rerolled. Normally prizes are rerolled when player joins the tournament - if the nubmber of participating nobles changed since the tournament was created (affects prize quality). Native is [When situation changed]. Default is [When prize tier can be improved].")]
+        [SettingPropertyBool("{=hARcKe6Jt}Allow notables participation", Order = 2, RequireRestart = false, HintText = "{=YqIOYTV0P}Allow settlement notables to participate in Tournaments. Recommended with tournament armor mods. Native is False. Default is True.")]
         [SettingPropertyGroup(HeadingTournaments, GroupOrder = 2)]
-        public Dropdown<string> TournamentPrizeRerollCondition { get; set; } = new Dropdown<string>(new string[]
-        {
+        public bool AllowNotablesParticipation { get; set; } = true;
+
+        [SettingPropertyDropdown("{=cCAOeRdmt}Prize reroll condition", Order = 3, RequireRestart = false, HintText = "{=CDGmDeYii}Specify when and if tournament prizes should be rerolled. Normally prizes are rerolled when player joins the tournament - if the nubmber of participating nobles changed since the tournament was created (affects prize quality). Native is [When situation changed]. Default is [When prize tier can be improved].")]
+        [SettingPropertyGroup(HeadingTournaments, GroupOrder = 2)]
+        public Dropdown<string> TournamentPrizeRerollCondition { get; set; } = new Dropdown<string>(
+        [
             DropdownValueNever,
             DropdownValueOnPrizeTierImprovement,
             DropdownValueOnImprovement,
             DropdownValueOnChange
-        }, 1);
+        ], 1);
 
         [SettingPropertyBool("{=IfsaDqygk}Enable gold prizes", Order = 0, RequireRestart = false, HintText = "{=yVAG4f83d}When this option is enabled, there are also gold prizes in tournaments. This is in addition to the usual prize items and bet wins.")]
         [SettingPropertyGroup(HeadingTournamentsMaterialRewards, GroupOrder = 0)]
@@ -240,12 +246,12 @@ namespace ArenaOverhaul
 
         [SettingPropertyDropdown("{=6o45aTuZi}Maximum number of teams", RequireRestart = false, HintText = "{=34r9jsdJq}The maximum number of teams in a tournament. A tournament has to have at least 8 teams.", Order = 10)]
         [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
-        public Dropdown<int> TeamsCountMax { get; set; } = new Dropdown<int>(new int[]
-        {
+        public Dropdown<int> TeamsCountMax { get; set; } = new Dropdown<int>(
+        [
             8,
             16,
             32
-        }, 1);
+        ], 1);
 
         /*
         [SettingPropertyDropdown("{=}Teams genesis", Order = 15, RequireRestart = false, HintText = "{=} Default is [Clan based].")]
@@ -294,5 +300,10 @@ namespace ArenaOverhaul
         [SettingPropertyInteger("{=F6qBgeAOk}Team 4 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 28)]
         [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
         public int TeamFourColor { get; set; } = 84;
+
+        //Compatibility settings
+        [SettingPropertyInteger("{=Ndc21b2NO}Practice loadout stages", 0, 10, Order = 0, RequireRestart = false, HintText = "{=9SY3aAtv1}The amount of practice loadout stages that are searched for in ObjectManager. Do not alter this setting unless you have mods that change the stages of arena practice and add corresponding character models. Native = 3. Default = 3.")]
+        [SettingPropertyGroup(HeadingCompatibility, GroupOrder = 3)]
+        public int PracticeLoadoutStages { get; set; } = 3;
     }
 }

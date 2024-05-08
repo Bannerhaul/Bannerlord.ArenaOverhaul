@@ -157,7 +157,7 @@
 		<string id="0q32VAkkg" text="Prize for defeating at least 10 fighters in the Arena Practice. Default = 25." />
 		<string id="VjGDrAK3N" text="Prize for defeating at least 20 fighters in the Arena Practice. Default = 60." />
 		<string id="ws4xpzph6" text="Prize for defeating at least 35 fighters in the Arena Practice. Can't be achieved with a standard number of participants. Default = 150." />
-		<string id="8mGYZd0fL" text="Specify how last man standing in the Arena Practice should be rewarded. Standard - with a special prize. Additive - with a special prize and any valor reward earned. Multiplicative - with a special prize for each valor class earned. Native is [Standard]. Default is [Additive]." />
+		<string id="8mGYZd0fL" text="Specify how last man standing in the Arena Practice should be rewarded. Standard - with a special prize. Additive - with a special prize and any valor reward earned. Multiplicative - with a special prize for each valor class earned above class I. Native is [Standard]. Default is [Additive]." />
 		<string id="2ovQejh10" text="Base prize for being the last man standing in the Arena Practice. Default = 250." />
 		<string id="gGEXaGsKV" text="Experience gain rate in the Arena Practice fights. Native = 6%. Default = 16.5%." />
 		<!-- Expansive Arena Practice hints -->
@@ -172,7 +172,7 @@
 		<string id="ivrbCerwG" text="Prize for defeating at least 10 fighters in the Expansive Arena Practice. Default = 50." />
 		<string id="41COOOrtk" text="Prize for defeating at least 20 fighters in the Expansive Arena Practice. Default = 120." />
 		<string id="aPjrww0Yz" text="Prize for defeating at least 35 fighters in the Expansive Arena Practice. Default = 300." />
-		<string id="aUEgf6bh5" text="Specify how last man standing in the Expansive Arena Practice should be rewarded. Standard - with a special prize. Additive - with a special prize and any valor reward earned. Multiplicative - with a special prize for each valor class earned. Default is [Additive]." />
+		<string id="aUEgf6bh5" text="Specify how last man standing in the Expansive Arena Practice should be rewarded. Standard - with a special prize. Additive - with a special prize and any valor reward earned. Multiplicative - with a special prize for each valor class earned above class I. Default is [Additive]." />
 		<string id="FP34ZZ1b0" text="Base prize for being the last man standing in the Expansive Arena Practice. Default = 500." />
 		<string id="YyniNTgz5" text="Only heroes and troops of rank 3 and up are allowed to enter Expansive Arena Practice. When this option is enabled, lower-ranking troops will gain some experience when their comrades successfully land hits and make takedowns in the arena." />
 		<string id="hTHzr3Q9U" text="Experience gain rate in the Expansive Arena Practice fights. Native = 6%. Default = 33.3%." />
@@ -181,7 +181,9 @@
 		<string id="gQvJ8Vvsk" text="The maximum amount of gold that is usually allowed to be wagered in each round of a tournament. Native = 150. Default = 500." />
 		<string id="qPAga7DLd" text="Enable randomized betting odds" />
 		<string id="kGyR7NsKh" text="When this option is enabled, bet odds are slightly randomized, but still mostly based on the prediction of the player's success." />
-		<string id="cCAOeRdmt" text="Prize reroll condition" />
+        <string id="hARcKe6Jt" text="Allow notables participation" />
+        <string id="YqIOYTV0P" text="Allow settlement notables to participate in Tournaments. Recommended with tournament armor mods. Native is False. Default is True." />
+        <string id="cCAOeRdmt" text="Prize reroll condition" />
 		<string id="CDGmDeYii" text="Specify when and if tournament prizes should be rerolled. Normally prizes are rerolled when player joins the tournament - if the nubmber of participating nobles changed since the tournament was created (affects prize quality). Native is [When situation changed]. Default is [When prize tier can be improved]." />
 		<string id="IfsaDqygk" text="Enable gold prizes" />
 		<string id="yVAG4f83d" text="When this option is enabled, there are also gold prizes in tournaments. This is in addition to the usual prize items and bet wins." />
@@ -212,5 +214,9 @@
 		<string id="3r3TStZPU" text="Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors." />
 		<string id="Ams5ccKzh" text="Roster can only be selected for team tournaments." />
 		<string id="xRkr497KP" text="Join as a team" />
-	</strings>
+        <!-- Compatibility settings and hints-->
+        <string id="WnQ4qOI7d" text="Compatibility settings" />
+        <string id="Ndc21b2NO" text="Practice loadout stages" />
+        <string id="9SY3aAtv1" text="The amount of practice loadout stages that are searched for in ObjectManager. Do not alter this setting unless you have mods that change the stages of arena practice and add corresponding character models. Native = 3. Default = 3." />
+    </strings>
 </base>

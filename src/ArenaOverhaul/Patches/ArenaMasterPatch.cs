@@ -182,7 +182,7 @@ namespace ArenaOverhaul.Patches
                 issueInfo.Append($"\nNumberOfEdits: {numberOfEdits}");
                 issueInfo.Append($"\nMethodInfos:");
                 issueInfo.Append($"\n\tmiSetStandardPracticeMode={(miSetStandardPracticeMode != null ? miSetStandardPracticeMode.ToString() : "not found")}");
-                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod());
+                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod()!);
                 LoggingHelper.Log(issueInfo.ToString());
             }
         }

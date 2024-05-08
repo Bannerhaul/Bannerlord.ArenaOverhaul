@@ -12,7 +12,7 @@ using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.View;
 using TaleWorlds.MountAndBlade.View.MissionViews;
-#if v100 || v101 || v102 || v103 || v110 || v111 || v112 || v113 || v114 || v115
+#if v100 || v101 || v102 || v103 || v110 || v111 || v112 || v113 || v114 || v115 || v116
 using TaleWorlds.MountAndBlade.View.MissionViews.Sound;
 using TaleWorlds.MountAndBlade.View.MissionViews.Sound.Components;
 #endif
@@ -43,7 +43,7 @@ namespace ArenaOverhaul.TeamTournament.Patches
                     new MusicTournamentMissionView(),
                     new MissionSingleplayerViewHandler(),
                     ViewCreator.CreateSingleplayerMissionKillNotificationUIHandler(),
-#if v100 || v101 || v102 || v103 || v110 || v111 || v112 || v113 || v114 || v115
+#if v100 || v101 || v102 || v103 || v110 || v111 || v112 || v113 || v114 || v115 || v116
                     new MusicMissionView(new MusicBaseComponent[1] { new MusicMissionTournamentComponent() }),
 #endif
                     ViewCreator.CreateMissionAgentLabelUIHandler(mission),
