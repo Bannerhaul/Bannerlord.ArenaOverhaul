@@ -38,7 +38,6 @@ namespace ArenaOverhaul.Patches
 #endif
         {
             __result = _applicantManager.GetParticipantCharacters(__instance, settlement, includePlayer);
-
             return false;
         }
 

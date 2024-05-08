@@ -193,7 +193,11 @@ namespace ArenaOverhaul
         [SettingPropertyGroup(HeadingTournaments, GroupOrder = 2)]
         public bool EnableRandomizedBettingOdds { get; set; } = true;
 
-        [SettingPropertyDropdown("{=cCAOeRdmt}Prize reroll condition", Order = 2, RequireRestart = false, HintText = "{=CDGmDeYii}Specify when and if tournament prizes should be rerolled. Normally prizes are rerolled when player joins the tournament - if the nubmber of participating nobles changed since the tournament was created (affects prize quality). Native is [When situation changed]. Default is [When prize tier can be improved].")]
+        [SettingPropertyBool("{=hARcKe6Jt}Allow notables participation", Order = 2, RequireRestart = false, HintText = "{=YqIOYTV0P}Allow settlement notables to participate in Tournaments. Recommended with tournament armor mods. Native is False. Default is True.")]
+        [SettingPropertyGroup(HeadingTournaments, GroupOrder = 2)]
+        public bool AllowNotablesParticipation { get; set; } = true;
+
+        [SettingPropertyDropdown("{=cCAOeRdmt}Prize reroll condition", Order = 3, RequireRestart = false, HintText = "{=CDGmDeYii}Specify when and if tournament prizes should be rerolled. Normally prizes are rerolled when player joins the tournament - if the nubmber of participating nobles changed since the tournament was created (affects prize quality). Native is [When situation changed]. Default is [When prize tier can be improved].")]
         [SettingPropertyGroup(HeadingTournaments, GroupOrder = 2)]
         public Dropdown<string> TournamentPrizeRerollCondition { get; set; } = new Dropdown<string>(
         [

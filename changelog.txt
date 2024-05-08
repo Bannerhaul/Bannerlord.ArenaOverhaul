@@ -5,6 +5,7 @@ Game Versions: v1.0.0 - v1.2.9 (all of them)
 * Added Xbox support.
 * Fixed common crash issues.
 * Added compatibility setting for loadout stages.
+* Added an option to allow settlement notables to participate in Tournaments.
 * Changed how participants for classic tournaments are selected (should also fix an issue with multiple companions).
 * Fixed an issue with wrong string variation used after winning while beating over 35 opponents in a practice fight.
 ---------------------------------------------------------------------------------------------------
