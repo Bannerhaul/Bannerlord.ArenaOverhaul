@@ -226,7 +226,6 @@ namespace ArenaOverhaul.CampaignBehaviors
             return _inExpansivePractice ? Settings.Instance!.ExpansivePracticeLoadoutChoiceCost : Settings.Instance!.PracticeLoadoutChoiceCost;
         }
 
-
         private bool conversation_town_arena_weapons_list_on_condition() => _currentLoadoutStage < Settings.Instance!.PracticeLoadoutStages;
 
         private bool conversation_town_arena_fight_join_check_on_condition(out TextObject? explanation)

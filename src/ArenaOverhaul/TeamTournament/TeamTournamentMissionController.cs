@@ -271,7 +271,6 @@ namespace ArenaOverhaul.TeamTournament
             bool isBlocked, bool isSiegeEngineHit, in Blow blow, in AttackCollisionData collisionData,
             float damagedHp, float hitDistance, float shotDifficulty)
         {
-
             if (affectorAgent != null)
             {
                 if (affectorAgent.Character != null && affectedAgent.Character != null)
@@ -364,9 +363,9 @@ namespace ArenaOverhaul.TeamTournament
             }
 
             int runningIndex = 0;
-            while (_aliveMembers.Count() > 1 && _aliveTeams!.Count() > 1)
+            while (_aliveMembers.Count > 1 && _aliveTeams!.Count > 1)
             {
-                runningIndex = ++runningIndex % _aliveMembers.Count();
+                runningIndex = ++runningIndex % _aliveMembers.Count;
                 var currentFighter = _aliveMembers[runningIndex];
                 int nextIndex;
 

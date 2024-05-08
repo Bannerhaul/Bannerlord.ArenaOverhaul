@@ -90,7 +90,7 @@ namespace ArenaOverhaul.TeamTournament
             if (!localLeader.Character.IsHero)
             {
                 List<TeamTournamentTeam> similarTeams = _teams!.Where(x => x.GetTeamLeader().Character.Name == localLeader.Character.Name).ToList();
-                teamIndex = similarTeams.Any() ? similarTeams.Max(x => x.TeamIndex) + 1 : 0;
+                teamIndex = similarTeams.Count > 0 ? similarTeams.Max(x => x.TeamIndex) + 1 : 0;
             }
 
             _teams!.Add(new TeamTournamentTeam(members, teamIndex, teamBanner, teamColor, leader));
