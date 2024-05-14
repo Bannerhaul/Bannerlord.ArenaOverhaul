@@ -86,14 +86,14 @@ namespace ArenaOverhaul.Tournament
 
         public virtual void AddPlayerParyToApplicants(Settlement settlement, List<Ta> applicantCharacters, bool includePlayer = true)
         {
-            if (!includePlayer)
+            if (!includePlayer || Hero.MainHero.IsPrisoner)
             {
                 return;
             }
             applicantCharacters.Add(GetPlayerApplicant());
 
             MobileParty? mainParty = Hero.MainHero.PartyBelongedTo;
-            if (mainParty is null || mainParty.Party?.MemberRoster is null || !settlement.Parties.Contains(mainParty))
+            if (mainParty is null || mainParty.Party?.MemberRoster is null)
             {
                 return;
             }
@@ -189,7 +189,7 @@ namespace ArenaOverhaul.Tournament
         {
             var character = CharacterObject.PlayerCharacter;
             var mobileParty = character.HeroObject.PartyBelongedTo;
-            var isPartyLeader = mobileParty.LeaderHero == character.HeroObject;
+            var isPartyLeader = mobileParty != null && mobileParty.LeaderHero == character.HeroObject;
 
             var importance = GetImportance(character, isPartyLeader);
             return GetApplicantInternal(character, mobileParty, importance);
