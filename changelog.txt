@@ -1,4 +1,8 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.4.1
+Game Versions: v1.0.0 - v1.2.9 (all of them)
+* Fixed a crash for imprisoned players.
+---------------------------------------------------------------------------------------------------
 Version: 1.4.0
 Game Versions: v1.0.0 - v1.2.9 (all of them)
 * Recompiled for the latest versions.
