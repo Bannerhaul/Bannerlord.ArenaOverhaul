@@ -20,7 +20,7 @@ namespace ArenaOverhaul
         private const string SErrorInitialising = "{=LRhyA9mqB}Error initialising Arena Overhaul! See details in the mod log. Error text: \"{EXCEPTION_MESSAGE}\"";
 
         public bool Patched { get; private set; }
-        public bool OnBeforeInitialModuleScreenSetAsRootWasCalled { get; private set; }
+        public bool OnBeforeInitialModuleScreenSetAsRootWasCalled { get; private set; } = false;
 
         private Harmony? _arenaOverhaulHarmonyInstance;
         public Harmony? ArenaOverhaulHarmonyInstance { get => _arenaOverhaulHarmonyInstance; private set => _arenaOverhaulHarmonyInstance = value; }

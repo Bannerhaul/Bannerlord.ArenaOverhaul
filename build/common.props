@@ -3,7 +3,7 @@
 
     <!--Module Version-->
     <PropertyGroup>
-        <Version>1.4.1</Version>
+        <Version>1.4.2</Version>
     </PropertyGroup>
 
     <!-- Versions of Major Dependencies (for Package References & SubModule.xml Substitution) -->
@@ -11,7 +11,7 @@
         <!--Harmony Version-->
         <HarmonyVersion>2.3.3</HarmonyVersion>
         <!--ButterLib Version-->
-        <ButterLibVersion>2.9.7</ButterLibVersion>
+        <ButterLibVersion>2.9.8</ButterLibVersion>
         <!--BuildResources Version-->
         <BuildResourcesVersion>1.1.0.104</BuildResourcesVersion>
         <!--MCM Version-->

@@ -255,7 +255,8 @@ namespace ArenaOverhaul.TeamTournament
                     // done with Tournament
                     CalculateBet();
                     MessageHelper.QuickInformationMessage(new TextObject("{=tWzLqegB}Tournament is over.", null), 0, null, "");
-                    Winner = LastMatch.Winners?.FirstOrDefault()?.GetTeamLeader();
+                    var winningTeam = LastMatch.Winners?.FirstOrDefault();
+                    Winner = winningTeam?.GetTeamLeader();
                     if (Winner?.Character.IsHero ?? false)
                     {
                         if (Winner.Character == CharacterObject.PlayerCharacter)
@@ -264,6 +265,14 @@ namespace ArenaOverhaul.TeamTournament
                         Campaign.Current.TournamentManager.GivePrizeToWinner(TournamentGame, Winner.Character.HeroObject, true);
                         Campaign.Current.TournamentManager.AddLeaderboardEntry(Winner.Character.HeroObject);
                     }
+
+                    if (Settings.Instance!.ScoresForWinningTeam && winningTeam != null)
+                    {
+                        winningTeam.Members.
+                            Where(x => x.Character.IsHero && x != winningTeam.GetTeamLeader()).ToList().
+                            ForEach(x => Campaign.Current.TournamentManager.AddLeaderboardEntry(x.Character.HeroObject));
+                    }
+
                     var list = new List<CharacterObject>(_teams!.SelectMany(x => x.Members).Select(y => y.Character));
 #if v100 || v101 || v102 || v103
                     CampaignEventDispatcher.Instance.OnTournamentFinished(Winner?.Character, list.GetReadOnlyList<CharacterObject>(), Settlement.Town, TournamentGame.Prize);
