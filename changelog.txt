@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.4.2
+Game Versions: v1.0.0 - v1.2.9 (all of them)
+* Added minimal team size setting for Team Tournaments.
+* All the heroes in the winning team might get a score in the leaderboard now (optional).
+---------------------------------------------------------------------------------------------------
 Version: 1.4.1
 Game Versions: v1.0.0 - v1.2.9 (all of them)
 * Fixed a crash for imprisoned players.

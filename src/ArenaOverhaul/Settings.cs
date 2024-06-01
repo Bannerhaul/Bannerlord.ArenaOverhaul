@@ -240,7 +240,11 @@ namespace ArenaOverhaul
         [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
         public bool EnableTeamTournaments { get; set; } = true;
 
-        [SettingPropertyInteger("{=Q6qQge312}Maximum team size", 2, 16, RequireRestart = false, HintText = "{=4q3hSTZPZ}The maximum number of members in a team. A team has to consist of at least two members.", Order = 5)]
+        [SettingPropertyInteger("{=lDuOZkktY}Minimum team size", 2, 16, RequireRestart = false, HintText = "{=Nv4MJ3oXq}Minimum number of tournament team members. A team must consist of at least two participants.", Order = 5)]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        public int TeamSizeMin { get; set; } = 2;
+
+        [SettingPropertyInteger("{=Q6qQge312}Maximum team size", 2, 16, RequireRestart = false, HintText = "{=4q3hSTZPZ}Maximum number of tournament team members. A team must consist of at least two participants. This setting takes precedence over Minimum Team Size in case of conflicting values.", Order = 6)]
         [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
         public int TeamSizeMax { get; set; } = 8;
 
@@ -252,6 +256,10 @@ namespace ArenaOverhaul
             16,
             32
         ], 1);
+
+        [SettingPropertyBool("{=rzIC6zMIv}Scores for the winning team", RequireRestart = false, HintText = "{=lA71kgTie}When enabled, every hero in the winning team will get a Tournament Leaderboard score. When disabled, only a team leader will get a score.", Order = 15)]
+        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
+        public bool ScoresForWinningTeam { get; set; } = true;
 
         /*
         [SettingPropertyDropdown("{=}Teams genesis", Order = 15, RequireRestart = false, HintText = "{=} Default is [Clan based].")]

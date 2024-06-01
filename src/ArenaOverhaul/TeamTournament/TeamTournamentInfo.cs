@@ -10,11 +10,14 @@ using TaleWorlds.CampaignSystem.Roster;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Core;
+using TaleWorlds.Library;
 
 namespace ArenaOverhaul.TeamTournament
 {
     public class TeamTournamentInfo
     {
+        private const int MinimumTeamMembers = 2;
+
         public static TeamTournamentInfo? Current { get; private set; }
         public TroopRoster? SelectedRoster { get; private set; }
         public TournamentTeam? PlayerTeam { get; set; }
@@ -31,7 +34,10 @@ namespace ArenaOverhaul.TeamTournament
             // TODO: if a need arises to show tournament information beforehand, extract creation into upper chain
             //       e.g. when tournaments are generated in the world, also replace "Current" instance
             Town = Settlement.CurrentSettlement.Town;
-            TeamSize = MBRandom.RandomInt(2, Settings.Instance!.TeamSizeMax + 1);
+
+            var teamSizeMax = Math.Max(Settings.Instance!.TeamSizeMax, MinimumTeamMembers);
+            var teamSizeMin = MBMath.ClampInt(Settings.Instance!.TeamSizeMin, MinimumTeamMembers, teamSizeMax);
+            TeamSize = MBRandom.RandomInt(teamSizeMin, teamSizeMax + 1);
 
             // 8, 16, 32 teams possible -> also 4 but needs more testing and fixing 
             TeamsCount = (int) Math.Pow(2, MBRandom.RandomInt(3, (int) Math.Log(Settings.Instance!.TeamsCountMax.SelectedValue, 2) + 1));
