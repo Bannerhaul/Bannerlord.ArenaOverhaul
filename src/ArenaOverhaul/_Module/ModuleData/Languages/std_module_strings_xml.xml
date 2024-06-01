@@ -203,14 +203,14 @@
 		<!-- Team Tournament settings and hints-->
 		<string id="PSnYupZhT" text="Enable Team Tournaments" />
 		<string id="qHyqXp9tK" text="Adds an option for joining and participating in the tournaments as a team." />
-        <string id="lDuOZkktY" text="Minimum team size" />
-        <string id="Nv4MJ3oXq" text="Minimum number of tournament team members. A team must consist of at least two participants." />
-        <string id="Q6qQge312" text="Maximum team size" />
+		<string id="lDuOZkktY" text="Minimum team size" />
+		<string id="Nv4MJ3oXq" text="Minimum number of tournament team members. A team must consist of at least two participants." />
+		<string id="Q6qQge312" text="Maximum team size" />
 		<string id="4q3hSTZPZ" text="Maximum number of tournament team members. A team must consist of at least two participants. This setting takes precedence over Minimum Team Size in case of conflicting values" />
 		<string id="6o45aTuZi" text="Maximum number of teams" />
 		<string id="34r9jsdJq" text="The maximum number of teams in a tournament. A tournament has to have at least 8 teams." />
-        <string id="rzIC6zMIv" text="Scores for the winning team" />
-        <string id="lA71kgTie" text="When enabled, every hero in the winning team will get a Tournament Leaderboard score. When disabled, only a team leader will get a score." />
+		<string id="rzIC6zMIv" text="Scores for the winning team" />
+		<string id="lA71kgTie" text="When enabled, every hero in the winning team will get a Tournament Leaderboard score. When disabled, only a team leader will get a score." />
         <string id="l2FTrzzXX" text="Team 1 Color Index" />
 		<string id="jWYXBiEZp" text="Team 2 Color Index" />
 		<string id="iRvUExaRI" text="Team 3 Color Index" />
