@@ -2,6 +2,7 @@
 using ArenaOverhaul.Tournament;
 
 using HarmonyLib;
+using HarmonyLib.BUTR.Extensions;
 
 using System;
 using System.Collections.Generic;
@@ -17,15 +18,21 @@ using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
+using TaleWorlds.Localization;
 
 namespace ArenaOverhaul.Patches
 {
     [HarmonyPatch(typeof(FightTournamentGame))]
     public static class FightTournamentGamePatch
     {
-        private static readonly MethodInfo miGetRegularRewardItemMinValue = AccessTools.Method(typeof(FightTournamentGamePatch), "GetRegularRewardItemMinValue");
-        private static readonly MethodInfo miGetRegularRewardItemMaxValue = AccessTools.Method(typeof(FightTournamentGamePatch), "GetRegularRewardItemMaxValue");
-        private static readonly MethodInfo miShouldPrizeBeRerolled = AccessTools.Method(typeof(FightTournamentGamePatch), "ShouldPrizeBeRerolled");
+        private static readonly MethodInfo? miTournamentPrizeGetter = AccessTools2.PropertyGetter(typeof(TournamentGame), "Prize");
+        private static readonly MethodInfo? miItemObjectNameGetter = AccessTools2.PropertyGetter(typeof(ItemObject), "Name");
+
+        private static readonly MethodInfo? miGetRegularRewardItemMinValue = AccessTools.Method(typeof(FightTournamentGamePatch), "GetRegularRewardItemMinValue");
+        private static readonly MethodInfo? miGetRegularRewardItemMaxValue = AccessTools.Method(typeof(FightTournamentGamePatch), "GetRegularRewardItemMaxValue");
+        private static readonly MethodInfo? miShouldPrizeBeRerolled = AccessTools.Method(typeof(FightTournamentGamePatch), "ShouldPrizeBeRerolled");
+
+        private static readonly MethodInfo? miGetPrizeItemName = AccessTools.Method(typeof(TournamentRewardManager), "GetPrizeItemName");
 
         private static readonly FightTournamentApplicantManager _applicantManager = new FightTournamentApplicantManager();
 
@@ -43,7 +50,7 @@ namespace ArenaOverhaul.Patches
 
         [HarmonyTranspiler]
         [HarmonyPatch("GetTournamentPrize")]
-        public static IEnumerable<CodeInstruction> GetTournamentPrizeTranspiler(IEnumerable<CodeInstruction> instructions)
+        public static IEnumerable<CodeInstruction> GetTournamentPrizeTranspiler(IEnumerable<CodeInstruction> instructions, MethodBase __originalMethod)
         {
             List<CodeInstruction> codes = new(instructions);
             int numberOfEdits = 0;
@@ -61,13 +68,17 @@ namespace ArenaOverhaul.Patches
             }
 
             //Logging
-            if (ldarg2Index == 0 || continueIndex == 0 || numberOfEdits < 1)
+            const int RequiredNumberOfEdits = 1;
+            if (ldarg2Index == 0 || continueIndex == 0 || numberOfEdits < RequiredNumberOfEdits || miShouldPrizeBeRerolled is null)
             {
-                LogNoHooksIssue(ldarg2Index, continueIndex, numberOfEdits, codes);
-                if (numberOfEdits < 2)
-                {
-                    MessageHelper.ErrorMessage("Harmony transpiler for FightTournamentGame. GetTournamentPrize was not able to make all required changes!");
-                }
+                LoggingHelper.LogNoHooksIssue(
+                    codes, numberOfEdits, RequiredNumberOfEdits, __originalMethod,
+                    [
+                        (nameof(ldarg2Index), ldarg2Index), (nameof(continueIndex), continueIndex),
+                    ],
+                    [
+                        (nameof(miShouldPrizeBeRerolled), miShouldPrizeBeRerolled)
+                    ]);
             }
             if (ldarg2Index > 0 && continueIndex > 0)
             {
@@ -80,19 +91,84 @@ namespace ArenaOverhaul.Patches
             }
 
             return codes.AsEnumerable();
+        }
+
+        [HarmonyTranspiler]
+        [HarmonyPatch("GetMenuText")]
+        public static IEnumerable<CodeInstruction> GetMenuTextTranspiler(IEnumerable<CodeInstruction> instructions, MethodBase __originalMethod)
+        {
+            List<CodeInstruction> codes = new(instructions);
+            int numberOfEdits = 0;
+            int prizeItemNameStartIndex1 = 0;
+            int prizeItemNameEndIndex1 = 0;
+            int prizeItemNameStartIndex2 = 0;
+            int prizeItemNameEndIndex2 = 0;
+            if (miTournamentPrizeGetter != null && miItemObjectNameGetter != null)
+            {
+                for (int i = 2; i < codes.Count; ++i)
+                {
+                    if (numberOfEdits == 0 && codes[i].LoadsConstant("TOURNAMENT_PRIZE") && codes[i + 1].opcode == OpCodes.Ldarg_0 && codes[i + 2].Calls(miTournamentPrizeGetter) && codes[i + 3].Calls(miItemObjectNameGetter))
+                    {
+                        prizeItemNameStartIndex1 = i + 2;
+                        prizeItemNameEndIndex1 = i + 3;
+                        ++numberOfEdits;
+                    }
+                    else if (numberOfEdits == 1 && codes[i].LoadsConstant("TOURNAMENT_PRIZE") && codes[i + 1].opcode == OpCodes.Ldarg_0 && codes[i + 2].Calls(miTournamentPrizeGetter) && codes[i + 3].Calls(miItemObjectNameGetter))
+                    {
+                        prizeItemNameStartIndex2 = i + 2;
+                        prizeItemNameEndIndex2 = i + 3;
+                        ++numberOfEdits;
+                        break;
+                    }
+                }
+            }
+
+            //Logging
+            const int RequiredNumberOfEdits = 2;
+            if (prizeItemNameStartIndex1 == 0 || prizeItemNameEndIndex1 == 0 || prizeItemNameStartIndex2 == 0 || prizeItemNameEndIndex2 == 0 || numberOfEdits < RequiredNumberOfEdits || miGetPrizeItemName is null)
+            {
+                LoggingHelper.LogNoHooksIssue(
+                    codes, numberOfEdits, RequiredNumberOfEdits, __originalMethod,
+                    [
+                        (nameof(prizeItemNameStartIndex1), prizeItemNameStartIndex1), (nameof(prizeItemNameEndIndex1), prizeItemNameEndIndex1),
+                        (nameof(prizeItemNameStartIndex2), prizeItemNameStartIndex2), (nameof(prizeItemNameEndIndex2), prizeItemNameEndIndex2)
+                    ],
+                    [
+                        (nameof(miTournamentPrizeGetter), miTournamentPrizeGetter),
+                        (nameof(miItemObjectNameGetter), miItemObjectNameGetter),
+                        (nameof(miGetPrizeItemName), miGetPrizeItemName)
+                    ]);
+            }
+            if (prizeItemNameStartIndex1 > 0 && prizeItemNameEndIndex1 > 0 && prizeItemNameStartIndex2 > 0 && prizeItemNameEndIndex2 > 0)
+            {
+                SetPrizeItemName(codes, prizeItemNameStartIndex2, prizeItemNameEndIndex2);
+                SetPrizeItemName(codes, prizeItemNameStartIndex1, prizeItemNameEndIndex1);
+            }
+            else
+            {
+                MessageHelper.ErrorMessage("Harmony transpiler for FightTournamentGame. GetMenuText could not find code hooks for stating correct prize item name!");
+            }
+
+            return codes.AsEnumerable();
 
             //local methods
-            static void LogNoHooksIssue(int ldarg2Index, int continueIndex, int numberOfEdits, List<CodeInstruction> codes)
+            static void SetPrizeItemName(List<CodeInstruction> codes, int prizeItemNameStartIndex, int prizeItemNameEndIndex)
             {
-                LoggingHelper.Log("Indexes:", "Transpiler for FightTournamentGame.GetParticipantCharacters");
-                StringBuilder issueInfo = new("");
-                issueInfo.Append($"\tldarg2Index={ldarg2Index}.\n\tcontinueIndex={continueIndex}.");
-                issueInfo.Append($"\nNumberOfEdits: {numberOfEdits}");
-                issueInfo.Append($"\nMethodInfos:");
-                issueInfo.Append($"\n\tmiShouldPrizeBeRerolled={(miShouldPrizeBeRerolled != null ? miShouldPrizeBeRerolled.ToString() : "not found")}");
-                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod()!);
-                LoggingHelper.Log(issueInfo.ToString());
+                codes.RemoveRange(prizeItemNameStartIndex, prizeItemNameEndIndex - prizeItemNameStartIndex + 1);
+                codes.InsertRange(prizeItemNameStartIndex, [new CodeInstruction(opcode: OpCodes.Call, operand: miGetPrizeItemName)]);
             }
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch("GetTournamentPrize")]
+        public static void GetTournamentPrizePostfix(FightTournamentGame __instance, ref ItemObject? __result )
+        {
+            if (!Settings.Instance!.EnableHighQualityPrizes || TournamentRewardManager.CurrentPrizeHasRegisteredModifier(__instance.Town, __result))
+            {
+                return;
+            }
+            var itemModifier = TournamentRewardManager.GetRandomItemModifier(__result);
+            TournamentRewardManager.RegisterPrizeModifier(__instance.Town, __result, itemModifier);
         }
 
         [HarmonyTranspiler]
@@ -126,7 +202,7 @@ namespace ArenaOverhaul.Patches
                 return true;
             }
 
-            if (Clan.PlayerClan.Tier <= 2)
+            if (Clan.PlayerClan.Tier < 2)
             {
                 return true;
             }
@@ -137,22 +213,67 @@ namespace ArenaOverhaul.Patches
             }
             List<ItemObject> itemObjectList = new();
 
-            //Get top 3 most valued Tier6 items by type and culture
-            var itemObjectCandidates =
-                Items.All.Where(itemObject => itemObject.Tier == ItemObject.ItemTiers.Tier6 && itemObject.Value <= GetMaxItemValueForElitePrize() && !itemObject.NotMerchandise && (itemObject.IsCraftedWeapon || itemObject.IsMountable || itemObject.ArmorComponent != null) && !itemObject.IsCraftedByPlayer).ToList()
-                .GroupBy(itemObject => (itemObject.Type, itemObject.Culture))
-                .Select(accessGroup => (GroupKey: accessGroup.Key, TopThreeItems: accessGroup.OrderByDescending(subg => subg.Value).Take(3)))
-                .SelectMany(x => x.TopThreeItems.Select(y => (x.GroupKey, Item: y)))
-                .Select(x => x.Item).ToList();
-            itemObjectList.AddRange(itemObjectCandidates);
+            var townCulture = __instance.Town.Culture;
+            int culturalPrizesSelectedIndex = Settings.Instance!.CultureRestrictedTournamentPrizes.SelectedIndex;
+            CultureObject? requiredCulture = culturalPrizesSelectedIndex switch
+            {
+                >= 1 => townCulture,
+                _ => null,
+            };
+            List<ItemObject>? itemObjectCandidates = default;
 
-            //Add unique weapons and mounts 
-            var uniqueItemObjects = Items.All.Where(itemObject => itemObject.NotMerchandise && (int) itemObject.Tier >= MBMath.ClampInt(Clan.PlayerClan.Tier - 1, 2, 5) && (itemObject.IsCraftedWeapon || itemObject.IsMountable) && !itemObject.IsCraftedByPlayer).ToList();
-            itemObjectList.AddRange(uniqueItemObjects);
-            //Add unique armors
-            var uniqueArmors = Items.All.Where(itemObject => itemObject.NotMerchandise && (int) itemObject.Tier >= MBMath.ClampInt(Clan.PlayerClan.Tier - 1, 2, 5) && itemObject.ArmorComponent != null && !itemObject.IsCraftedByPlayer && itemObject.Culture != null && !itemObject.StringId.StartsWith("dummy_")).ToList();
+            //Pick standard items with cultural restrictions
+            if (requiredCulture != null)
+            {
+                //Get top 10 most valued standard items by type with town culture
+                itemObjectCandidates =
+                    Items.All
+                    .Where<ItemObject>(itemObject => IsSuitablePrize(itemObject, requiredCulture)).ToList()
+                    .GroupBy(itemObject => (itemObject.Type))
+                    .Select(accessGroup => (GroupKey: accessGroup.Key, TopTenItems: accessGroup.OrderByDescending(subg => subg.Value).Take(10)))
+                    .SelectMany(x => x.TopTenItems.Select(y => (x.GroupKey, Item: y)))
+                    .Select(x => x.Item).ToList();
+            }
+
+            //Another try without cultural restrictions
+            if (itemObjectCandidates is null || itemObjectCandidates.Count <= 0)
+            {
+                //Get top 5 most valued standard items by type and culture
+                itemObjectCandidates =
+                    Items.All
+                    .Where(itemObject => IsSuitablePrize(itemObject, null)).ToList()
+                    .GroupBy(itemObject => (itemObject.Type, itemObject.Culture))
+                    .Select(accessGroup => (GroupKey: accessGroup.Key, TopFiveItems: accessGroup.OrderByDescending(subg => subg.Value).Take(5)))
+                    .SelectMany(x => x.TopFiveItems.Select(y => (x.GroupKey, Item: y)))
+                    .Select(x => x.Item).ToList();
+            }
+
+            //Add standard items
+            if (itemObjectCandidates != null)
+            {
+                itemObjectList.AddRange(itemObjectCandidates);
+            }
+
+            //Add unique weapons and armors
+            requiredCulture = culturalPrizesSelectedIndex switch
+            {
+                >= 2 => townCulture,
+                _ => null,
+            };
+            
+            var uniqueWeapons = Items.All.Where<ItemObject>(itemObject => IsUniqueWeapon(itemObject, requiredCulture)).ToList();
+            itemObjectList.AddRange(uniqueWeapons);
+
+            var uniqueArmors = Items.All.Where<ItemObject>(itemObject => IsUniqueArmor(itemObject, requiredCulture)).ToList();
             itemObjectList.AddRange(uniqueArmors);
 
+            //Add unique mounts
+            requiredCulture = culturalPrizesSelectedIndex == 3 ? townCulture : null;
+
+            var uniqueMounts = Items.All.Where<ItemObject>(itemObject => IsUniqueMount(itemObject, requiredCulture)).ToList();
+            itemObjectList.AddRange(uniqueMounts);
+
+            //Save list in TW class
             if (FieldAccessHelper.FTGPossibleEliteRewardItemObjectsCacheByRef(__instance).IsEmpty())
             {
                 FieldAccessHelper.FTGPossibleEliteRewardItemObjectsCacheByRef(__instance).AddRange(itemObjectList);
@@ -161,7 +282,91 @@ namespace ArenaOverhaul.Patches
             return false;
         }
 
+        [HarmonyPostfix]
+        [HarmonyPatch("CachePossibleEliteRewardItems")]
+        public static void CachePossibleEliteRewardItemsPostfix(FightTournamentGame __instance)
+        {
+            if (Settings.Instance!.EnableTournamentPrizeScaling || Settings.Instance!.CultureRestrictedTournamentPrizes.SelectedIndex <= 1 || __instance.Town.Culture is not CultureObject townCulture)
+            {
+                return;
+            }
+
+            var ignoreMounts = Settings.Instance!.CultureRestrictedTournamentPrizes.SelectedIndex == 2;
+            var list = FieldAccessHelper.FTGPossibleEliteRewardItemObjectsCacheByRef(__instance);
+            FilterByCulture(list, townCulture, ignoreMounts);
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch("CachePossibleBannerItems")]
+        public static void CachePossibleBannerItemsPostfix(FightTournamentGame __instance, bool isElite)
+        {
+            if (isElite)
+            {
+                //We have to fix Native bug with banner sorting regardless of settings
+                var list = FieldAccessHelper.FTGPossibleEliteRewardItemObjectsCacheByRef(__instance);
+                if (Settings.Instance!.CultureRestrictedTournamentPrizes.SelectedIndex >= 1 && __instance.Town.Culture is CultureObject townCulture)
+                {
+                    FilterByCulture(list, townCulture, ignoreEverythingButBanners: true);
+                }
+                else
+                {
+                    list.Sort((x, y) => x.Value.CompareTo(y.Value));
+                }
+
+            }
+            else
+            {
+                if (Settings.Instance!.CultureRestrictedTournamentPrizes.SelectedIndex < 1 || __instance.Town.Culture is not CultureObject townCulture)
+                {
+                    return;
+                }
+                var list = FieldAccessHelper.FTGPossibleBannerRewardItemObjectsCacheByRef(__instance);
+                FilterByCulture(list, townCulture);
+            }
+        }
+
         /* service methods */
+        private static void FilterByCulture(List<ItemObject> list, CultureObject townCulture, bool ignoreMounts = false, bool ignoreEverythingButBanners = false)
+        {
+            if (list.Count > 0)
+            {
+                var filteredList = list.Where(x => x.Culture is null || !x.Culture.CanHaveSettlement || x.Culture == townCulture || (ignoreMounts && x.IsMountable) || (ignoreEverythingButBanners && !x.HasBannerComponent)).ToList();
+                filteredList.Sort((x, y) => x.Value.CompareTo(y.Value));
+                list.Clear();
+                list.AddRange(filteredList);
+            }
+        }
+
+        private static bool IsSuitablePrize(ItemObject itemObject, CultureObject? requiredCulture) =>
+            (((int) itemObject.Tier) is >= 4 and <= 5) && itemObject.Value <= GetMaxItemValueForElitePrize()
+            && (requiredCulture is null || itemObject.Culture is null || itemObject.Culture == requiredCulture || !itemObject.Culture.CanHaveSettlement)
+            && !itemObject.NotMerchandise
+            && (itemObject.IsCraftedWeapon || itemObject.IsMountable || itemObject.ArmorComponent != null)
+            && !itemObject.IsCraftedByPlayer;
+
+        private static bool IsUniqueItemObject(ItemObject itemObject, CultureObject? requiredCulture) =>
+            itemObject.NotMerchandise && (int) itemObject.Tier >= 2 && !itemObject.IsCraftedByPlayer
+            && (requiredCulture is null || itemObject.Culture is null || itemObject.Culture == requiredCulture || !itemObject.Culture.CanHaveSettlement);
+
+        private static bool IsUniqueWeapon(ItemObject itemObject, CultureObject? requiredCulture) =>
+            IsUniqueItemObject(itemObject, requiredCulture)
+            && itemObject.IsCraftedWeapon
+            //Remove practice weapons
+            && !itemObject.StringId.EndsWith("_blunt")
+            && !itemObject.StringId.StartsWith("practice_")
+            //Remove cheap weapons
+            && !itemObject.StringId.StartsWith("peasant_");
+
+        private static bool IsUniqueArmor(ItemObject itemObject, CultureObject? requiredCulture) =>
+            IsUniqueItemObject(itemObject, requiredCulture)
+            && itemObject.ArmorComponent != null
+            //Remove practice armors
+            && !itemObject.StringId.StartsWith("dummy_")
+            //Remove magic armors
+            && itemObject.StringId != "celtic_frost" && itemObject.StringId != "saddle_of_aeneas" && itemObject.StringId != "fortunas_choice";
+
+        private static bool IsUniqueMount(ItemObject itemObject, CultureObject? requiredCulture) => IsUniqueItemObject(itemObject, requiredCulture) && itemObject.IsMountable;
+
         internal static bool ShouldPrizeBeRerolled(int lastRecordedNobleCountForTournamentPrize, int participantingNoblesCount) =>
             Settings.Instance!.TournamentPrizeRerollCondition.SelectedIndex switch
             {
@@ -200,10 +405,10 @@ namespace ArenaOverhaul.Patches
         private static int GetMaxItemValueForElitePrize() =>
             Clan.PlayerClan.Tier switch
             {
-                < 3 => 0,
-                3 => 50000,
-                4 => 75000,
-                5 => 100000,
+                < 3 => 50000,
+                3 => 200000,
+                4 => 300000,
+                5 => 400000,
                 _ => 500000,
             };
     }

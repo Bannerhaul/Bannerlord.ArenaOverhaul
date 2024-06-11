@@ -25,17 +25,16 @@ namespace ArenaOverhaul.Patches
     [HarmonyPatch(typeof(ArenaPracticeFightMissionController))]
     public static class ArenaPracticeFightMissionControllerPatch
     {
-        private static readonly MethodInfo miGetInitialParticipantsCount = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetInitialParticipantsCount");
-        private static readonly MethodInfo miGetTotalParticipantsCount = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetTotalParticipantsCount");
-        private static readonly MethodInfo miGetActiveOpponentCount = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetActiveOpponentCount");
-        private static readonly MethodInfo miGetMinimumActiveOpponentCount = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetMinimumActiveOpponentCount");
-        private static readonly MethodInfo miSpawnArenaAgents = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "SpawnArenaAgents");
-        private static readonly MethodInfo miGetParticipantCharacters = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetParticipantCharacters");
-        private static readonly MethodInfo miGetChosenEquipmentStage = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetChosenEquipmentStage");
-        private static readonly MethodInfo miGetChosenEquipment = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetChosenEquipment");
+        private static readonly MethodInfo? miGetInitialParticipantsCount = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetInitialParticipantsCount");
+        private static readonly MethodInfo? miGetTotalParticipantsCount = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetTotalParticipantsCount");
+        private static readonly MethodInfo? miGetActiveOpponentCount = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetActiveOpponentCount");
+        private static readonly MethodInfo? miGetMinimumActiveOpponentCount = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetMinimumActiveOpponentCount");
+        private static readonly MethodInfo? miSpawnArenaAgents = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "SpawnArenaAgents");
+        private static readonly MethodInfo? miGetParticipantCharacters = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetParticipantCharacters");
+        private static readonly MethodInfo? miGetChosenEquipmentStage = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetChosenEquipmentStage");
+        private static readonly MethodInfo? miGetChosenEquipment = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetChosenEquipment");
 
-        private static readonly MethodInfo miSelectRandomAiTeam = AccessTools.Method(typeof(ArenaPracticeFightMissionController), "SelectRandomAiTeam");
-        private static readonly MethodInfo miGetSpawnFrame = AccessTools.Method(typeof(ArenaPracticeFightMissionController), "GetSpawnFrame");
+        private static readonly MethodInfo? miSelectRandomAiTeam = AccessTools.Method(typeof(ArenaPracticeFightMissionController), "SelectRandomAiTeam");
 
         private delegate Agent SpawnArenaAgentDelegate(ArenaPracticeFightMissionController instance, Team team, MatrixFrame frame);
         private delegate Team SelectRandomAiTeamDelegate(ArenaPracticeFightMissionController instance);
@@ -54,29 +53,29 @@ namespace ArenaOverhaul.Patches
 
         [HarmonyTranspiler]
         [HarmonyPatch("OnMissionTick")]
-        public static IEnumerable<CodeInstruction> OnMissionTickTranspiler(IEnumerable<CodeInstruction> instructions)
+        public static IEnumerable<CodeInstruction> OnMissionTickTranspiler(IEnumerable<CodeInstruction> instructions, MethodBase __originalMethod)
         {
             List<CodeInstruction> codes = new(instructions);
             int numberOfEdits = 0;
             int spawnStartIndex = 0, spawnEndIndex = 0;
             for (int i = 0; i < codes.Count; ++i)
             {
-                if (numberOfEdits == 0 && codes[i].opcode == OpCodes.Ldc_I4_6)
+                if (numberOfEdits == 0 && codes[i].opcode == OpCodes.Ldc_I4_6 && miGetActiveOpponentCount != null)
                 {
                     codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetActiveOpponentCount);
                     ++numberOfEdits;
                 }
-                else if (numberOfEdits == 1 && codes[i].opcode == OpCodes.Ldc_I4_S && (sbyte) codes[i].operand == 30)
+                else if (numberOfEdits == 1 && codes[i].opcode == OpCodes.Ldc_I4_S && (sbyte) codes[i].operand == 30 && miGetTotalParticipantsCount != null)
                 {
                     codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetTotalParticipantsCount);
                     ++numberOfEdits;
                 }
-                else if (numberOfEdits == 2 && codes[i].opcode == OpCodes.Ldc_I4_2)
+                else if (numberOfEdits == 2 && codes[i].opcode == OpCodes.Ldc_I4_2 && miGetMinimumActiveOpponentCount != null)
                 {
                     codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetMinimumActiveOpponentCount);
                     ++numberOfEdits;
                 }
-                else if (numberOfEdits == 3 && spawnStartIndex == 0 && codes[i - 1].opcode == OpCodes.Ldarg_0 && codes[i].Calls(miSelectRandomAiTeam))
+                else if (numberOfEdits == 3 && spawnStartIndex == 0 && codes[i - 1].opcode == OpCodes.Ldarg_0 && miSelectRandomAiTeam != null && codes[i].Calls(miSelectRandomAiTeam))
                 {
                     spawnStartIndex = i;
                 }
@@ -85,7 +84,7 @@ namespace ArenaOverhaul.Patches
                     spawnEndIndex = i;
                     ++numberOfEdits;
                 }
-                else if (numberOfEdits == 4 && codes[i].opcode == OpCodes.Ldc_I4_S && (sbyte) codes[i].operand == 30)
+                else if (numberOfEdits == 4 && codes[i].opcode == OpCodes.Ldc_I4_S && (sbyte) codes[i].operand == 30 && miGetTotalParticipantsCount != null)
                 {
                     codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetTotalParticipantsCount);
                     ++numberOfEdits;
@@ -93,18 +92,26 @@ namespace ArenaOverhaul.Patches
                 }
             }
             //Logging
-            if (spawnStartIndex == 0 || spawnEndIndex == 0 || numberOfEdits < 5)
+            const int RequiredNumberOfEdits = 5;
+            if (spawnStartIndex == 0 || spawnEndIndex == 0 || numberOfEdits < RequiredNumberOfEdits || miSpawnArenaAgents is null)
             {
-                LogNoHooksIssue(spawnStartIndex, spawnEndIndex, numberOfEdits, codes);
-                if (numberOfEdits < 5)
-                {
-                    MessageHelper.ErrorMessage("Harmony transpiler for ArenaPracticeFightMissionController. OnMissionTick was not able to make all required changes!");
-                }
+                LoggingHelper.LogNoHooksIssue(
+                    codes, numberOfEdits, RequiredNumberOfEdits, __originalMethod,
+                    [
+                        (nameof(spawnStartIndex), spawnStartIndex), (nameof(spawnEndIndex), spawnEndIndex),
+                    ],
+                    [
+                        (nameof(miGetActiveOpponentCount), miGetActiveOpponentCount),
+                        (nameof(miGetTotalParticipantsCount), miGetTotalParticipantsCount),
+                        (nameof(miGetMinimumActiveOpponentCount), miGetMinimumActiveOpponentCount),
+                        (nameof(miSelectRandomAiTeam), miSelectRandomAiTeam),
+                        (nameof(miSpawnArenaAgents), miSpawnArenaAgents)
+                    ]);
             }
             if (spawnStartIndex > 0 && spawnEndIndex > 0)
             {
                 codes.RemoveRange(spawnStartIndex, spawnEndIndex - spawnStartIndex + 1);
-                codes.InsertRange(spawnStartIndex, new CodeInstruction[] { new CodeInstruction(opcode: OpCodes.Call, operand: miSpawnArenaAgents) });
+                codes.InsertRange(spawnStartIndex, [new CodeInstruction(opcode: OpCodes.Call, operand: miSpawnArenaAgents)]);
             }
             else
             {
@@ -112,29 +119,11 @@ namespace ArenaOverhaul.Patches
             }
 
             return codes.AsEnumerable();
-
-            //local methods
-            static void LogNoHooksIssue(int spawnStartIndex, int spawnEndIndex, int numberOfEdits, List<CodeInstruction> codes)
-            {
-                LoggingHelper.Log("Indexes:", "Transpiler for ArenaPracticeFightMissionController.OnMissionTick");
-                StringBuilder issueInfo = new("");
-                issueInfo.Append($"\tspawnStartIndex = {spawnStartIndex}.\n\tspawnEndIndex={spawnEndIndex}.");
-                issueInfo.Append($"\nNumberOfEdits: {numberOfEdits}");
-                issueInfo.Append($"\nMethodInfos:");
-                issueInfo.Append($"\n\tmiGetTotalParticipantsCount={(miGetTotalParticipantsCount != null ? miGetTotalParticipantsCount.ToString() : "not found")}");
-                issueInfo.Append($"\n\tmiGetActiveOpponentCount={(miGetActiveOpponentCount != null ? miGetActiveOpponentCount.ToString() : "not found")}");
-                issueInfo.Append($"\n\tmiGetMinimumActiveOpponentCount={(miGetMinimumActiveOpponentCount != null ? miGetMinimumActiveOpponentCount.ToString() : "not found")}");
-                issueInfo.Append($"\n\tmiSpawnArenaAgents={(miSpawnArenaAgents != null ? miSpawnArenaAgents.ToString() : "not found")}");
-                issueInfo.Append($"\n\tmiSelectRandomAiTeam={(miSelectRandomAiTeam != null ? miSelectRandomAiTeam.ToString() : "not found")}");
-                issueInfo.Append($"\n\tmiGetSpawnFrame={(miGetSpawnFrame != null ? miGetSpawnFrame.ToString() : "not found")}");
-                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod()!);
-                LoggingHelper.Log(issueInfo.ToString());
-            }
         }
 
         [HarmonyTranspiler]
         [HarmonyPatch("AddRandomWeapons")]
-        public static IEnumerable<CodeInstruction> AddRandomWeaponsTranspiler(IEnumerable<CodeInstruction> instructions)
+        public static IEnumerable<CodeInstruction> AddRandomWeaponsTranspiler(IEnumerable<CodeInstruction> instructions, MethodBase __originalMethod)
         {
             List<CodeInstruction> codes = new(instructions);
             int numberOfEdits = 0;
@@ -165,21 +154,27 @@ namespace ArenaOverhaul.Patches
                 }
             }
             //Logging
-            if (stageDefinitionStartIndex < 0 || stageDefinitionEndIndex < 0 || equipmentDefinitionStartIndex < 0 || equipmentDefinitionEndIndex < 0 || numberOfEdits < 4)
+            const int RequiredNumberOfEdits = 4;
+            if (stageDefinitionStartIndex < 0 || stageDefinitionEndIndex < 0 || equipmentDefinitionStartIndex < 0 || equipmentDefinitionEndIndex < 0 || numberOfEdits < RequiredNumberOfEdits || miGetChosenEquipment is null || miGetChosenEquipmentStage is null)
             {
-                LogNoHooksIssue(stageDefinitionStartIndex, stageDefinitionEndIndex, equipmentDefinitionStartIndex, equipmentDefinitionEndIndex, numberOfEdits, codes);
-                if (numberOfEdits < 4)
-                {
-                    MessageHelper.ErrorMessage("Harmony transpiler for ArenaPracticeFightMissionController. AddRandomWeapons was not able to make all required changes!");
-                }
+                LoggingHelper.LogNoHooksIssue(
+                    codes, numberOfEdits, RequiredNumberOfEdits, __originalMethod,
+                    [
+                        (nameof(stageDefinitionStartIndex), stageDefinitionStartIndex), (nameof(stageDefinitionEndIndex), stageDefinitionEndIndex),
+                        (nameof(equipmentDefinitionStartIndex), equipmentDefinitionStartIndex), (nameof(equipmentDefinitionEndIndex), equipmentDefinitionEndIndex),
+                    ],
+                    [
+                        (nameof(miGetChosenEquipment), miGetChosenEquipment),
+                        (nameof(miGetChosenEquipmentStage), miGetChosenEquipmentStage)
+                    ]);
             }
             if (stageDefinitionStartIndex >= 0 && stageDefinitionEndIndex > 0 && equipmentDefinitionStartIndex > 0 && equipmentDefinitionEndIndex > 0)
             {
                 codes.RemoveRange(equipmentDefinitionStartIndex, equipmentDefinitionEndIndex - equipmentDefinitionStartIndex + 1);
-                codes.InsertRange(equipmentDefinitionStartIndex, new CodeInstruction[] { new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(OpCodes.Ldarg_2), new CodeInstruction(OpCodes.Ldloc_1), new CodeInstruction(opcode: OpCodes.Call, operand: miGetChosenEquipment) });
+                codes.InsertRange(equipmentDefinitionStartIndex, [new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(OpCodes.Ldarg_2), new CodeInstruction(OpCodes.Ldloc_1), new CodeInstruction(opcode: OpCodes.Call, operand: miGetChosenEquipment)]);
 
                 codes.RemoveRange(stageDefinitionStartIndex, stageDefinitionEndIndex - stageDefinitionStartIndex + 1);
-                codes.InsertRange(stageDefinitionStartIndex, new CodeInstruction[] { new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(OpCodes.Ldarg_2), new CodeInstruction(opcode: OpCodes.Call, operand: miGetChosenEquipmentStage) });
+                codes.InsertRange(stageDefinitionStartIndex, [new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(OpCodes.Ldarg_2), new CodeInstruction(opcode: OpCodes.Call, operand: miGetChosenEquipmentStage)]);
             }
             else
             {
@@ -187,21 +182,6 @@ namespace ArenaOverhaul.Patches
             }
 
             return codes.AsEnumerable();
-
-            //local methods
-            static void LogNoHooksIssue(int stageDefinitionStartIndex, int stageDefinitionEndIndex, int equipmentDefinitionStartIndex, int equipmentDefinitionEndIndex, int numberOfEdits, List<CodeInstruction> codes)
-            {
-                LoggingHelper.Log("Indexes:", "Transpiler for ArenaPracticeFightMissionController.OnMissionTick");
-                StringBuilder issueInfo = new("");
-                issueInfo.Append($"\tstageDefinitionStartIndex={stageDefinitionStartIndex}.\n\tstageDefinitionEndIndex={stageDefinitionEndIndex}.");
-                issueInfo.Append($"\n\tequipmentDefinitionStartIndex={equipmentDefinitionStartIndex}.\n\tequipmentDefinitionEndIndex={equipmentDefinitionEndIndex}.");
-                issueInfo.Append($"\nNumberOfEdits: {numberOfEdits}");
-                issueInfo.Append($"\nMethodInfos:");
-                issueInfo.Append($"\n\tmiGetChosenEquipmentStage={(miGetChosenEquipmentStage != null ? miGetChosenEquipmentStage.ToString() : "not found")}");
-                issueInfo.Append($"\n\tmiGetChosenEquipment={(miGetChosenEquipment != null ? miGetChosenEquipment.ToString() : "not found")}");
-                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod()!);
-                LoggingHelper.Log(issueInfo.ToString());
-            }
         }
 
         [HarmonyTranspiler]

@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.5.0
+Game Versions: v1.0.0 - v1.2.9 (all of them)
+* Improvements to how Tournament prize pool is calculated with scaling enabled.
+* Added an option for Tournament prize items to be of high quality (masterwork, lordly, etc).
+---------------------------------------------------------------------------------------------------
 Version: 1.4.2
 Game Versions: v1.0.0 - v1.2.9 (all of them)
 * Added minimal team size setting for Team Tournaments.

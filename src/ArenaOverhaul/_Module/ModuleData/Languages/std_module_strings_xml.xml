@@ -180,17 +180,15 @@
 		<string id="hS7XbrLGG" text="Maximum bet" />
 		<string id="gQvJ8Vvsk" text="The maximum amount of gold that is usually allowed to be wagered in each round of a tournament. Native = 150. Default = 500." />
 		<string id="qPAga7DLd" text="Enable randomized betting odds" />
-		<string id="kGyR7NsKh" text="When this option is enabled, bet odds are slightly randomized, but still mostly based on the prediction of the player's success." />
+		<string id="kGyR7NsKh" text="When this option is enabled, bet odds are slightly randomized, but still mostly based on the prediction of the player's success. Native is False. Default is True." />
         <string id="hARcKe6Jt" text="Allow notables participation" />
         <string id="YqIOYTV0P" text="Allow settlement notables to participate in Tournaments. Recommended with tournament armor mods. Native is False. Default is True." />
         <string id="cCAOeRdmt" text="Prize reroll condition" />
 		<string id="CDGmDeYii" text="Specify when and if tournament prizes should be rerolled. Normally prizes are rerolled when player joins the tournament - if the nubmber of participating nobles changed since the tournament was created (affects prize quality). Native is [When situation changed]. Default is [When prize tier can be improved]." />
 		<string id="IfsaDqygk" text="Enable gold prizes" />
-		<string id="yVAG4f83d" text="When this option is enabled, there are also gold prizes in tournaments. This is in addition to the usual prize items and bet wins." />
+		<string id="yVAG4f83d" text="When this option is enabled, there are also gold prizes in tournaments. This is in addition to the usual prize items and bet wins. Native is False. Default is True." />
 		<string id="fH4Ev0UoC" text="Enable prize scaling" />
-		<string id="1THMacQwa" text="When this option is enabled, tournament prizes are scaling with player's renown. Slightly unconventional, but helps keep tournaments useful in the mid and late game." />
-		<string id="DXiVYMIUL" text="Enable unobtainable prizes" />
-		<string id="YxVkSN8sn" text="When this option is enabled, elite tournament prizes can include otherwize unobtainable items and animals. Only works with prize scaling and at player clan tier 5 or 6." />
+		<string id="1THMacQwa" text="When this option is enabled, tournament prizes are scaling with player's renown. Slightly unconventional, but helps keep tournaments useful in the mid and late game. Native is False. Default is True." />
 		<string id="DyNe9qH4v" text="Reward for the won round" />
 		<string id="aAquVsgYJ" text="The amount of gold that participants receive for each round of the tournament they won. Native = 0. Default = 0." />
 		<string id="lkgaScPft" text="Renown reward for the champion" />

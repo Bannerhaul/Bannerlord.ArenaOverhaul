@@ -1,4 +1,5 @@
-﻿using ArenaOverhaul.Helpers;
+﻿using ArenaOverhaul.CampaignBehaviors.BehaviorManagers;
+using ArenaOverhaul.Helpers;
 using ArenaOverhaul.TeamTournament;
 using ArenaOverhaul.Tournament;
 
@@ -49,6 +50,9 @@ namespace ArenaOverhaul.CampaignBehaviors
         private int _chosenLoadout = -1;
         private int _currentLoadoutStage = 1;
 
+        private AOArenaBehaviorManager _AOArenaBehaviorManager = new();
+
+        public AOArenaBehaviorManager BehaviorManager => _AOArenaBehaviorManager;
         public bool InExpansivePractice { get => _inExpansivePractice; internal set => _inExpansivePractice = value; }
         public int ChosenLoadout { get => _chosenLoadout; internal set => _chosenLoadout = value; }
         public int ChosenLoadoutStage { get => _currentLoadoutStage; internal set => _currentLoadoutStage = value; }
@@ -82,8 +86,7 @@ namespace ArenaOverhaul.CampaignBehaviors
                 AddLoadoutDialogues(_campaignGame, Settlement.CurrentSettlement);
             }
 
-            if (TeamTournamentInfo.Current != null)
-                TeamTournamentInfo.Current.Finish();
+            TeamTournamentInfo.Current?.Finish();
         }
 
         private void AddGameMenus(CampaignGameStarter campaignGameStarter)
@@ -392,16 +395,17 @@ namespace ArenaOverhaul.CampaignBehaviors
                 for (int i = startEntry; i < nearbyTournamentTowns.Count && i < startEntry + entriesCount; i++)
                 {
                     Town town = nearbyTournamentTowns[i];
+                    TournamentGame tournamentGame = Campaign.Current.TournamentManager.GetTournamentGame(town);
 
                     string distanceEstimate = GetDistanceEstimate(town, nearbyTownDistances, out bool isCloseBy);
-                    int tournamentAge = (int) Campaign.Current.TournamentManager.GetTournamentGame(town).CreationTime.ElapsedDaysUntilNow;
+                    int tournamentAge = (int) tournamentGame.CreationTime.ElapsedDaysUntilNow;
                     int textVariation = (isCloseBy ? 0 : 3) + (tournamentAge <= 4 ? 0 : tournamentAge > 12 ? 2 : 1);
 
-                    ItemObject prizeItemObject = Campaign.Current.TournamentManager.GetTournamentGame(town).Prize;
+                    ItemObject prizeItemObject = tournamentGame.Prize;
                     TextObject prizeTextObject = new("{=UOpsoG57t}tier {TIER} {TYPE}, {NAME}, worth {GOLD}{GOLD_ICON}");
                     LocalizationHelper.SetNumericVariable(prizeTextObject, "TIER", (int) prizeItemObject.Tier + 1);
                     prizeTextObject.SetTextVariable("TYPE", GetItemTypeName(prizeItemObject.Type));
-                    prizeTextObject.SetTextVariable("NAME", prizeItemObject.Name);
+                    prizeTextObject.SetTextVariable("NAME", TournamentRewardManager.GetPrizeItemName(tournamentGame));
                     prizeTextObject.SetTextVariable("GOLD", prizeItemObject.Value);
 
                     TextObject textObject = GameTexts.FindText("str_menu_nearby_tournaments_list_entry", textVariation.ToString());
@@ -565,6 +569,14 @@ namespace ArenaOverhaul.CampaignBehaviors
 
         public override void SyncData(IDataStore dataStore)
         {
+            dataStore.SyncData("_AOArenaBehaviorManager", ref _AOArenaBehaviorManager);
+            if (dataStore.IsLoading)
+            {
+                if (_AOArenaBehaviorManager == null)
+                {
+                    _AOArenaBehaviorManager = new AOArenaBehaviorManager();
+                }
+            }
         }
     }
 }

@@ -33,20 +33,11 @@ namespace ArenaOverhaul.Tournament
 
         private static int GetRandomizedImportance(int baseImportance)
         {
-            return MBRandom.RandomInt(3 * baseImportance / 4, 5 * baseImportance / 4);
+            return MBRandom.RandomInt(3 * baseImportance / 4, 5 * baseImportance / 4 + 1);
         }
 
         public static bool IsRightTypeOfHero(Hero hero, bool allowNotables = false) =>
             hero != null && !hero.IsWounded && !hero.IsNoncombatant && !hero.IsChild && (hero.IsLord || hero.IsWanderer || (allowNotables && hero.IsNotable));
-
-        protected static int GetNonHeroParticipantsCount(int applicantHeroCount, int maximumParticipantCount)
-        {
-            if (applicantHeroCount >= maximumParticipantCount)
-            {
-                return MBRandom.RandomInt(0, (int) MathF.Max(maximumParticipantCount - (DefaultHeroParticipantsCount + applicantHeroCount / applicantHeroCount), 1f));
-            }
-            return maximumParticipantCount - applicantHeroCount;
-        }
 
         protected static void GetUpgradeTargets(CharacterObject troop, List<CharacterObject> list)
         {

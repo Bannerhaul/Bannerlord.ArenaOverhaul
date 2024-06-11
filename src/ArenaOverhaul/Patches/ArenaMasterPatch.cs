@@ -25,8 +25,8 @@ namespace ArenaOverhaul.Patches
     [HarmonyPatch(typeof(ArenaMasterCampaignBehavior))]
     public static class ArenaMasterPatch
     {
-        private static readonly MethodInfo miSetStandardPracticeMode = AccessTools.Method(typeof(ArenaMasterPatch), "SetStandardPracticeMode");
-        private static readonly MethodInfo miCheckRematchIsAffordable = AccessTools.Method(typeof(ArenaMasterPatch), "CheckRematchIsAffordable");
+        private static readonly MethodInfo? miSetStandardPracticeMode = AccessTools.Method(typeof(ArenaMasterPatch), "SetStandardPracticeMode");
+        private static readonly MethodInfo? miCheckRematchIsAffordable = AccessTools.Method(typeof(ArenaMasterPatch), "CheckRematchIsAffordable");
 
         [HarmonyPrefix]
         [HarmonyPatch("conversation_arena_master_post_fight_on_condition")]
@@ -86,7 +86,7 @@ namespace ArenaOverhaul.Patches
 
         [HarmonyTranspiler]
         [HarmonyPatch("AddDialogs")]
-        public static IEnumerable<CodeInstruction> AddDialogsTranspiler(IEnumerable<CodeInstruction> instructions)
+        public static IEnumerable<CodeInstruction> AddDialogsTranspiler(IEnumerable<CodeInstruction> instructions, MethodBase __originalMethod)
         {
             List<CodeInstruction> codes = new(instructions);
             int numberOfEdits = 0;
@@ -145,18 +145,25 @@ namespace ArenaOverhaul.Patches
                 }
             }
             //Logging
-            if (indexToSetStandardPracticeMode <= 0 || indexOfOnConsequenceNewobjOperand <= 0 || indexToCheckRematchIsAffordable <= 0 || indexOfOnClickableConditionNewobjOperand <= 0 || numberOfEdits < 9)
+            const int RequiredNumberOfEdits = 9;
+            if (indexToSetStandardPracticeMode <= 0 || indexOfOnConsequenceNewobjOperand <= 0 || indexToCheckRematchIsAffordable <= 0 || indexOfOnClickableConditionNewobjOperand <= 0
+                || numberOfEdits < RequiredNumberOfEdits || miCheckRematchIsAffordable is null || miSetStandardPracticeMode is null)
             {
-                LogNoHooksIssue(indexToSetStandardPracticeMode, indexOfOnConsequenceNewobjOperand, indexToCheckRematchIsAffordable, indexOfOnClickableConditionNewobjOperand, numberOfEdits, codes);
-                if (numberOfEdits < 9)
-                {
-                    MessageHelper.ErrorMessage("Harmony transpiler for ArenaMasterCampaignBehavior. AddDialogs was not able to make all required changes!");
-                }
+                LoggingHelper.LogNoHooksIssue(
+                    codes, numberOfEdits, RequiredNumberOfEdits, __originalMethod,
+                    [
+                        (nameof(indexToSetStandardPracticeMode), indexToSetStandardPracticeMode), (nameof(indexOfOnConsequenceNewobjOperand), indexOfOnConsequenceNewobjOperand),
+                        (nameof(indexToCheckRematchIsAffordable), indexToCheckRematchIsAffordable), (nameof(indexOfOnClickableConditionNewobjOperand), indexOfOnClickableConditionNewobjOperand),
+                    ],
+                    [
+                        (nameof(miCheckRematchIsAffordable), miCheckRematchIsAffordable),
+                        (nameof(miSetStandardPracticeMode), miSetStandardPracticeMode)
+                    ]);
             }
 
             if (indexToCheckRematchIsAffordable > 0 && indexOfOnClickableConditionNewobjOperand > 0)
             {
-                codes.InsertRange(indexToCheckRematchIsAffordable, new CodeInstruction[] { new CodeInstruction(opcode: OpCodes.Ldftn, operand: miCheckRematchIsAffordable), new CodeInstruction(opcode: OpCodes.Newobj, operand: codes[indexOfOnClickableConditionNewobjOperand].operand) });
+                codes.InsertRange(indexToCheckRematchIsAffordable, [new CodeInstruction(opcode: OpCodes.Ldftn, operand: miCheckRematchIsAffordable), new CodeInstruction(opcode: OpCodes.Newobj, operand: codes[indexOfOnClickableConditionNewobjOperand].operand)]);
             }
             else
             {
@@ -164,27 +171,13 @@ namespace ArenaOverhaul.Patches
             }
             if (indexToSetStandardPracticeMode > 0 && indexOfOnConsequenceNewobjOperand > 0)
             {
-                codes.InsertRange(indexToSetStandardPracticeMode, new CodeInstruction[] { new CodeInstruction(opcode: OpCodes.Ldftn, operand: miSetStandardPracticeMode), new CodeInstruction(opcode: OpCodes.Newobj, operand: codes[indexOfOnConsequenceNewobjOperand].operand) });
+                codes.InsertRange(indexToSetStandardPracticeMode, [new CodeInstruction(opcode: OpCodes.Ldftn, operand: miSetStandardPracticeMode), new CodeInstruction(opcode: OpCodes.Newobj, operand: codes[indexOfOnConsequenceNewobjOperand].operand)]);
             }
             else
             {
                 MessageHelper.ErrorMessage("Harmony transpiler for ArenaMasterCampaignBehavior. AddDialogs could not find code hooks for setting standard practice mode!");
             }
             return codes.AsEnumerable();
-
-            //local methods
-            static void LogNoHooksIssue(int indexToSetStandardPracticeMode, int indexOfOnConsequenceNewobjOperand, int indexToCheckRematchIsAffordable, int indexOfOnClickableConditionNewobjOperand, int numberOfEdits, List<CodeInstruction> codes)
-            {
-                LoggingHelper.Log("Indexes:", "Transpiler for ArenaMasterCampaignBehavior.AddDialogs");
-                StringBuilder issueInfo = new("");
-                issueInfo.Append($"\tindexToSetStandardPracticeMode={indexToSetStandardPracticeMode}.\n\tindexOfOnConsequenceNewobjOperand={indexOfOnConsequenceNewobjOperand}." +
-                                 $"\n\tindexToCheckRematchIsAffordable={indexToCheckRematchIsAffordable}.\n\tindexOfOnClickableConditionNewobjOperand={indexOfOnClickableConditionNewobjOperand}.");
-                issueInfo.Append($"\nNumberOfEdits: {numberOfEdits}");
-                issueInfo.Append($"\nMethodInfos:");
-                issueInfo.Append($"\n\tmiSetStandardPracticeMode={(miSetStandardPracticeMode != null ? miSetStandardPracticeMode.ToString() : "not found")}");
-                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod()!);
-                LoggingHelper.Log(issueInfo.ToString());
-            }
         }
 
         /* service methods */
@@ -194,7 +187,7 @@ namespace ArenaOverhaul.Patches
             currentAOArenaBehavior.SetStandardPracticeMode();
         }
 
-        private static bool CheckRematchIsAffordable(out TextObject? explanation)
+        internal static bool CheckRematchIsAffordable(out TextObject? explanation)
         {
             AOArenaBehavior currentAOArenaBehavior = Campaign.Current.CampaignBehaviorManager.GetBehavior<AOArenaBehavior>()!;
             return currentAOArenaBehavior.conversation_town_arena_afford_loadout_choice_on_condition(out explanation);

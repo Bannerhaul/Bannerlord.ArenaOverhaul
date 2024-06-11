@@ -84,7 +84,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
             GameTexts.SetVariable("GOLD_ICON", "{=!}<img src=\"General\\Icons\\Coin@2x\" extend=\"8\">");
             BetDescriptionText = GameTexts.FindText("str_tournament_bet_description", null).ToString();
             TournamentPrizeText = GameTexts.FindText("str_tournament_prize", null).ToString();
-            PrizeItemName = Tournament.TournamentGame.Prize.Name.ToString();
+            PrizeItemName = TournamentRewardManager.GetPrizeItemName(Tournament.TournamentGame);
             MBTextManager.SetTextVariable("SETTLEMENT_NAME", Tournament.Settlement.Name, false);
             TournamentTitle = GameTexts.FindText("str_tournament", null).ToString();
             CurrentWagerText = GameTexts.FindText("str_tournament_current_wager", null).ToString();
@@ -282,10 +282,7 @@ namespace ArenaOverhaul.TeamTournament.ViewModels
         {
             if (HasPrizeItem)
             {
-                InformationManager.ShowTooltip(typeof(ItemObject), new object[]
-                {
-                    new EquipmentElement(Tournament.TournamentGame.Prize, null, null, false)
-                });
+                TournamentRewardManager.ShowPrizeItemHint(Tournament.TournamentGame);
             }
         }
 

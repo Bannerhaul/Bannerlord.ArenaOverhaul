@@ -30,6 +30,7 @@ namespace ArenaOverhaul
         private const string HeadingTournamentsTeamGame = HeadingTournaments + "/{=h6sPrqfax}Team Tournaments";
 
         private const string HeadingCompatibility = "{=WnQ4qOI7d}Compatibility settings";
+        private const string HeadingLogging = "{=}Logging settings";
 
         //Reused settings, hints and values
         internal const string DropdownValueStandard = "{=gknaSzMr6}Standard";
@@ -40,6 +41,10 @@ namespace ArenaOverhaul
         internal const string DropdownValueOnPrizeTierImprovement = "{=JHsRs730T}When prize tier can be improved";
         internal const string DropdownValueOnImprovement = "{=oVADnv9sb}When chances for better prize are improved";
         internal const string DropdownValueOnChange = "{=MwOn3n7yC}When situation changed";
+
+        internal const string DropdownValueStandardItemsOnly = "{=}Non-unique items only";
+        internal const string DropdownValueAlwaysExceptForMounts = "{=}Always, except for unique mounts";
+        internal const string DropdownValueAlways = "{=}Always";
 
         /*
         internal const string DropdownValuePartyBased = "{=}Party based";
@@ -189,7 +194,7 @@ namespace ArenaOverhaul
         [SettingPropertyGroup(HeadingTournaments, GroupOrder = 2)]
         public int TournamentMaximumBet { get; set; } = 500;
 
-        [SettingPropertyBool("{=qPAga7DLd}Enable randomized betting odds", Order = 1, RequireRestart = false, HintText = "{=kGyR7NsKh}When this option is enabled, bet odds are slightly randomized, but still mostly based on the prediction of the player's success.")]
+        [SettingPropertyBool("{=qPAga7DLd}Enable randomized betting odds", Order = 1, RequireRestart = false, HintText = "{=kGyR7NsKh}When this option is enabled, bet odds are slightly randomized, but still mostly based on the prediction of the player's success. Native is False. Default is True.")]
         [SettingPropertyGroup(HeadingTournaments, GroupOrder = 2)]
         public bool EnableRandomizedBettingOdds { get; set; } = true;
 
@@ -207,15 +212,29 @@ namespace ArenaOverhaul
             DropdownValueOnChange
         ], 1);
 
-        [SettingPropertyBool("{=IfsaDqygk}Enable gold prizes", Order = 0, RequireRestart = false, HintText = "{=yVAG4f83d}When this option is enabled, there are also gold prizes in tournaments. This is in addition to the usual prize items and bet wins.")]
+        [SettingPropertyBool("{=IfsaDqygk}Enable gold prizes", Order = 0, RequireRestart = false, HintText = "{=yVAG4f83d}When this option is enabled, there are also gold prizes in tournaments. This is in addition to the usual prize items and bet wins. Native is False. Default is True.")]
         [SettingPropertyGroup(HeadingTournamentsMaterialRewards, GroupOrder = 0)]
         public bool EnableTournamentGoldPrizes { get; set; } = true;
 
-        [SettingPropertyBool("{=fH4Ev0UoC}Enable prize scaling", Order = 1, RequireRestart = false, HintText = "{=1THMacQwa}When this option is enabled, tournament prizes are scaling with player's renown. Slightly unconventional, but helps keep tournaments useful in the mid and late game.")]
+        [SettingPropertyBool("{=fH4Ev0UoC}Enable prize scaling", Order = 10, RequireRestart = false, HintText = "{=1THMacQwa}When this option is enabled, tournament prizes are scaling with player's renown. Slightly unconventional, but helps keep tournaments useful in the mid and late game. Native is False. Default is True.")]
         [SettingPropertyGroup(HeadingTournamentsMaterialRewards, GroupOrder = 0)]
         public bool EnableTournamentPrizeScaling { get; set; } = true;
 
-        [SettingPropertyInteger("{=DyNe9qH4v}Reward for the won round", 0, 1000, Order = 3, RequireRestart = false, HintText = "{=aAquVsgYJ}The amount of gold that participants receive for each round of the tournament they won. Native = 0. Default = 0.")]
+        [SettingPropertyBool("{=}Enable high quality prizes", Order = 11, RequireRestart = false, HintText = "{=}When this option is enabled, high quality versions of items (masterwork, lordly, etc) can be awarded as tournament prizes. Native is False. Default is True.")]
+        [SettingPropertyGroup(HeadingTournamentsMaterialRewards, GroupOrder = 0)]
+        public bool EnableHighQualityPrizes { get; set; } = true;
+
+        [SettingPropertyDropdown("{=}Culture restricted elite prizes", Order = 20, RequireRestart = false, HintText = "{=}Specify when and whether elite tournament prizes should be limited to match the culture of the hosting settlement in a same manner as basic prizes are. Does not affect banners. Native is [Never]. Default is [Always, except for unique mounts].")]
+        [SettingPropertyGroup(HeadingTournamentsMaterialRewards, GroupOrder = 0)]
+        public Dropdown<string> CultureRestrictedTournamentPrizes { get; set; } = new Dropdown<string>(
+        [
+            DropdownValueNever,
+            DropdownValueStandardItemsOnly,
+            DropdownValueAlwaysExceptForMounts,
+            DropdownValueAlways
+        ], 2);
+
+        [SettingPropertyInteger("{=DyNe9qH4v}Reward for the won round", 0, 1000, Order = 30, RequireRestart = false, HintText = "{=aAquVsgYJ}The amount of gold that participants receive for each round of the tournament they won. Native = 0. Default = 0.")]
         [SettingPropertyGroup(HeadingTournamentsMaterialRewards, GroupOrder = 0)]
         public int TournamentRoundWonReward { get; set; } = 0;
 
@@ -261,38 +280,6 @@ namespace ArenaOverhaul
         [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
         public bool ScoresForWinningTeam { get; set; } = true;
 
-        /*
-        [SettingPropertyDropdown("{=}Teams genesis", Order = 15, RequireRestart = false, HintText = "{=} Default is [Clan based].")]
-        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
-        public Dropdown<string> TeamGenesis { get; set; } = new Dropdown<string>(new string[]
-        {
-            DropdownValuePartyBased,
-            DropdownValueClanBased,
-            DropdownValueGlobal,
-            DropdownValueRandom
-        }, 1);
-
-        [SettingPropertyDropdown("{=}Teams composition", Order = 16, RequireRestart = false, HintText = "{=} Default is [Ensures highest power].")]
-        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
-        public Dropdown<string> TeamComposition { get; set; } = new Dropdown<string>(new string[]
-        {
-            DropdownValueEnsuresPower,
-            DropdownValueEnsuresEquality,
-            DropdownValueEnsuresVariety,
-            DropdownValueRandom
-        }, 0);
-
-        [SettingPropertyDropdown("{=}Player controll over teams composition", Order = 17, RequireRestart = false, HintText = "{=} Default is [Only own team].")]
-        [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
-        public Dropdown<string> PlayerControllOverComposition { get; set; } = new Dropdown<string>(new string[]
-        {
-            DropdownValueNoControll,
-            DropdownValueOwnTeam,
-            DropdownValueAffiliatedTeams,
-            DropdownValueRandom
-        }, 0);
-        */
-
         [SettingPropertyInteger("{=l2FTrzzXX}Team 1 Color Index", 0, 157, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.", Order = 25)]
         [SettingPropertyGroup(HeadingTournamentsTeamGame, GroupOrder = 3)]
         public int TeamOneColor { get; set; } = 83;
@@ -311,7 +298,12 @@ namespace ArenaOverhaul
 
         //Compatibility settings
         [SettingPropertyInteger("{=Ndc21b2NO}Practice loadout stages", 0, 10, Order = 0, RequireRestart = false, HintText = "{=9SY3aAtv1}The amount of practice loadout stages that are searched for in ObjectManager. Do not alter this setting unless you have mods that change the stages of arena practice and add corresponding character models. Native = 3. Default = 3.")]
-        [SettingPropertyGroup(HeadingCompatibility, GroupOrder = 3)]
+        [SettingPropertyGroup(HeadingCompatibility, GroupOrder = 100)]
         public int PracticeLoadoutStages { get; set; } = 3;
+
+        //Logging settings
+        [SettingPropertyBool("{=}Log technical Transpiler info", RequireRestart = false, HintText = "{=}When enabled, logs a lot of technical data about failed Harmony Transpiler calls.", Order = 15)]
+        [SettingPropertyGroup(HeadingLogging, GroupOrder = 101)]
+        public bool LogTechnicalTranspilerInfo { get; set; } = false;
     }
 }

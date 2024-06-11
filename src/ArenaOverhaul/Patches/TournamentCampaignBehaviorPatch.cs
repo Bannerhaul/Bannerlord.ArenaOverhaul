@@ -16,31 +16,46 @@ namespace ArenaOverhaul.Patches
     [HarmonyPatch(typeof(TournamentCampaignBehavior))]
     public static class TournamentCampaignBehaviorPatch
     {
-        private static readonly MethodInfo miAddRenown = AccessTools.Method(typeof(Clan), "AddRenown");
+        private static readonly MethodInfo? miAddRenown = AccessTools.Method(typeof(Clan), "AddRenown");
 
         [HarmonyTranspiler]
         [HarmonyPatch("OnTournamentFinished")]
-        public static IEnumerable<CodeInstruction> EndCurrentMatchTranspiler(IEnumerable<CodeInstruction> instructions)
+        public static IEnumerable<CodeInstruction> EndCurrentMatchTranspiler(IEnumerable<CodeInstruction> instructions, MethodBase __originalMethod)
         {
             List<CodeInstruction> codes = new(instructions);
+            int numberOfEdits = 0;
             int renownAwardStartIndex = 0;
             int renownAwardEndIndex = 0;
-            for (int i = 1; i < codes.Count; ++i)
+            if (miAddRenown != null)
             {
-                if (renownAwardStartIndex == 0 && codes[i].opcode == OpCodes.Ldarg_1 && codes[i - 1].opcode == OpCodes.Brfalse_S && codes[i + 3].opcode != OpCodes.Brfalse_S)
+                for (int i = 1; i < codes.Count; ++i)
                 {
-                    renownAwardStartIndex = i;
-                }
-                else if (renownAwardStartIndex > 0 && renownAwardEndIndex == 0 && codes[i].Calls(miAddRenown))
-                {
-                    renownAwardEndIndex = i;
-                    break;
+                    if (numberOfEdits == 0 && codes[i].opcode == OpCodes.Ldarg_1 && codes[i - 1].opcode == OpCodes.Brfalse_S && codes[i + 3].opcode != OpCodes.Brfalse_S)
+                    {
+                        renownAwardStartIndex = i;
+                        ++numberOfEdits;
+                    }
+                    else if (numberOfEdits == 1 && codes[i].Calls(miAddRenown))
+                    {
+                        renownAwardEndIndex = i;
+                        ++numberOfEdits;
+                        break;
+                    }
                 }
             }
+
             //Logging
-            if (renownAwardStartIndex == 0 || renownAwardEndIndex == 0)
+            const int RequiredNumberOfEdits = 2;
+            if (renownAwardStartIndex == 0 || renownAwardEndIndex == 0 || numberOfEdits < RequiredNumberOfEdits)
             {
-                LogNoHooksIssue(renownAwardStartIndex, renownAwardEndIndex, codes);
+                LoggingHelper.LogNoHooksIssue(
+                    codes, numberOfEdits, RequiredNumberOfEdits, __originalMethod,
+                    [
+                        (nameof(renownAwardStartIndex), renownAwardStartIndex), (nameof(renownAwardEndIndex), renownAwardEndIndex),
+                    ],
+                    [
+                        (nameof(miAddRenown), miAddRenown),
+                    ]);
                 MessageHelper.ErrorMessage("Harmony transpiler for TournamentCampaignBehavior. OnTournamentFinished could not find code hooks for removing surplus renown reward!");
             }
             else
@@ -49,18 +64,6 @@ namespace ArenaOverhaul.Patches
             }
 
             return codes.AsEnumerable();
-
-            //local methods
-            static void LogNoHooksIssue(int renownAwardStartIndex, int renownAwardEndIndex, List<CodeInstruction> codes)
-            {
-                LoggingHelper.Log("Indexes:", "Transpiler for TournamentCampaignBehavior.OnTournamentFinished");
-                StringBuilder issueInfo = new("");
-                issueInfo.Append($"\trenownAwardStartIndex={renownAwardStartIndex}.\n\trenownAwardEndIndex={renownAwardEndIndex}.");
-                issueInfo.Append($"\nMethodInfos:");
-                issueInfo.Append($"\n\tmiAddRenown={(miAddRenown != null ? miAddRenown.ToString() : "not found")}");
-                LoggingHelper.LogILAndPatches(codes, issueInfo, MethodBase.GetCurrentMethod()!);
-                LoggingHelper.Log(issueInfo.ToString());
-            }
         }
     }
 }
