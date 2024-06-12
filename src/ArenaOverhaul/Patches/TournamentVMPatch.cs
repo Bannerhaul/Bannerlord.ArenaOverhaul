@@ -9,13 +9,13 @@ using SandBox.ViewModelCollection.Tournament;
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
 using System.Reflection;
+using System.Reflection.Emit;
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Settlements;
-using TaleWorlds.Core;
 using TaleWorlds.CampaignSystem.TournamentGames;
+using TaleWorlds.Core;
 
 namespace ArenaOverhaul.Patches
 {
@@ -57,7 +57,8 @@ namespace ArenaOverhaul.Patches
                 LoggingHelper.LogNoHooksIssue(
                     codes, numberOfEdits, RequiredNumberOfEdits, __originalMethod,
                     [
-                        (nameof(getPrizeIndex), getPrizeIndex), (nameof(toStringIndex), toStringIndex),
+                        (nameof(getPrizeIndex), getPrizeIndex),
+                        (nameof(toStringIndex), toStringIndex),
                     ],
                     [
                         (nameof(miTournamentGetter), miTournamentGetter),
@@ -125,7 +126,7 @@ namespace ArenaOverhaul.Patches
 
         [HarmonyPostfix]
         [HarmonyPatch("RefreshValues")]
-        public static void RefreshValuesPostfix(TournamentVM __instance) 
+        public static void RefreshValuesPostfix(TournamentVM __instance)
         {
             if (!__instance.HasPrizeItem)
             {

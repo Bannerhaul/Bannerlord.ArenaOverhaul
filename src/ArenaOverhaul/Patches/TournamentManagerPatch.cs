@@ -23,9 +23,9 @@ namespace ArenaOverhaul.Patches
             }
 
             EquipmentElement prizeEquipmentElement = TournamentRewardManager.TryGetPrizeItemModifier(tournament, out var prizeItemInfo)
-                ? new (prizeItemInfo!.ItemObject, prizeItemInfo.ItemModifier)
+                ? new(prizeItemInfo!.ItemObject, prizeItemInfo.ItemModifier)
                 : new(tournament.Prize);
-            
+
             if (winner.PartyBelongedTo == MobileParty.MainParty)
             {
                 winner.PartyBelongedTo.ItemRoster.AddToCounts(prizeEquipmentElement, 1);
