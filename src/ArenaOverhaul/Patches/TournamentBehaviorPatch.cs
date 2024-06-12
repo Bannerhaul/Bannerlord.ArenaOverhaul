@@ -144,7 +144,8 @@ namespace ArenaOverhaul.Patches
                 LoggingHelper.LogNoHooksIssue(
                     codes, numberOfEdits, RequiredNumberOfEdits, __originalMethod,
                     [
-                        (nameof(renownAndInfluenceStartIndex), renownAndInfluenceStartIndex), (nameof(renownAndInfluenceEndIndex), renownAndInfluenceEndIndex),
+                        (nameof(renownAndInfluenceStartIndex), renownAndInfluenceStartIndex),
+                        (nameof(renownAndInfluenceEndIndex), renownAndInfluenceEndIndex),
                     ],
                     [
                         (nameof(miGetMainHero), miGetMainHero),

@@ -152,8 +152,10 @@ namespace ArenaOverhaul.Patches
                 LoggingHelper.LogNoHooksIssue(
                     codes, numberOfEdits, RequiredNumberOfEdits, __originalMethod,
                     [
-                        (nameof(indexToSetStandardPracticeMode), indexToSetStandardPracticeMode), (nameof(indexOfOnConsequenceNewobjOperand), indexOfOnConsequenceNewobjOperand),
-                        (nameof(indexToCheckRematchIsAffordable), indexToCheckRematchIsAffordable), (nameof(indexOfOnClickableConditionNewobjOperand), indexOfOnClickableConditionNewobjOperand),
+                        (nameof(indexToSetStandardPracticeMode), indexToSetStandardPracticeMode),
+                        (nameof(indexOfOnConsequenceNewobjOperand), indexOfOnConsequenceNewobjOperand),
+                        (nameof(indexToCheckRematchIsAffordable), indexToCheckRematchIsAffordable),
+                        (nameof(indexOfOnClickableConditionNewobjOperand), indexOfOnClickableConditionNewobjOperand),
                     ],
                     [
                         (nameof(miCheckRematchIsAffordable), miCheckRematchIsAffordable),
