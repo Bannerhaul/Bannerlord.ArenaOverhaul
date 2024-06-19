@@ -1,5 +1,7 @@
-﻿using ArenaOverhaul.CampaignBehaviors;
+﻿using ArenaOverhaul.CampaignBehaviors.BehaviorManagers;
 using ArenaOverhaul.Helpers;
+using ArenaOverhaul.ModSettings;
+
 using ArenaOverhaul.TeamTournament;
 
 using SandBox.Tournaments.MissionLogics;
@@ -29,7 +31,7 @@ namespace ArenaOverhaul.Tournament
 
         public static Dictionary<Town, List<(Hero Participant, int Winnings)>> RoundPrizeWinners => _roundPrizeWinners;
         public static Dictionary<Town, List<(Hero Participant, int Winnings)>> RenownAwardees => _renownAwardees;
-        public static Dictionary<Town, PrizeItemInfo?> PlannedTournamentPrizes => Campaign.Current.GetCampaignBehavior<AOArenaBehavior>().BehaviorManager.TournamentPrizes;
+        public static Dictionary<Town, PrizeItemInfo?> PlannedTournamentPrizes => AOArenaBehaviorManager.Instance!.TournamentPrizes;
         public static Dictionary<Town, PrizeItemInfo?> TournamentPrizeAwards => _tournamentPrizeAwards;
 
         internal static void Initialize()

@@ -1,4 +1,5 @@
 ﻿using ArenaOverhaul.Helpers;
+using ArenaOverhaul.ModSettings;
 using ArenaOverhaul.Tournament;
 
 using SandBox.Tournaments;

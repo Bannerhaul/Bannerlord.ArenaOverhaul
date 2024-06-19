@@ -19,7 +19,7 @@
 		<string id="uBC62Jdh1" text="Next page..." />
 		<string id="De0boqLm0" text="Previous page..." />
 		<string id="fakGolQMf" text="Back to arena" />
-		<string id="ForHVzTkJ" text="Also, from time to time, so-called extensive practice fights are held. Basically, it's the same thing, but longer and much more intense. I would advise you to bring some of your men with you, it might be good practice for them. Just do not forget - no teams in there, otherwise you will be disqualified.[ib:closed][if:convo_bared_teeth]" />
+		<string id="ForHVzTkJ" text="Also, from time to time, so-called expansive practice fights are held. Basically, it's the same thing, but longer and much more intense. I would advise you to bring some of your men with you, it might be good practice for them. Just do not forget - no teams in there, otherwise you will be disqualified.[ib:closed][if:convo_bared_teeth]" />
 		<string id="nZVbLJnVn" text="And what about these expansive practice fights, are they rewarded too? How much are the prizes?" />
 		<string id="MqTDJG0uG" text="I'd like to choose my gear." />
 		<string id="iDGR9F0Gn" text="Alright{?WEAPON_CHOICE_HAS_PRICE}, but it will cost you {WEAPON_CHOICE_PRICE}{GOLD_ICON}{?}{\?}! Which weapon set are you taking?[ib:closed][if:convo_bared_teeth]" />
@@ -36,8 +36,8 @@
 		<string id="2JXPNLOm3" text="very far from here" />
 		<string id="UOpsoG57t" text="tier {TIER} {TYPE}, {NAME}, worth {GOLD}{GOLD_ICON}" />
 		<string id="fpPMPCNp5" text="You don't have enough gold." />
-		<string id="EPjU6L6kg" text="You don't have enough gold to do another round with the current loadout." />
-		<string id="9REfw5FN6" text="Another round of practice with the current loadout will cost you {REMATCH_COST}{GOLD_ICON}" />
+		<string id="EPjU6L6kg" text="You don't have enough gold to do another round with the current match settings." />
+		<string id="9REfw5FN6" text="Another round of practice with the current match settings will cost you {REMATCH_COST}{GOLD_ICON}" />
 		<!--
 		|||||||||||||||||||||||||| Item categories ||||||||||||||||||||||||||
 		-->

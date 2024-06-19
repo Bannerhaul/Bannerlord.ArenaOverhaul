@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using ArenaOverhaul.ModSettings;
+
+using System.Collections.Generic;
 using System.Linq;
 
 using TaleWorlds.CampaignSystem;
@@ -22,8 +24,6 @@ namespace ArenaOverhaul.Tournament
         protected const int DefaultTroopImportance = 15000;
         protected const int TroopImportanceStep = 2000;
 
-        private const float DefaultHeroParticipantsCount = 10f;
-
         protected static int GetImportance(CharacterObject character, bool isPartyLeader)
         {
             bool isHighStatus = isPartyLeader || (character.IsHero && character.HeroObject.IsLord);
@@ -31,7 +31,7 @@ namespace ArenaOverhaul.Tournament
             return (character.IsPlayerCharacter ? DefaultPlayerImportance : 0) + (isHighStatus ? DefaultPartyLeaderImportance : 0) + GetRandomizedImportance(baseImportance);
         }
 
-        private static int GetRandomizedImportance(int baseImportance)
+        internal static int GetRandomizedImportance(int baseImportance)
         {
             return MBRandom.RandomInt(3 * baseImportance / 4, 5 * baseImportance / 4 + 1);
         }

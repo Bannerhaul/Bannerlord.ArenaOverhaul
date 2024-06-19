@@ -1,12 +1,12 @@
-﻿using ArenaOverhaul.CampaignBehaviors;
+﻿using ArenaOverhaul.CampaignBehaviors.BehaviorManagers;
+using ArenaOverhaul.ModSettings;
 
 using System;
 
-using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
 
-namespace ArenaOverhaul
+namespace ArenaOverhaul.ArenaPractice
 {
     public static class PracticePrizeManager
     {
@@ -77,12 +77,22 @@ namespace ArenaOverhaul
 
         private static int GetLMSPrizeCalculationTypeIndex()
         {
-            return (IsExpansivePractice() ? Settings.Instance!.ExpansivePracticeChampionPrizeCalculation : Settings.Instance!.PracticeChampionPrizeCalculation).SelectedIndex;
+            return AOArenaBehaviorManager.Instance!.PracticeMode switch
+            {
+                ArenaPracticeMode.Standard => Settings.Instance!.PracticeChampionPrizeCalculation.SelectedIndex,
+                ArenaPracticeMode.Expansive => Settings.Instance!.ExpansivePracticeChampionPrizeCalculation.SelectedIndex,
+                _ => 0,
+            };
         }
 
         private static int GetLastManStandingBasePrize()
         {
-            return IsExpansivePractice() ? Settings.Instance!.ExpansivePracticeChampionReward : Settings.Instance!.PracticeChampionReward;
+            return AOArenaBehaviorManager.Instance!.PracticeMode switch
+            {
+                ArenaPracticeMode.Standard => Settings.Instance!.PracticeChampionReward,
+                ArenaPracticeMode.Expansive => Settings.Instance!.ExpansivePracticeChampionReward,
+                _ => 0,
+            };
         }
 
         private static int GetValorCategory(int countBeatenByPlayer) =>
@@ -99,14 +109,37 @@ namespace ArenaOverhaul
         private static int GetValorPrizeAmount(int countBeatenByPlayer) =>
             GetValorCategory(countBeatenByPlayer) switch
             {
-                1 => IsExpansivePractice() ? Settings.Instance!.ExpansivePracticeValorReward1 : Settings.Instance!.PracticeValorReward1,
-                2 => IsExpansivePractice() ? Settings.Instance!.ExpansivePracticeValorReward2 : Settings.Instance!.PracticeValorReward2,
-                3 => IsExpansivePractice() ? Settings.Instance!.ExpansivePracticeValorReward3 : Settings.Instance!.PracticeValorReward3,
-                4 => IsExpansivePractice() ? Settings.Instance!.ExpansivePracticeValorReward4 : Settings.Instance!.PracticeValorReward4,
-                5 => IsExpansivePractice() ? Settings.Instance!.ExpansivePracticeValorReward5 : Settings.Instance!.PracticeValorReward5,
+                1 => AOArenaBehaviorManager.Instance!.PracticeMode switch
+                {
+                    ArenaPracticeMode.Standard => Settings.Instance!.PracticeValorReward1,
+                    ArenaPracticeMode.Expansive => Settings.Instance!.ExpansivePracticeValorReward1,
+                    _ => 0,
+                },
+                2 => AOArenaBehaviorManager.Instance!.PracticeMode switch
+                {
+                    ArenaPracticeMode.Standard => Settings.Instance!.PracticeValorReward2,
+                    ArenaPracticeMode.Expansive => Settings.Instance!.ExpansivePracticeValorReward2,
+                    _ => 0,
+                },
+                3 => AOArenaBehaviorManager.Instance!.PracticeMode switch
+                {
+                    ArenaPracticeMode.Standard => Settings.Instance!.PracticeValorReward3,
+                    ArenaPracticeMode.Expansive => Settings.Instance!.ExpansivePracticeValorReward3,
+                    _ => 0,
+                },
+                4 => AOArenaBehaviorManager.Instance!.PracticeMode switch
+                {
+                    ArenaPracticeMode.Standard => Settings.Instance!.PracticeValorReward4,
+                    ArenaPracticeMode.Expansive => Settings.Instance!.ExpansivePracticeValorReward4,
+                    _ => 0,
+                },
+                5 => AOArenaBehaviorManager.Instance!.PracticeMode switch
+                {
+                    ArenaPracticeMode.Standard => Settings.Instance!.PracticeValorReward5,
+                    ArenaPracticeMode.Expansive => Settings.Instance!.ExpansivePracticeValorReward5,
+                    _ => 0,
+                },
                 _ => 0
             };
-
-        private static bool IsExpansivePractice() => Campaign.Current.CampaignBehaviorManager.GetBehavior<AOArenaBehavior>()?.InExpansivePractice ?? false;
     }
 }

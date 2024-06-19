@@ -1,4 +1,5 @@
 ﻿using ArenaOverhaul.Extensions.Harmony;
+using ArenaOverhaul.ModSettings;
 
 using HarmonyLib;
 
@@ -44,10 +45,14 @@ namespace ArenaOverhaul.Helpers
         public static void LogNoHooksIssue(List<CodeInstruction> codes, int numberOfEdits, int requiredNumberOfEdits, MethodBase originalMethod, (string IndexName, int IndexValue)[] indexArgs, (string MethodInfoName, MemberInfo? MemberInfo)[] memberInfoArgs)
 
         {
-            StringBuilder issueInfo = new("Indexes:");
-            foreach (var indexInfo in indexArgs)
+            StringBuilder issueInfo = new();
+            if (indexArgs.Length > 0)
             {
-                issueInfo.Append($"\n\t{indexInfo.IndexName}={indexInfo.IndexValue}");
+                issueInfo.Append("Indexes:");
+                foreach (var indexInfo in indexArgs)
+                {
+                    issueInfo.Append($"\n\t{indexInfo.IndexName}={indexInfo.IndexValue}");
+                }
             }
             issueInfo.Append($"\nNumberOfEdits: {numberOfEdits} out of {requiredNumberOfEdits}");
             if (memberInfoArgs.Length > 0)

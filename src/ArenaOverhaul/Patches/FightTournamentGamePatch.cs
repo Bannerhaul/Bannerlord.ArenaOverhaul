@@ -1,4 +1,5 @@
 ﻿using ArenaOverhaul.Helpers;
+using ArenaOverhaul.ModSettings;
 using ArenaOverhaul.Tournament;
 
 using HarmonyLib;
@@ -9,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Extensions;
@@ -18,7 +18,6 @@ using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
-using TaleWorlds.Localization;
 
 namespace ArenaOverhaul.Patches
 {
@@ -209,17 +208,13 @@ namespace ArenaOverhaul.Patches
 
             if (FieldAccessHelper.FTGPossibleEliteRewardItemObjectsCacheByRef(__instance) == null)
             {
-                FieldAccessHelper.FTGPossibleEliteRewardItemObjectsCacheByRef(__instance) = new List<ItemObject>();
+                FieldAccessHelper.FTGPossibleEliteRewardItemObjectsCacheByRef(__instance) = [];
             }
-            List<ItemObject> itemObjectList = new();
+            List<ItemObject> itemObjectList = [];
 
             var townCulture = __instance.Town.Culture;
             int culturalPrizesSelectedIndex = Settings.Instance!.CultureRestrictedTournamentPrizes.SelectedIndex;
-            CultureObject? requiredCulture = culturalPrizesSelectedIndex switch
-            {
-                >= 1 => townCulture,
-                _ => null,
-            };
+            CultureObject? requiredCulture = culturalPrizesSelectedIndex >= 1 ? townCulture : null;
             List<ItemObject>? itemObjectCandidates = default;
 
             //Pick standard items with cultural restrictions
@@ -255,11 +250,7 @@ namespace ArenaOverhaul.Patches
             }
 
             //Add unique weapons and armors
-            requiredCulture = culturalPrizesSelectedIndex switch
-            {
-                >= 2 => townCulture,
-                _ => null,
-            };
+            requiredCulture = culturalPrizesSelectedIndex >= 2 ? townCulture : null;
             
             var uniqueWeapons = Items.All.Where<ItemObject>(itemObject => IsUniqueWeapon(itemObject, requiredCulture)).ToList();
             itemObjectList.AddRange(uniqueWeapons);
@@ -338,7 +329,8 @@ namespace ArenaOverhaul.Patches
         }
 
         private static bool IsSuitablePrize(ItemObject itemObject, CultureObject? requiredCulture) =>
-            (((int) itemObject.Tier) is >= 4 and <= 5) && itemObject.Value <= GetMaxItemValueForElitePrize()
+            (itemObject.Tier is ItemObject.ItemTiers.Tier5 or ItemObject.ItemTiers.Tier6)
+            && itemObject.Value <= GetMaxItemValueForElitePrize()
             && (requiredCulture is null || itemObject.Culture is null || itemObject.Culture == requiredCulture || !itemObject.Culture.CanHaveSettlement)
             && !itemObject.NotMerchandise
             && (itemObject.IsCraftedWeapon || itemObject.IsMountable || itemObject.ArmorComponent != null)

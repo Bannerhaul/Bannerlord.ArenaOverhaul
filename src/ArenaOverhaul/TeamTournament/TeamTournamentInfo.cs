@@ -1,4 +1,6 @@
-﻿using SandBox.View.Menu;
+﻿using ArenaOverhaul.ModSettings;
+
+using SandBox.View.Menu;
 
 using System;
 using System.Linq;

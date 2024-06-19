@@ -1,16 +1,15 @@
 ﻿using ArenaOverhaul.Helpers;
+using ArenaOverhaul.ModSettings;
 using ArenaOverhaul.Tournament;
 
 using HarmonyLib;
 
 using SandBox.Tournaments.MissionLogics;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;

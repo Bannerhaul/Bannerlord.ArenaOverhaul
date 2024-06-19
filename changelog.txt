@@ -1,8 +1,16 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.5.0
 Game Versions: v1.0.0 - v1.2.9 (all of them)
-* Improvements to how Tournament prize pool is calculated with scaling enabled.
-* Added an option for Tournament prize items to be of high quality (masterwork, lordly, etc).
+* Improvements to how Tournament prize pool is calculated both with and without scaling enabled.
+* Fixed an issue where practice items could be obtained as elite tournament prizes with scaling enabled.
+* Added an option for Tournament prizes to be of high quality (masterwork, lordly, etc).
+* Added an option for elite Tournament prizes to be depend on settlement culture.
+* Added customizable team count setting for arena practice.
+* Added an option to use combat, civilian, or Tournamnt armor for the arena practice.
+* On high intensity arena practice settings, starting spawn points will be used in addition to the main ones to prevent overcrowding and some glitches associated with it.
+* Added parry training option for the arena practice, designed to help practice parrying and chambler blocking.
+* Added customizable weapon preferences for companions. This will help them practice the skills they need in the arena. There will be a usual fee for selecting a loadout for each companion.
+* A bunch of other improvements and fixes to the arena practice.
 ---------------------------------------------------------------------------------------------------
 Version: 1.4.2
 Game Versions: v1.0.0 - v1.2.9 (all of them)

@@ -1,5 +1,8 @@
-﻿using ArenaOverhaul.CampaignBehaviors.BehaviorManagers;
+﻿using ArenaOverhaul.ArenaPractice;
+using ArenaOverhaul.CampaignBehaviors.BehaviorManagers;
+using ArenaOverhaul.Extensions;
 using ArenaOverhaul.Helpers;
+using ArenaOverhaul.ModSettings;
 using ArenaOverhaul.TeamTournament;
 using ArenaOverhaul.Tournament;
 
@@ -14,7 +17,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.ComponentInterfaces;
 using TaleWorlds.CampaignSystem.Conversation;
 using TaleWorlds.CampaignSystem.Encounters;
@@ -37,7 +39,6 @@ namespace ArenaOverhaul.CampaignBehaviors
 {
     public class AOArenaBehavior : CampaignBehaviorBase
     {
-        private bool _inExpansivePractice;
         private bool _enteredPracticeFightFromMenu;
         private ArenaMasterCampaignBehavior? _arenaMasterBehavior;
 
@@ -46,16 +47,17 @@ namespace ArenaOverhaul.CampaignBehaviors
         private const int _tournamentListEntriesPerPage = 4;
 
         private CampaignGameStarter? _campaignGame;
-        private readonly List<CultureObject> _visitedCultures = new();
-        private int _chosenLoadout = -1;
-        private int _currentLoadoutStage = 1;
+        private readonly List<CultureObject> _visitedCultures = [];
 
         private AOArenaBehaviorManager _AOArenaBehaviorManager = new();
 
         public AOArenaBehaviorManager BehaviorManager => _AOArenaBehaviorManager;
-        public bool InExpansivePractice { get => _inExpansivePractice; internal set => _inExpansivePractice = value; }
-        public int ChosenLoadout { get => _chosenLoadout; internal set => _chosenLoadout = value; }
-        public int ChosenLoadoutStage { get => _currentLoadoutStage; internal set => _currentLoadoutStage = value; }
+
+
+        public AOArenaBehavior()
+        {
+            AOArenaBehaviorManager.Instance = _AOArenaBehaviorManager;
+        }
 
         public override void RegisterEvents()
         {
@@ -74,9 +76,8 @@ namespace ArenaOverhaul.CampaignBehaviors
         public void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
         {
             _arenaMasterBehavior = Campaign.Current.CampaignBehaviorManager.GetBehavior<ArenaMasterCampaignBehavior>();
-            _inExpansivePractice = false;
             _campaignGame = campaignGameStarter;
-            ResetWeaponChoice();
+            _AOArenaBehaviorManager.SetStandardPracticeMode();
 
             AddDialogs(campaignGameStarter);
             TournamentRewardManager.Initialize();
@@ -92,7 +93,9 @@ namespace ArenaOverhaul.CampaignBehaviors
         private void AddGameMenus(CampaignGameStarter campaignGameStarter)
         {
             campaignGameStarter.AddGameMenuOption("town_arena", "town_arena_enter_expansive_practice_fight", "{=a3uuVmMKR}Expansive practice fight", new GameMenuOption.OnConditionDelegate(game_menu_enter_expansive_practice_fight_on_condition), new GameMenuOption.OnConsequenceDelegate(game_menu_enter_expansive_practice_fight_on_consequence), false, 1, false);
-            campaignGameStarter.AddGameMenuOption("town_arena", "town_arena_nearby_tournaments", "{=aiDNBFQ4U}Nearby Tournaments", args => { _tournamentListOffset = 0; args.optionLeaveType = GameMenuOption.LeaveType.Submenu; return true; }, x => GameMenu.SwitchToMenu("nearby_tournaments_list"), false, 2, false);
+            campaignGameStarter.AddGameMenuOption("town_arena", "town_arena_enter_parry_practice_fight", "{=}Parry practice fight", new GameMenuOption.OnConditionDelegate(game_menu_enter_parry_practice_fight_on_condition), new GameMenuOption.OnConsequenceDelegate(game_menu_enter_parry_practice_fight_on_consequence), false, 2, false);
+
+            campaignGameStarter.AddGameMenuOption("town_arena", "town_arena_nearby_tournaments", "{=aiDNBFQ4U}Nearby Tournaments", args => { _tournamentListOffset = 0; args.optionLeaveType = GameMenuOption.LeaveType.Submenu; return true; }, x => GameMenu.SwitchToMenu("nearby_tournaments_list"), false, 3, false);
 
             campaignGameStarter.AddGameMenu("nearby_tournaments_list", "{=!}{MENU_TEXT}", new OnInitDelegate(game_menu_nearby_tournaments_list_on_init), GameOverlays.MenuOverlayType.SettlementWithBoth, GameMenu.MenuFlags.None, null);
 
@@ -103,28 +106,42 @@ namespace ArenaOverhaul.CampaignBehaviors
             campaignGameStarter.AddGameMenuOption("menu_town_tournament_join", "participate_as_team", "{=xRkr497KP}Join as a team", new GameMenuOption.OnConditionDelegate(team_game_select_roster_condition), new GameMenuOption.OnConsequenceDelegate(team_game_select_roster_consequence), false, 1, false);
 
 #if DEBUG // only needed when debugging for testing
-            campaignGameStarter.AddGameMenuOption("town_arena", "test_add_tournament_game", "Add Tournament", new GameMenuOption.OnConditionDelegate(AddTournamentCondition), new GameMenuOption.OnConsequenceDelegate(AddTournamentConsequence), false, 3, true);
-            campaignGameStarter.AddGameMenuOption("town_arena", "test_resolve_tournament_game", "Resolve Tournament", new GameMenuOption.OnConditionDelegate(ResolveTournamentCondition), new GameMenuOption.OnConsequenceDelegate(ResolveTournamentConsequence), false, 4, true);
+            campaignGameStarter.AddGameMenuOption("town_arena", "test_add_tournament_game", "Add Tournament", new GameMenuOption.OnConditionDelegate(AddTournamentCondition), new GameMenuOption.OnConsequenceDelegate(AddTournamentConsequence), false, 4, true);
+            campaignGameStarter.AddGameMenuOption("town_arena", "test_resolve_tournament_game", "Resolve Tournament", new GameMenuOption.OnConditionDelegate(ResolveTournamentCondition), new GameMenuOption.OnConsequenceDelegate(ResolveTournamentConsequence), false, 5, true);
 #endif
         }
 
         protected void AddDialogs(CampaignGameStarter campaignGameStarter)
         {
-            campaignGameStarter.AddDialogLine("arena_training_expansive_practice_fight_intro_1a", "arena_expansive_practice_fight_rules", "arena_intro_4", "{=ForHVzTkJ}Also, from time to time, so-called extensive practice fights are held. Basically, it's the same thing, but longer and much more intense. I would advise you to bring some of your men with you, it might be good practice for them. Just do not forget - no teams in there, otherwise you will be disqualified.[ib:closed][if:convo_bared_teeth]", null, null, 100, null);
+            //Expansive practice introduction and rewards
+            campaignGameStarter.AddDialogLine("arena_training_expansive_practice_fight_intro_1a", "arena_expansive_practice_fight_rules", "arena_intro_4", "{=ForHVzTkJ}Also, from time to time, so-called expansive practice fights are held. Basically, it's the same thing, but longer and much more intense. I would advise you to bring some of your men with you, it might be good practice for them. Just do not forget - no teams in there, otherwise you will be disqualified.[ib:closed][if:convo_bared_teeth]", null, null, 100, null);
             campaignGameStarter.AddPlayerLine("arena_training_expansive_practice_fight_intro_3", "arena_prizes_amounts", "arena_expansive_practice_fight_reward", "{=nZVbLJnVn}And what about these expansive practice fights, are they rewarded too? How much are the prizes?", null, null, 95, null, null);
             campaignGameStarter.AddDialogLine("arena_training_expansive_practice_fight_intro_reward", "arena_expansive_practice_fight_reward", "arena_joining_ask", "{=!}{ARENA_REWARD}", new ConversationSentence.OnConditionDelegate(conversation_arena_expansive_practice_fight_explain_reward_on_condition), null, 100, null);
 
+            //Loadout choice
             campaignGameStarter.AddPlayerLine("arena_master_practice_choose_weapon", "arena_master_enter_practice_fight_confirm", "arena_master_practice_choose_weapon_request", "{=MqTDJG0uG}I'd like to choose my gear.", new ConversationSentence.OnConditionDelegate(conversation_arena_weapon_choice_allowed_on_condition), null, 200, null, null);
             campaignGameStarter.AddDialogLine("arena_master_practice_choose_weapon_master_confirm", "arena_master_practice_choose_weapon_request", "arena_master_practice_weapons_list", "{=iDGR9F0Gn}Alright{?WEAPON_CHOICE_HAS_PRICE}, but it will cost you {WEAPON_CHOICE_PRICE}{GOLD_ICON}{?}{\\?}! Which weapon set are you taking?[ib:closed][if:convo_bared_teeth]", new ConversationSentence.OnConditionDelegate(conversation_town_arena_weapon_choice_request_confirm_on_condition), null, 100, null);
             campaignGameStarter.AddPlayerLine("arena_master_practice_choose_better_weapon", "arena_master_practice_weapons_list", "arena_master_practice_choose_weapon_request", "{=DGsGeb4LA}I'd like to get better gear.", new ConversationSentence.OnConditionDelegate(conversation_town_arena_weapons_list_on_condition), new ConversationSentence.OnConsequenceDelegate(conversation_town_arena_weapons_list_get_better_on_consequence), 20, null, null);
-            campaignGameStarter.AddPlayerLine("arena_master_practice_choose_weapon_return", "arena_master_practice_weapons_list", "arena_master_enter_practice_fight", "{=lIBwkFipY}Actually, nevermind.", null, new ConversationSentence.OnConsequenceDelegate(ResetWeaponChoice), 10, null, null);
+            campaignGameStarter.AddPlayerLine("arena_master_practice_choose_weapon_return", "arena_master_practice_weapons_list", "arena_master_enter_practice_fight", "{=lIBwkFipY}Actually, nevermind.", null, new ConversationSentence.OnConsequenceDelegate(_AOArenaBehaviorManager.ResetWeaponChoice), 10, null, null);
 
-            campaignGameStarter.AddPlayerLine("arena_master_ask_for_expansive_practice_fight_fight", "arena_master_talk", "arena_master_enter_expansive_practice_fight", "{=7f21TSn5W}I'd like to participate in an expansive practice fight...", null, new ConversationSentence.OnConsequenceDelegate(SetExpansivePracticeMode), 100, new ConversationSentence.OnClickableConditionDelegate(conversation_town_arena_fight_join_check_on_condition), null);
-            campaignGameStarter.AddDialogLine("arena_master_enter_expansive_practice_fight_master_confirm", "arena_master_enter_expansive_practice_fight", "arena_master_enter_practice_fight_confirm", "{=MnhLtl9Nn}Well, gather your men and go to it! Don't forget to grab a practice weapon on your way down.[if:convo_approving]", new ConversationSentence.OnConditionDelegate(conversation_arena_join_practice_fight_confirm_on_condition), null, 100, null);
+            //Expansive practice request
+            campaignGameStarter.AddPlayerLine("arena_master_ask_for_expansive_practice_fight_fight", "arena_master_talk", "arena_master_enter_expansive_practice_fight", "{=7f21TSn5W}I'd like to participate in an expansive practice fight...", null, new ConversationSentence.OnConsequenceDelegate(_AOArenaBehaviorManager.SetExpansivePracticeMode), 100, new ConversationSentence.OnClickableConditionDelegate(conversation_town_arena_fight_join_check_on_condition), null);
+            campaignGameStarter.AddDialogLine("arena_master_enter_expansive_practice_fight_master_confirm", "arena_master_enter_expansive_practice_fight", "arena_master_enter_practice_fight_confirm", "{=MnhLtl9Nn}Well, gather your men and go to it! Don't forget to grab a practice weapon on your way down.[if:convo_approving]", new ConversationSentence.OnConditionDelegate(conversation_arena_can_join_practice_fight_on_condition), null, 100, null);
             campaignGameStarter.AddDialogLine("arena_master_enter_expansive_practice_fight_master_decline", "arena_master_enter_expansive_practice_fight", "close_window", "{=FguHzavX}You can't practice in the arena because there is a tournament going on right now.", null, null, 100, null);
 
-            campaignGameStarter.AddPlayerLine("arena_master_post_practice_fight_take_default_loadout", "arena_master_post_practice_fight_talk", "close_window", "{=WRO1rFtQm}I'll do that with standard gear.", new ConversationSentence.OnConditionDelegate(conversation_arena_return_to_default_choice_allowed_on_condition), new ConversationSentence.OnConsequenceDelegate(conversation_arena_join_fight_with_default_weapons_on_consequence), 95, null, null);
-            campaignGameStarter.AddPlayerLine("arena_master_post_practice_fight_take_new_loadout", "arena_master_post_practice_fight_talk", "arena_master_practice_choose_weapon_request", "{=uLNYivCXl}Sure. Although I'd like to take a new loadout.", new ConversationSentence.OnConditionDelegate(conversation_arena_weapon_choice_allowed_on_condition), new ConversationSentence.OnConsequenceDelegate(ResetWeaponChoice), 90, null, null);
+            //Special practice request
+            campaignGameStarter.AddPlayerLine("arena_master_ask_for_speacial_practice_fight", "arena_master_talk", "arena_master_request_speacial_practice_fight", "{=}Can you arrange a special match for me?", new ConversationSentence.OnConditionDelegate(conversation_arena_ask_for_speacial_practice_fight_on_condition), null, 100, new ConversationSentence.OnClickableConditionDelegate(conversation_town_arena_fight_join_check_on_condition), null);
+            campaignGameStarter.AddDialogLine("arena_master_request_speacial_practice_fight_master_confirm", "arena_master_request_speacial_practice_fight", "arena_master_speacial_practice_fight_list", "{=}It depends. What exactly are you thinking about?[ib:hip][if:convo_thinking]", new ConversationSentence.OnConditionDelegate(conversation_arena_can_join_practice_fight_on_condition), null, 100, null);
+            campaignGameStarter.AddDialogLine("arena_master_request_speacial_practice_fight_master_decline", "arena_master_request_speacial_practice_fight", "close_window", "{=FguHzavX}You can't practice in the arena because there is a tournament going on right now.", null, null, 100, null);
+
+            //Parry practice request
+            campaignGameStarter.AddPlayerLine("arena_master_ask_for_parry_practice_fight_fight", "arena_master_speacial_practice_fight_list", "arena_master_enter_parry_practice_fight", "{=}I'd like to practice parrying. Can you arrange that for me?", null, new ConversationSentence.OnConsequenceDelegate(_AOArenaBehaviorManager.SetParryPracticeMode), 100, new ConversationSentence.OnClickableConditionDelegate(conversation_town_arena_fight_join_check_on_condition), null);
+            campaignGameStarter.AddDialogLine("arena_master_enter_parry_practice_fight_master_confirm", "arena_master_enter_parry_practice_fight", "arena_master_enter_practice_fight_confirm", "{=}This is a really important skill and practicing it will benefit others too... I think I can make this match happen{?PRACTICE_CHOICE_HAS_PRICE}, but it will cost you {PRACTICE_CHOICE_PRICE}{GOLD_ICON}{?}{\\?}. Oh, and don't expect any winnings, since this type of exercise is unlikely to interest the crowd. if you're still up to it, don't forget to grab a practice weapon on your way down.[if:convo_calm_friendly][ib:confident]", new ConversationSentence.OnConditionDelegate(conversation_arena_join_parry_practice_fight_confirm_on_condition), null, 100, null);
+            campaignGameStarter.AddDialogLine("arena_master_enter_parry_practice_fight_master_decline", "arena_master_enter_parry_practice_fight", "close_window", "{=FguHzavX}You can't practice in the arena because there is a tournament going on right now.", null, null, 100, null);
+
+            //Loadout choice post match
+            campaignGameStarter.AddPlayerLine("arena_master_post_practice_fight_take_default_loadout", "arena_master_post_practice_fight_talk", "close_window", "{=WRO1rFtQm}I'll do that with standard gear.", new ConversationSentence.OnConditionDelegate(conversation_arena_return_to_default_choice_allowed_on_condition), new ConversationSentence.OnConsequenceDelegate(conversation_arena_join_fight_with_default_weapons_on_consequence), 95, new ConversationSentence.OnClickableConditionDelegate(conversation_arena_join_fight_with_default_weapons_on_condition), null);
+            campaignGameStarter.AddPlayerLine("arena_master_post_practice_fight_take_new_loadout", "arena_master_post_practice_fight_talk", "arena_master_practice_choose_weapon_request", "{=uLNYivCXl}Sure. Although I'd like to take a new loadout.", new ConversationSentence.OnConditionDelegate(conversation_arena_weapon_choice_allowed_on_condition), new ConversationSentence.OnConsequenceDelegate(_AOArenaBehaviorManager.ResetWeaponChoice), 90, conversation_arena_join_fight_with_new_weapons_on_condition, null);
         }
 
         public void AfterMissionStarted(IMission obj)
@@ -133,7 +150,8 @@ namespace ArenaOverhaul.CampaignBehaviors
             {
                 return;
             }
-            Mission.Current.SetMissionMode(MissionMode.Battle, true);
+            AOArenaBehaviorManager.Instance!.PayForPracticeMatch();
+            Mission.Current.SetMissionMode(_AOArenaBehaviorManager.GetArenaPracticeMissionMode(), true);
             Mission.Current.GetMissionBehavior<ArenaPracticeFightMissionController>().StartPlayerPractice();
             _enteredPracticeFightFromMenu = false;
         }
@@ -149,7 +167,7 @@ namespace ArenaOverhaul.CampaignBehaviors
             {
                 return;
             }
-            ResetWeaponChoice();
+            _AOArenaBehaviorManager.ResetWeaponChoice();
             AddLoadoutDialogues(_campaignGame!, settlement);
         }
 
@@ -173,63 +191,74 @@ namespace ArenaOverhaul.CampaignBehaviors
                         continue;
                     }
 
-                    List<(int EquipmentStage, string Loadout)> listOfExistingLoadouts = new();
-                    for (int i = 0; i < characterObject.BattleEquipments.Count(); i++)
-                    {
-                        string[] dialogueIdArr = new string[4];
-                        string[] dialogueTextArr = new string[4];
-                        string dialogueID = "arena_practice_stage_" + practiceStage.ToString() + "_loadout_";
-                        string dialogueText = "";
-                        int loadout = i;
-                        int equipmentStage = practiceStage;
-
-                        for (int x = 0; x < 4; x++)
-                        {
-                            EquipmentElement equipmentFromSlot = characterObject.BattleEquipments.ToList<Equipment>()[i].GetEquipmentFromSlot((EquipmentIndex) x);
-                            if (equipmentFromSlot.Item != null)
-                            {
-                                dialogueIdArr[x] = equipmentFromSlot.Item.StringId;
-                                dialogueTextArr[x] = equipmentFromSlot.Item.Name.ToString();
-                            }
-                        }
-                        dialogueID = string.Join("_", dialogueIdArr.Where(s => !string.IsNullOrEmpty(s)));
-                        dialogueText = string.Join(", ", dialogueTextArr.Where(s => !string.IsNullOrEmpty(s)));
-
-                        var equipmentEntry = (equipmentStage, dialogueText);
-                        if (!listOfExistingLoadouts.Contains(equipmentEntry))
-                        {
-                            listOfExistingLoadouts.Add(equipmentEntry);
-                            campaignGameStarter.AddPlayerLine(dialogueID, "arena_master_practice_weapons_list", "close_window", dialogueText, new ConversationSentence.OnConditionDelegate(() => conversation_town_arena_culture_match_on_condition(settlementCulture, equipmentStage)), new ConversationSentence.OnConsequenceDelegate(() => conversation_arena_join_fight_with_selected_loadout_on_consequence(loadout)), 100, new ConversationSentence.OnClickableConditionDelegate((out TextObject? explanation) => conversation_town_arena_afford_loadout_choice_on_condition(out explanation, equipmentStage)), null);
-                        }
-                    }
+                    var battleEquipments = characterObject.BattleEquipments.ToList();
+                    AddLoadoutDialoguesInternal(campaignGameStarter, settlementCulture, practiceStage, battleEquipments, "arena_practice_", ArenaPracticeMode.ExceptParry);
+                    AddLoadoutDialoguesInternal(campaignGameStarter, settlementCulture, practiceStage, AOArenaBehaviorManager.FilterAvailableWeapons(battleEquipments, ArenaPracticeMode.Parry), "arena_parry_practice_", ArenaPracticeMode.Parry);
                 }
                 _visitedCultures.Add(settlementCulture);
             }
         }
 
+        private void AddLoadoutDialoguesInternal(CampaignGameStarter campaignGameStarter, CultureObject settlementCulture, int practiceStage, List<Equipment> battleEquipments, string dialogueIDPrefix, ArenaPracticeMode practiceMode)
+        {
+            List<(int EquipmentStage, string Loadout)> listOfExistingLoadouts = [];
+            for (int i = 0; i < battleEquipments.Count; i++)
+            {
+                string[] dialogueIdArr = new string[4];
+                string[] dialogueTextArr = new string[4];
+                string dialogueID = dialogueIDPrefix + "stage_" + practiceStage.ToString() + "_loadout_";
+                string dialogueText = "";
+                int loadout = i;
+                int equipmentStage = practiceStage;
+
+                for (int x = 0; x < 4; x++)
+                {
+                    EquipmentElement equipmentFromSlot = battleEquipments[i].GetEquipmentFromSlot((EquipmentIndex) x);
+                    if (equipmentFromSlot.Item != null)
+                    {
+                        dialogueIdArr[x] = equipmentFromSlot.Item.StringId;
+                        dialogueTextArr[x] = equipmentFromSlot.Item.Name.ToString();
+                    }
+                }
+                dialogueID = dialogueID + string.Join("_", dialogueIdArr.Where(s => !string.IsNullOrEmpty(s)));
+                dialogueText = string.Join(", ", dialogueTextArr.Where(s => !string.IsNullOrEmpty(s)));
+
+                var equipmentEntry = (equipmentStage, dialogueText);
+                if (!listOfExistingLoadouts.Contains(equipmentEntry))
+                {
+                    listOfExistingLoadouts.Add(equipmentEntry);
+                    campaignGameStarter.AddPlayerLine(dialogueID, "arena_master_practice_weapons_list", "close_window", dialogueText, new ConversationSentence.OnConditionDelegate(() => conversation_town_arena_culture_match_on_condition(settlementCulture, equipmentStage, practiceMode)), new ConversationSentence.OnConsequenceDelegate(() => conversation_arena_join_fight_with_selected_loadout_on_consequence(loadout)), 100, new ConversationSentence.OnClickableConditionDelegate((out TextObject? explanation) => conversation_town_arena_afford_loadout_choice_on_condition(out explanation, equipmentStage)), null);
+                }
+            }
+        }
+
 #pragma warning disable IDE1006 // Naming Styles
-        public bool conversation_arena_weapon_choice_allowed_on_condition() => _inExpansivePractice ? Settings.Instance!.ExpansivePracticeEnableLoadoutChoice : Settings.Instance!.PracticeEnableLoadoutChoice;
 
-        public bool conversation_arena_weapon_choice_forbidden_on_condition() => !(_inExpansivePractice ? Settings.Instance!.ExpansivePracticeEnableLoadoutChoice : Settings.Instance!.PracticeEnableLoadoutChoice);
+        private bool conversation_arena_ask_for_speacial_practice_fight_on_condition() => Settings.Instance!.EnableParryPractice;
 
-        private bool conversation_arena_return_to_default_choice_allowed_on_condition() => conversation_arena_weapon_choice_allowed_on_condition() && _chosenLoadout >= 0;
+        public bool conversation_arena_weapon_choice_allowed_on_condition() => _AOArenaBehaviorManager.IsWeaponChoiceAllowed();
 
-        private bool conversation_town_arena_culture_match_on_condition(CultureObject culture, int stage) => culture.Equals(Settlement.CurrentSettlement.MapFaction?.Culture ?? Settlement.CurrentSettlement.Culture) && stage == _currentLoadoutStage;
+        public bool conversation_arena_weapon_choice_forbidden_on_condition() => !_AOArenaBehaviorManager.IsWeaponChoiceAllowed();
+
+        private bool conversation_arena_return_to_default_choice_allowed_on_condition() => conversation_arena_weapon_choice_allowed_on_condition() && _AOArenaBehaviorManager.ChosenLoadout >= 0;
+
+        private bool conversation_town_arena_culture_match_on_condition(CultureObject culture, int stage, ArenaPracticeMode practiceMode) =>
+            culture.Equals(Settlement.CurrentSettlement.MapFaction?.Culture ?? Settlement.CurrentSettlement.Culture) && stage == _AOArenaBehaviorManager.ChosenLoadoutStage && practiceMode.Contains(_AOArenaBehaviorManager.PracticeMode);
+
+        private bool conversation_arena_join_fight_with_default_weapons_on_condition(out TextObject? explanation) => _AOArenaBehaviorManager.CheckAffordabilityForNextPracticeRound(_AOArenaBehaviorManager.PracticeMode, 0, out explanation);
+
+        private bool conversation_arena_join_fight_with_new_weapons_on_condition(out TextObject? explanation) =>
+            _AOArenaBehaviorManager.CheckAffordabilityForNextPracticeRound(_AOArenaBehaviorManager.PracticeMode, _AOArenaBehaviorManager.GetWeaponLoadoutChoiceCost(), out explanation);
 
         private bool conversation_town_arena_weapon_choice_request_confirm_on_condition()
         {
-            int price = GetWeaponLoadoutChoiceCost();
+            int price = _AOArenaBehaviorManager.GetWeaponLoadoutChoiceCost();
             MBTextManager.SetTextVariable("WEAPON_CHOICE_HAS_PRICE", (price > 0 ? 1 : 0).ToString(), false);
-            MBTextManager.SetTextVariable("WEAPON_CHOICE_PRICE", (_currentLoadoutStage * price).ToString(), false);
+            MBTextManager.SetTextVariable("WEAPON_CHOICE_PRICE", (_AOArenaBehaviorManager.ChosenLoadoutStage * price).ToString(), false);
             return true;
         }
 
-        public int GetWeaponLoadoutChoiceCost()
-        {
-            return _inExpansivePractice ? Settings.Instance!.ExpansivePracticeLoadoutChoiceCost : Settings.Instance!.PracticeLoadoutChoiceCost;
-        }
-
-        private bool conversation_town_arena_weapons_list_on_condition() => _currentLoadoutStage < Settings.Instance!.PracticeLoadoutStages;
+        private bool conversation_town_arena_weapons_list_on_condition() => _AOArenaBehaviorManager.ChosenLoadoutStage < Settings.Instance!.PracticeLoadoutStages;
 
         private bool conversation_town_arena_fight_join_check_on_condition(out TextObject? explanation)
         {
@@ -254,35 +283,13 @@ namespace ArenaOverhaul.CampaignBehaviors
 
         private bool conversation_town_arena_afford_loadout_choice_on_condition(out TextObject? explanation, int stage)
         {
-            int price = GetWeaponLoadoutChoiceCost();
-            if (Hero.MainHero.Gold < stage * price)
-            {
-                explanation = new TextObject("{=fpPMPCNp5}You don't have enough gold.", null);
-                return false;
-            }
-            explanation = null;
-            return true;
+            int loadoutPrice = stage * _AOArenaBehaviorManager.GetWeaponLoadoutChoiceCost();
+            return _AOArenaBehaviorManager.CheckAffordabilityForNextPracticeRound(_AOArenaBehaviorManager.PracticeMode, loadoutPrice, out explanation);
         }
 
         internal bool conversation_town_arena_afford_loadout_choice_on_condition(out TextObject? explanation)
         {
-            if (_chosenLoadout >= 0)
-            {
-                int price = _currentLoadoutStage * GetWeaponLoadoutChoiceCost();
-                if (Hero.MainHero.Gold < price)
-                {
-                    explanation = new TextObject("{=EPjU6L6kg}You don't have enough gold to do another round with the current loadout.", null);
-                    return false;
-                }
-                else
-                {
-                    explanation = new TextObject("{=9REfw5FN6}Another round of practice with the current loadout will cost you {REMATCH_COST}{GOLD_ICON}", null);
-                    explanation.SetTextVariable("REMATCH_COST", price);
-                    return true;
-                }
-            }
-            explanation = null;
-            return true;
+            return _AOArenaBehaviorManager.CheckAffordabilityForNextPracticeRound(out explanation);
         }
 
         private static bool conversation_arena_expansive_practice_fight_explain_reward_on_condition()
@@ -291,58 +298,40 @@ namespace ArenaOverhaul.CampaignBehaviors
             return true;
         }
 
-        private bool conversation_arena_join_practice_fight_confirm_on_condition() => !Settlement.CurrentSettlement.Town.HasTournament;
+        private bool conversation_arena_can_join_practice_fight_on_condition() => !Settlement.CurrentSettlement.Town.HasTournament;
+
+        private bool conversation_arena_join_parry_practice_fight_confirm_on_condition()
+        {
+            int price = _AOArenaBehaviorManager.GetPracticeModeChoiceCost();
+            MBTextManager.SetTextVariable("PRACTICE_CHOICE_HAS_PRICE", (price > 0 ? 1 : 0).ToString(), false);
+            MBTextManager.SetTextVariable("PRACTICE_CHOICE_PRICE", price.ToString(), false);
+
+            return !Settlement.CurrentSettlement.Town.HasTournament;
+        }
 
         private void conversation_arena_join_fight_with_selected_loadout_on_consequence(int loadout)
         {
-            _chosenLoadout = loadout;
+            _AOArenaBehaviorManager.ChosenLoadout = loadout;
             conversation_arena_join_fight_with_pre_selected_loadout_on_consequence();
         }
 
         public void conversation_arena_join_fight_with_pre_selected_loadout_on_consequence()
         {
-            PayForWeaponLoadout();
             Campaign.Current.ConversationManager.ConversationEndOneShot += new Action(StartPlayerPracticeAfterConversationEnd);
         }
 
-        private void conversation_town_arena_weapons_list_get_better_on_consequence() => _currentLoadoutStage++;
+        private void conversation_town_arena_weapons_list_get_better_on_consequence() => _AOArenaBehaviorManager.ChosenLoadoutStage++;
 
         public void conversation_arena_join_fight_with_default_weapons_on_consequence()
         {
-            ResetWeaponChoice();
+            _AOArenaBehaviorManager.ResetWeaponChoice();
             Campaign.Current.ConversationManager.ConversationEndOneShot += new Action(StartPlayerPracticeAfterConversationEnd);
-        }
-
-        public void ResetWeaponChoice()
-        {
-            _chosenLoadout = -1;
-            _currentLoadoutStage = 1;
-        }
-
-        public void SetStandardPracticeMode()
-        {
-            _inExpansivePractice = false;
-            ResetWeaponChoice();
-        }
-
-        public void SetExpansivePracticeMode()
-        {
-            _inExpansivePractice = true;
-            ResetWeaponChoice();
-        }
-
-        public void PayForWeaponLoadout()
-        {
-            if (_chosenLoadout >= 0)
-            {
-                int price = GetWeaponLoadoutChoiceCost();
-                GiveGoldAction.ApplyForCharacterToSettlement(Hero.MainHero, Settlement.CurrentSettlement, _currentLoadoutStage * price);
-            }
         }
 
         private static void StartPlayerPracticeAfterConversationEnd()
         {
-            Mission.Current.SetMissionMode(MissionMode.Battle, false);
+            AOArenaBehaviorManager.Instance!.PayForPracticeMatch();
+            Mission.Current.SetMissionMode(AOArenaBehaviorManager.Instance!.GetArenaPracticeMissionMode(), false);
             Mission.Current.GetMissionBehavior<ArenaPracticeFightMissionController>().StartPlayerPractice();
         }
 
@@ -454,19 +443,28 @@ namespace ArenaOverhaul.CampaignBehaviors
                 };
         }
 
-        private void game_menu_enter_expansive_practice_fight_on_consequence(MenuCallbackArgs args)
+        private void game_menu_enter_expansive_practice_fight_on_consequence(MenuCallbackArgs args) => StartPlayerPractice(ArenaPracticeMode.Expansive);
+
+        private void game_menu_enter_parry_practice_fight_on_consequence(MenuCallbackArgs args) => StartPlayerPractice(ArenaPracticeMode.Parry);
+
+        private void StartPlayerPractice(ArenaPracticeMode practiceMode)
         {
+            var dict = AOArenaBehaviorManager._companionPracticeSettings;
+
             if (!FieldAccessHelper.ArenaMasterHasMetInSettlementsByRef(_arenaMasterBehavior!).Contains(Settlement.CurrentSettlement))
             {
                 FieldAccessHelper.ArenaMasterHasMetInSettlementsByRef(_arenaMasterBehavior!).Add(Settlement.CurrentSettlement);
             }
-            _inExpansivePractice = true;
-            ResetWeaponChoice();
+            _AOArenaBehaviorManager.SetPracticeMode(practiceMode);
             PlayerEncounter.LocationEncounter.CreateAndOpenMissionController(LocationComplex.Current.GetLocationWithId("arena"), null, null, null);
             _enteredPracticeFightFromMenu = true;
         }
 
-        private bool game_menu_enter_expansive_practice_fight_on_condition(MenuCallbackArgs args)
+        private bool game_menu_enter_parry_practice_fight_on_condition(MenuCallbackArgs args) => CheckCustomPracticeFightMenuAvailability(args, ArenaPracticeMode.Parry);
+
+        private bool game_menu_enter_expansive_practice_fight_on_condition(MenuCallbackArgs args) => CheckCustomPracticeFightMenuAvailability(args, ArenaPracticeMode.Expansive);
+
+        private bool CheckCustomPracticeFightMenuAvailability(MenuCallbackArgs args, ArenaPracticeMode practiceMode)
         {
             Settlement currentSettlement = Settlement.CurrentSettlement;
 #if v100 || v101 || v102 || v103
@@ -498,12 +496,17 @@ namespace ArenaOverhaul.CampaignBehaviors
                 args.IsEnabled = false;
                 return true;
             }
-            if (!currentSettlement.Town.HasTournament)
+            if (currentSettlement.Town.HasTournament)
             {
+                args.Tooltip = new TextObject("{=NESB0CVc}There is no practice fight because of the Tournament.", null);
+                args.IsEnabled = false;
                 return true;
             }
-            args.Tooltip = new TextObject("{=NESB0CVc}There is no practice fight because of the Tournament.", null);
-            args.IsEnabled = false;
+            if (!_AOArenaBehaviorManager.CheckAffordabilityForNextPracticeRound(practiceMode, 0, out args.Tooltip))
+            {
+                args.IsEnabled = false;
+                return true;
+            }
             return true;
         }
 
@@ -572,11 +575,9 @@ namespace ArenaOverhaul.CampaignBehaviors
             dataStore.SyncData("_AOArenaBehaviorManager", ref _AOArenaBehaviorManager);
             if (dataStore.IsLoading)
             {
-                if (_AOArenaBehaviorManager == null)
-                {
-                    _AOArenaBehaviorManager = new AOArenaBehaviorManager();
-                }
+                _AOArenaBehaviorManager ??= new AOArenaBehaviorManager();
             }
+            AOArenaBehaviorManager.Instance = _AOArenaBehaviorManager;
         }
     }
 }
