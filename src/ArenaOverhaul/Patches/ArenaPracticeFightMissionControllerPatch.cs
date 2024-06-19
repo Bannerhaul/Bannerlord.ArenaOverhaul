@@ -111,7 +111,8 @@ namespace ArenaOverhaul.Patches
                 LoggingHelper.LogNoHooksIssue(
                     codes, numberOfEdits, RequiredNumberOfEdits, __originalMethod,
                     [
-                        (nameof(spawnStartIndex), spawnStartIndex), (nameof(spawnEndIndex), spawnEndIndex),
+                        (nameof(spawnStartIndex), spawnStartIndex),
+                        (nameof(spawnEndIndex), spawnEndIndex),
                     ],
                     [
                         (nameof(miGetActiveOpponentCount), miGetActiveOpponentCount),
@@ -174,8 +175,10 @@ namespace ArenaOverhaul.Patches
                 LoggingHelper.LogNoHooksIssue(
                     codes, numberOfEdits, RequiredNumberOfEdits, __originalMethod,
                     [
-                        (nameof(stageDefinitionStartIndex), stageDefinitionStartIndex), (nameof(stageDefinitionEndIndex), stageDefinitionEndIndex),
-                        (nameof(equipmentDefinitionStartIndex), equipmentDefinitionStartIndex), (nameof(equipmentDefinitionEndIndex), equipmentDefinitionEndIndex),
+                        (nameof(stageDefinitionStartIndex), stageDefinitionStartIndex),
+                        (nameof(stageDefinitionEndIndex), stageDefinitionEndIndex),
+                        (nameof(equipmentDefinitionStartIndex), equipmentDefinitionStartIndex),
+                        (nameof(equipmentDefinitionEndIndex), equipmentDefinitionEndIndex),
                     ],
                     [
                         (nameof(miGetChosenEquipmentStage), miGetChosenEquipmentStage),

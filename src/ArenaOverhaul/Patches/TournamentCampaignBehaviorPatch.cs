@@ -51,7 +51,8 @@ namespace ArenaOverhaul.Patches
                 LoggingHelper.LogNoHooksIssue(
                     codes, numberOfEdits, RequiredNumberOfEdits, __originalMethod,
                     [
-                        (nameof(renownAwardStartIndex), renownAwardStartIndex), (nameof(renownAwardEndIndex), renownAwardEndIndex),
+                        (nameof(renownAwardStartIndex), renownAwardStartIndex),
+                        (nameof(renownAwardEndIndex), renownAwardEndIndex),
                     ],
                     [
                         (nameof(miAddRenown), miAddRenown),

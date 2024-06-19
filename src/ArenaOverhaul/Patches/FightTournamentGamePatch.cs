@@ -73,7 +73,8 @@ namespace ArenaOverhaul.Patches
                 LoggingHelper.LogNoHooksIssue(
                     codes, numberOfEdits, RequiredNumberOfEdits, __originalMethod,
                     [
-                        (nameof(ldarg2Index), ldarg2Index), (nameof(continueIndex), continueIndex),
+                        (nameof(ldarg2Index), ldarg2Index),
+                        (nameof(continueIndex), continueIndex),
                     ],
                     [
                         (nameof(miShouldPrizeBeRerolled), miShouldPrizeBeRerolled)
@@ -129,8 +130,10 @@ namespace ArenaOverhaul.Patches
                 LoggingHelper.LogNoHooksIssue(
                     codes, numberOfEdits, RequiredNumberOfEdits, __originalMethod,
                     [
-                        (nameof(prizeItemNameStartIndex1), prizeItemNameStartIndex1), (nameof(prizeItemNameEndIndex1), prizeItemNameEndIndex1),
-                        (nameof(prizeItemNameStartIndex2), prizeItemNameStartIndex2), (nameof(prizeItemNameEndIndex2), prizeItemNameEndIndex2)
+                        (nameof(prizeItemNameStartIndex1), prizeItemNameStartIndex1),
+                        (nameof(prizeItemNameEndIndex1), prizeItemNameEndIndex1),
+                        (nameof(prizeItemNameStartIndex2), prizeItemNameStartIndex2),
+                        (nameof(prizeItemNameEndIndex2), prizeItemNameEndIndex2)
                     ],
                     [
                         (nameof(miTournamentPrizeGetter), miTournamentPrizeGetter),
@@ -160,7 +163,7 @@ namespace ArenaOverhaul.Patches
 
         [HarmonyPostfix]
         [HarmonyPatch("GetTournamentPrize")]
-        public static void GetTournamentPrizePostfix(FightTournamentGame __instance, ref ItemObject? __result )
+        public static void GetTournamentPrizePostfix(FightTournamentGame __instance, ref ItemObject? __result)
         {
             if (!Settings.Instance!.EnableHighQualityPrizes || TournamentRewardManager.CurrentPrizeHasRegisteredModifier(__instance.Town, __result))
             {
