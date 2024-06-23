@@ -191,8 +191,13 @@ namespace ArenaOverhaul.Patches
                 codes.RemoveRange(equipmentDefinitionStartIndex, equipmentDefinitionEndIndex - equipmentDefinitionStartIndex + 1);
                 codes.InsertRange(equipmentDefinitionStartIndex,
                     [
-                        new CodeInstruction(OpCodes.Ldloc_1), new CodeInstruction(opcode: OpCodes.Call, operand: miFilterAvailableWeapons), new CodeInstruction(OpCodes.Stloc_1),
-                        new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(OpCodes.Ldarg_2), new CodeInstruction(OpCodes.Ldloc_1), new CodeInstruction(opcode: OpCodes.Call, operand: miGetChosenEquipment)
+                        new CodeInstruction(OpCodes.Ldloc_1),
+                        new CodeInstruction(opcode: OpCodes.Call, operand: miFilterAvailableWeapons),
+                        new CodeInstruction(OpCodes.Stloc_1),
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        new CodeInstruction(OpCodes.Ldarg_2),
+                        new CodeInstruction(OpCodes.Ldloc_1),
+                        new CodeInstruction(opcode: OpCodes.Call, operand: miGetChosenEquipment)
                     ]);
                 codes.RemoveRange(stageDefinitionStartIndex, stageDefinitionEndIndex - stageDefinitionStartIndex + 1);
                 codes.InsertRange(stageDefinitionStartIndex, [new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(OpCodes.Ldarg_2), new CodeInstruction(opcode: OpCodes.Call, operand: miGetChosenEquipmentStage)]);
@@ -520,7 +525,7 @@ namespace ArenaOverhaul.Patches
         {
             int countToAddAtOnce = Math.Max(FieldAccessHelper.APFMCSpawnFramesByRef(instance).Count - 1, 1);
             if (IsExpansivePractice(instance) && IsUndercrowded() && GetTotalParticipantsCount() >= FieldAccessHelper.APFMCSpawnedOpponentAgentCountByRef(instance) + countToAddAtOnce)
-            {                
+            {
                 int num = 0;
                 while (num < countToAddAtOnce && FieldAccessHelper.APFMCSpawnedOpponentAgentCountByRef(instance) <= GetTotalParticipantsCount())
                 {
@@ -592,7 +597,7 @@ namespace ArenaOverhaul.Patches
 
         private static bool IsExpansivePractice(ArenaPracticeFightMissionController instance) => (instance?.IsPlayerPracticing ?? false) && ((AOArenaBehaviorManager.Instance?.PracticeMode ?? ArenaPracticeMode.Standard) == ArenaPracticeMode.Expansive);
 
-        private static ArenaPracticeMode GetPracticeMode(bool checkPlayerIsPracticing = true) 
+        private static ArenaPracticeMode GetPracticeMode(bool checkPlayerIsPracticing = true)
         {
             if (checkPlayerIsPracticing && !(Mission.Current?.GetMissionBehavior<ArenaPracticeFightMissionController>()?.IsPlayerPracticing ?? false))
             {

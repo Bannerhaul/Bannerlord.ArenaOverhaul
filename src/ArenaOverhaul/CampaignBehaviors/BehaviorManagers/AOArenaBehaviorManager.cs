@@ -1,21 +1,23 @@
 ﻿using ArenaOverhaul.ModSettings;
 using ArenaOverhaul.Tournament;
 
-using System.Collections.Generic;
-
-using TaleWorlds.CampaignSystem.Actions;
-using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.Settlements;
-using TaleWorlds.SaveSystem;
-using TaleWorlds.Localization;
-using TaleWorlds.Core;
-using System;
-using System.Linq;
 using Bannerlord.ButterLib.Common.Helpers;
-using TaleWorlds.CampaignSystem.Roster;
+
 using SandBox.Missions.MissionLogics.Arena;
-using TaleWorlds.MountAndBlade;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.Party;
+using TaleWorlds.CampaignSystem.Roster;
+using TaleWorlds.CampaignSystem.Settlements;
+using TaleWorlds.Core;
+using TaleWorlds.Localization;
+using TaleWorlds.MountAndBlade;
+using TaleWorlds.SaveSystem;
 
 namespace ArenaOverhaul.CampaignBehaviors.BehaviorManagers
 {

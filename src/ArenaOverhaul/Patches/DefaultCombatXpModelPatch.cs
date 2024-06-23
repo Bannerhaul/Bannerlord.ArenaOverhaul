@@ -46,7 +46,7 @@ namespace ArenaOverhaul.Patches
             const int RequiredNumberOfEdits = 2;
             if (numberOfEdits < RequiredNumberOfEdits)
             {
-                LoggingHelper.LogNoHooksIssue( codes, numberOfEdits, RequiredNumberOfEdits, __originalMethod, [], []);
+                LoggingHelper.LogNoHooksIssue(codes, numberOfEdits, RequiredNumberOfEdits, __originalMethod, [], []);
             }
             return codes.AsEnumerable();
         }

@@ -1,7 +1,7 @@
 ﻿using ArenaOverhaul.Extensions;
 
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ArenaOverhaul.ModSettings
@@ -27,7 +27,7 @@ namespace ArenaOverhaul.ModSettings
                 throw new InvalidOperationException("The struct must be of Enum type!");
             }
             T enumValue = Enum.GetValues(typeof(T)).Cast<T>().First();
-            var dropdownItems = (typeof(T).IsDefined(typeof(FlagsAttribute), inherit: false) ? (GetAllVariations ? enumValue.GetPossibleVariations(accountForZeros) : enumValue.GetDefinedFlags(accountForZeros)) : enumValue.GetAllItems   (accountForZeros)).ToList();
+            var dropdownItems = (typeof(T).IsDefined(typeof(FlagsAttribute), inherit: false) ? (GetAllVariations ? enumValue.GetPossibleVariations(accountForZeros) : enumValue.GetDefinedFlags(accountForZeros)) : enumValue.GetAllItems(accountForZeros)).ToList();
             int idx = -1;
             foreach (T item in dropdownItems)
             {

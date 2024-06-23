@@ -10,18 +10,18 @@ using TaleWorlds.ModuleManager;
 
 namespace ArenaOverhaul.ViewModelMixin
 {
-    
+
     [PrefabExtension("ArenaPracticeFight", "descendant::ListPanel[@IsVisible='@IsPlayerPracticing']")]
     [UsedImplicitly]
     internal sealed class ArenaPracticeFightPrefabExtension : PrefabExtensionSetAttributePatch
     {
         public override List<Attribute> Attributes =>
         [
-            new Attribute( "IsVisible", "@IsStandardPanelVisible" ),
-            new Attribute( "Id", "StandardPanel" ),
+            new Attribute("IsVisible", "@IsStandardPanelVisible"),
+            new Attribute("Id", "StandardPanel"),
         ];
     }
-    
+
     [PrefabExtension("ArenaPracticeFight", "descendant::ListPanel[@Id='StandardPanel']")]
     [UsedImplicitly]
     internal sealed class ArenaPracticeFightPrefabInsertExtension : PrefabExtensionInsertPatch
