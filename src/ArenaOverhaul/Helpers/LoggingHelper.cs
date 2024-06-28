@@ -43,7 +43,6 @@ namespace ArenaOverhaul.Helpers
         }
 
         public static void LogNoHooksIssue(List<CodeInstruction> codes, int numberOfEdits, int requiredNumberOfEdits, MethodBase originalMethod, (string IndexName, int IndexValue)[] indexArgs, (string MethodInfoName, MemberInfo? MemberInfo)[] memberInfoArgs)
-
         {
             StringBuilder issueInfo = new();
             if (indexArgs.Length > 0)
@@ -74,7 +73,6 @@ namespace ArenaOverhaul.Helpers
                 MessageHelper.ErrorMessage($"Harmony transpiler for  {originalMethod.DeclaringType?.Name}. {originalMethod.Name} was not able to make all required changes!");
             }
         }
-
 
         private static void LogILAndPatches(List<CodeInstruction> codes, StringBuilder issueInfo, MethodBase originalMethod)
         {

@@ -658,7 +658,6 @@ namespace ArenaOverhaul.Patches
             return AOArenaBehaviorManager.GetAITeamColor(GetPracticeMode(), FieldAccessHelper.APFMCAIParticipantTeamsByRef(instance).Count);
         }
 
-
         internal static Banner GetAITeamBanner(ArenaPracticeFightMissionController instance)
         {
             return Banner.CreateOneColoredEmptyBanner(BannerManager.GetColorId(GetAITeamColor(instance)));

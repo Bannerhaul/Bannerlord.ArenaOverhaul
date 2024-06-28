@@ -270,7 +270,6 @@ namespace ArenaOverhaul.Patches
                     ]);
             }
 
-
             if (indexToResetAfterPracticeTalkFlag > 0 && indexOfOnConsequenceNewobjOperand > 0)
             {
                 codes.InsertRange(indexToResetAfterPracticeTalkFlag, [new CodeInstruction(opcode: OpCodes.Ldftn, operand: miResetAfterPracticeTalkFlag), new CodeInstruction(opcode: OpCodes.Newobj, operand: codes[indexOfOnConsequenceNewobjOperand].operand)]);

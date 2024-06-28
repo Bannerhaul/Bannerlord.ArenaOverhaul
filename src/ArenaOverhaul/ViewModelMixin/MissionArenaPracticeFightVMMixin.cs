@@ -26,7 +26,6 @@ namespace ArenaOverhaul.ViewModelMixin
 
         private bool _isSpecialPanelVisible;
 
-
         private string _successfulBlocksText = "";
         private string _perfectBlocksText = "";
         private string _chamberBlocksText = "";

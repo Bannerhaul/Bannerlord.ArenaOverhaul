@@ -246,7 +246,7 @@ namespace ArenaOverhaul.CampaignBehaviors.BehaviorManagers
 
         private void GetAvailableLoadoutInfo(CultureObject? settlementCulture)
         {
-            if (settlementCulture is null || WeaponLoadoutInformation.TryGetValue(settlementCulture, out var cultureLoadoutsInformation) && cultureLoadoutsInformation != null)
+            if (settlementCulture is null || (WeaponLoadoutInformation.TryGetValue(settlementCulture, out var cultureLoadoutsInformation) && cultureLoadoutsInformation != null))
             {
                 return;
             }

@@ -302,7 +302,6 @@ namespace ArenaOverhaul.Patches
                 {
                     list.Sort((x, y) => x.Value.CompareTo(y.Value));
                 }
-
             }
             else
             {

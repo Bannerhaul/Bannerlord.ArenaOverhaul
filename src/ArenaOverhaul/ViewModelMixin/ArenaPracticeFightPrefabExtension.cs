@@ -10,7 +10,6 @@ using TaleWorlds.ModuleManager;
 
 namespace ArenaOverhaul.ViewModelMixin
 {
-    
     [PrefabExtension("ArenaPracticeFight", "descendant::ListPanel[@IsVisible='@IsPlayerPracticing']")]
     [UsedImplicitly]
     internal sealed class ArenaPracticeFightPrefabExtension : PrefabExtensionSetAttributePatch

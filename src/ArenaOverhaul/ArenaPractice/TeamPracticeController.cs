@@ -186,12 +186,10 @@ namespace ArenaOverhaul.ArenaPractice
                 return (Frame: kvp.Key, BetterTeamsCount: kvp.Value.Count(x => x.Team != team && x.Distance < teamDistance), Distance: teamDistance);
             }).OrderBy(x => x.BetterTeamsCount).ThenBy(x => x.Distance).ToList();
 
-
             return (optimalFrames.Count >= 1)
                 ? optimalFrames.First().Frame
                 : teamsDict.TryGetValue(team, out var teamDistances) && teamDistances.Count > 0 ? teamDistances.First().Frame : deGetSpawnFrame!(instance, true, UseInitialSpawnForDiversity(instance));
         }
-
 
         public static Dictionary<MatrixFrame, List<(Team Team, float Distance)>> GetClosestTeamsForSpawnFrames(Dictionary<Team, List<(MatrixFrame Frame, float Distance)>> teamsDict)
         {
