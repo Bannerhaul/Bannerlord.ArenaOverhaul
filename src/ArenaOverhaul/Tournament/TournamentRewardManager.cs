@@ -121,11 +121,7 @@ namespace ArenaOverhaul.Tournament
 
         public static int GetTournamentGoldPrize(Town tournamentTown)
         {
-#if v100 || v101 || v102 || v103 || v110 || v111 || v112 || v113 || v114 || v115 || v116
-            return (int) (Math.Floor((Settings.Instance!.EnableTournamentGoldPrizes ? MathHelper.GetSoftCappedValue(tournamentTown.Settlement.Prosperity) + (Settings.Instance!.EnableTournamentPrizeScaling ? MathHelper.GetSoftCappedValue(Clan.PlayerClan.Renown) : 0.0) : 0.0) / 50.0) * 50.0);
-#else
             return (int) (Math.Floor((Settings.Instance!.EnableTournamentGoldPrizes ? MathHelper.GetSoftCappedValue(tournamentTown.Settlement.Town.Prosperity) + (Settings.Instance!.EnableTournamentPrizeScaling ? MathHelper.GetSoftCappedValue(Clan.PlayerClan.Renown) : 0.0) : 0.0) / 50.0) * 50.0);
-#endif
         }
 
         public static void ResolveTournament(CharacterObject winner, MBReadOnlyList<CharacterObject> participants, Town town)
@@ -293,25 +289,26 @@ namespace ArenaOverhaul.Tournament
 
         private static (ItemQuality MaxQuality, ItemQuality MinQuality) GetDesiredItemQuality()
         {
-            int maxQualityRestriction;
+            (int MaxQuality, int MinQuality) qualityRestrictions;
             if (Settings.Instance!.EnableTournamentPrizeScaling)
             {
-                maxQualityRestriction = Clan.PlayerClan.Tier switch
+                qualityRestrictions = Clan.PlayerClan.Tier switch
                 {
-                    > 5 => (int) ItemQuality.Legendary + 2,
-                    5 => (int) ItemQuality.Legendary + 1,
-                    4 => (int) ItemQuality.Legendary,
-                    3 => (int) ItemQuality.Masterwork,
-                    >= 1 => (int) ItemQuality.Fine,
-                    _ => (int) ItemQuality.Common
+                    > 5 => ((int) ItemQuality.Legendary + 2, (int) ItemQuality.Common),
+                    5 => ((int) ItemQuality.Legendary + 1, (int) ItemQuality.Common),
+                    4 => ((int) ItemQuality.Legendary, (int) ItemQuality.Common),
+                    3 => ((int) ItemQuality.Masterwork, (int) ItemQuality.Common),
+                    >= 1 => ((int) ItemQuality.Fine, (int) ItemQuality.Inferior),
+                    _ => ((int) ItemQuality.Fine, (int) ItemQuality.Poor)
                 };
             }
             else
             {
-                maxQualityRestriction = (int) ItemQuality.Legendary;
+                qualityRestrictions = ((int) ItemQuality.Legendary, (int) ItemQuality.Poor);
             }
-            var maxQuality = (ItemQuality) MBMath.ClampInt(MBRandom.RandomInt((int) ItemQuality.Common, maxQualityRestriction + 1), (int) ItemQuality.Common, (int) ItemQuality.Legendary);
-            return (maxQuality, ItemQuality.Fine);
+            //The tournament prize should never be worse than of Common quality, lower values ​​are only used to calculate the drop chance for higher qualities.
+            var maxQuality = (ItemQuality) MBMath.ClampInt(MBRandom.RandomInt(qualityRestrictions.MinQuality, qualityRestrictions.MaxQuality + 1), (int) ItemQuality.Common, (int) ItemQuality.Legendary);
+            return (maxQuality, ItemQuality.Fine); //Since we default to Common quality, there's no need to check for anything lower than ItemQuality.Fine.
         }
         #endregion Prize Item Quality
     }

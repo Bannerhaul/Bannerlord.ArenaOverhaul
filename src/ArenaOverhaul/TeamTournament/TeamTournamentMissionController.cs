@@ -41,7 +41,7 @@ namespace ArenaOverhaul.TeamTournament
             }
 
             if (_spawnPoints.Count < 4)
-                _spawnPoints = Mission.Scene.FindEntitiesWithTag("sp_arena").ToList<GameEntity>();
+                _spawnPoints = Mission.Scene.FindEntitiesWithTag("sp_arena").ToList();
         }
 
         private void PrepareForMatch() // also called from skip SkipMatch
@@ -195,11 +195,7 @@ namespace ArenaOverhaul.TeamTournament
             var character = member.Character;
             var agentBuildData = new AgentBuildData(new SimpleAgentOrigin(character, -1, null, member.Descriptor)).Team(team).InitialPosition(frame.origin);
             agentBuildData = agentBuildData.InitialDirection(frame.rotation.f.AsVec2.Normalized()).Equipment(member.MatchEquipment).ClothingColor1(team.Color).Banner(team.Banner).Controller(character.IsPlayerCharacter ? Agent.ControllerType.Player : Agent.ControllerType.AI);
-#if v100 || v101 || v102 || v103
-            var agent = Mission.SpawnAgent(agentBuildData, false, 0);
-#else
             var agent = Mission.SpawnAgent(agentBuildData, false);
-#endif
 
             if (character.IsPlayerCharacter)
             {

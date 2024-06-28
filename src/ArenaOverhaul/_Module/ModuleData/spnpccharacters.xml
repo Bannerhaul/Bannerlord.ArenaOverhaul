@@ -1,0 +1,362 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NPCCharacters>
+    <NPCCharacter
+		id="gear_team_practice_dummy_empire"
+		default_group="Infantry"
+		is_hero="false"
+		occupation="Special"
+		culture="Culture.empire"
+		name="{=!}Empire Gear Team Dummy"
+		skill_template="SkillSet.infantry_heavyinfantry_level1_template_skills">
+        <face>
+            <face_key_template
+				value="BodyProperty.guard" />
+        </face>
+        <skills></skills>
+        <Equipments>
+            <EquipmentRoster>
+                <equipment
+					slot="Item0"
+					id="Item.peasant_sickle_1_t1" />
+                <equipment
+					slot="Body"
+					id="Item.tied_cloth_tunic" />
+                <equipment
+					slot="Leg"
+					id="Item.empire_horseman_boots" />
+                <equipment
+					slot="Gloves"
+					id="Item.woven_leather_bracers" />
+            </EquipmentRoster>
+            <EquipmentRoster>
+                <equipment
+					slot="Item0"
+					id="Item.peasant_sickle_1_t1" />
+                <equipment
+					slot="Body"
+					id="Item.fine_town_tunic" />
+                <equipment
+					slot="Leg"
+					id="Item.empire_horseman_boots" />
+            </EquipmentRoster>
+            <EquipmentRoster>
+                <equipment
+					slot="Item0"
+					id="Item.peasant_sickle_1_t1" />
+                <equipment
+					slot="Body"
+					id="Item.tunic_with_rolled_cloth" />
+                <equipment
+					slot="Leg"
+					id="Item.empire_horseman_boots" />
+            </EquipmentRoster>
+            <EquipmentRoster>
+                <equipment
+					slot="Item0"
+					id="Item.peasant_sickle_1_t1" />
+                <equipment
+					slot="Body"
+					id="Item.footmans_tunic" />
+                <equipment
+					slot="Leg"
+					id="Item.empire_horseman_boots" />
+            </EquipmentRoster>
+            <EquipmentRoster>
+                <equipment
+					slot="Item0"
+					id="Item.peasant_sickle_1_t1" />
+                <equipment
+					slot="Body"
+					id="Item.tunic_with_shoulder_pads" />
+                <equipment
+					slot="Leg"
+					id="Item.empire_horseman_boots" />
+            </EquipmentRoster>
+            <EquipmentSet
+				id="npc_wanderer_equipment_template_empire"
+				civilian="true" />
+        </Equipments>
+    </NPCCharacter>
+    <NPCCharacter
+		id="gear_team_practice_dummy_vlandia"
+		default_group="Infantry"
+		is_hero="false"
+		occupation="Special"
+		culture="Culture.vlandia"
+		name="{=!}Vlandia Gear Team Dummy"
+		skill_template="SkillSet.infantry_heavyinfantry_level1_template_skills">
+        <face>
+            <face_key_template
+				value="BodyProperty.guard" />
+        </face>
+        <skills></skills>
+        <Equipments>
+            <EquipmentRoster>
+                <equipment
+					slot="Item0"
+					id="Item.peasant_sickle_1_t1" />
+                <equipment
+					slot="Head"
+					id="Item.padded_coif" />
+                <equipment
+					slot="Body"
+					id="Item.cloth_tunic" />
+                <equipment
+					slot="Leg"
+					id="Item.leather_cavalier_boots" />
+                <equipment
+					slot="Gloves"
+					id="Item.leather_gloves" />
+            </EquipmentRoster>
+            <EquipmentRoster>
+                <equipment
+					slot="Item0"
+					id="Item.peasant_sickle_1_t1" />
+                <equipment
+					slot="Body"
+					id="Item.long_hemp_tunic" />
+                <equipment
+					slot="Leg"
+					id="Item.leather_cavalier_boots" />
+            </EquipmentRoster>
+            <EquipmentRoster>
+                <equipment
+					slot="Item0"
+					id="Item.peasant_sickle_1_t1" />
+                <equipment
+					slot="Body"
+					id="Item.cloth_tunic" />
+                <equipment
+					slot="Leg"
+					id="Item.leather_cavalier_boots" />
+            </EquipmentRoster>
+            <EquipmentSet
+				id="npc_wanderer_equipment_template_vlandia"
+				civilian="true" />
+        </Equipments>
+    </NPCCharacter>
+    <NPCCharacter
+		id="gear_team_practice_dummy_sturgia"
+		default_group="Infantry"
+		is_hero="false"
+		occupation="Special"
+		culture="Culture.sturgia"
+		name="{=!}Sturgia Gear Team Dummy"
+		skill_template="SkillSet.infantry_heavyinfantry_level1_template_skills">
+        <face>
+            <face_key_template
+				value="BodyProperty.guard" />
+        </face>
+        <skills></skills>
+        <Equipments>
+            <EquipmentRoster>
+                <equipment
+					slot="Item0"
+					id="Item.peasant_sickle_1_t1" />
+                <equipment
+					slot="Head"
+					id="Item.roughhide_cap" />
+                <equipment
+					slot="Body"
+					id="Item.heavy_nordic_tunic" />
+                <equipment
+					slot="Leg"
+					id="Item.mail_chausses" />
+            </EquipmentRoster>
+            <EquipmentRoster>
+                <equipment
+					slot="Item0"
+					id="Item.peasant_sickle_1_t1" />
+                <equipment
+					slot="Body"
+					id="Item.heavy_nordic_tunic" />
+                <equipment
+					slot="Leg"
+					id="Item.strapped_mail_chausses" />
+            </EquipmentRoster>
+            <EquipmentRoster>
+                <equipment
+					slot="Item0"
+					id="Item.peasant_sickle_1_t1" />
+                <equipment
+					slot="Body"
+					id="Item.tundra_tunic" />
+                <equipment
+					slot="Leg"
+					id="Item.mail_chausses" />
+            </EquipmentRoster>
+            <EquipmentRoster>
+                <equipment
+					slot="Item0"
+					id="Item.peasant_sickle_1_t1" />
+                <equipment
+					slot="Body"
+					id="Item.decorated_short_tunic" />
+                <equipment
+					slot="Leg"
+					id="Item.strapped_mail_chausses" />
+            </EquipmentRoster>
+            <EquipmentRoster>
+                <equipment
+					slot="Item0"
+					id="Item.peasant_sickle_1_t1" />
+                <equipment
+					slot="Head"
+					id="Item.roughhide_cap" />
+                <equipment
+					slot="Body"
+					id="Item.northern_tunic" />
+                <equipment
+					slot="Leg"
+					id="Item.mail_chausses" />
+            </EquipmentRoster>
+            <EquipmentSet
+				id="npc_wanderer_equipment_template_sturgia"
+				civilian="true" />
+        </Equipments>
+    </NPCCharacter>
+    <NPCCharacter
+		id="gear_team_practice_dummy_battania"
+		default_group="Infantry"
+		is_hero="false"
+		occupation="Special"
+		culture="Culture.battania"
+		name="{=!}Battania Gear Team Dummy"
+		skill_template="SkillSet.infantry_heavyinfantry_level1_template_skills">
+        <face>
+            <face_key_template
+				value="BodyProperty.guard" />
+        </face>
+        <skills></skills>
+        <Equipments>
+            <EquipmentRoster>
+                <equipment
+					slot="Item0"
+					id="Item.peasant_sickle_1_t1" />
+                <equipment
+					slot="Body"
+					id="Item.studded_fur_armor" />
+                <equipment
+					slot="Leg"
+					id="Item.battania_leather_boots" />
+            </EquipmentRoster>
+            <EquipmentRoster>
+                <equipment
+					slot="Item0"
+					id="Item.peasant_sickle_1_t1" />
+                <equipment
+					slot="Body"
+					id="Item.sleeveless_studded_fur_armor" />
+                <equipment
+					slot="Leg"
+					id="Item.battania_leather_boots" />
+                <equipment
+					slot="Gloves"
+					id="Item.armwraps" />
+            </EquipmentRoster>
+            <EquipmentRoster>
+                <equipment
+					slot="Item0"
+					id="Item.peasant_sickle_1_t1" />
+                <equipment
+					slot="Body"
+					id="Item.rough_fur_armor" />
+                <equipment
+					slot="Leg"
+					id="Item.battania_leather_boots" />
+                <equipment
+					slot="Gloves"
+					id="Item.armwraps" />
+            </EquipmentRoster>
+            <EquipmentRoster>
+                <equipment
+					slot="Item0"
+					id="Item.peasant_sickle_1_t1" />
+                <equipment
+					slot="Body"
+					id="Item.fur_waistcoat_over_tunic" />
+                <equipment
+					slot="Leg"
+					id="Item.battania_leather_boots" />
+            </EquipmentRoster>            
+            <EquipmentRoster>
+                <equipment
+					slot="Item0"
+					id="Item.peasant_sickle_1_t1" />
+                <equipment
+					slot="Body"
+					id="Item.fur_skirt_with_tunic" />
+                <equipment
+					slot="Leg"
+					id="Item.battania_leather_boots" />
+            </EquipmentRoster>
+            <EquipmentSet
+				id="npc_wanderer_equipment_template_battania"
+				civilian="true" />
+        </Equipments>
+    </NPCCharacter>
+    <NPCCharacter
+		id="gear_team_practice_dummy_khuzait"
+		default_group="Infantry"
+		is_hero="false"
+		occupation="Special"
+		culture="Culture.khuzait"
+		name="{=!}Khuzait Gear Team Dummy"
+		skill_template="SkillSet.infantry_heavyinfantry_level1_template_skills">
+        <face>
+            <face_key_template
+				value="BodyProperty.guard" />
+        </face>
+        <skills></skills>
+        <Equipments>
+            <EquipmentRoster>
+                <equipment
+					slot="Item0"
+					id="Item.peasant_sickle_1_t1" />
+                <equipment
+					slot="Head"
+					id="Item.fur_hat" />
+                <equipment
+					slot="Body"
+					id="Item.steppe_armor" />
+                <equipment
+					slot="Leg"
+					id="Item.leather_boots" />
+                <equipment
+					slot="Gloves"
+					id="Item.eastern_wrapped_armguards" />
+            </EquipmentRoster>
+            <EquipmentRoster>
+                <equipment
+					slot="Item0"
+					id="Item.peasant_sickle_1_t1" />
+                <equipment
+					slot="Head"
+					id="Item.fur_hood" />
+                <equipment
+					slot="Body"
+					id="Item.khuzait_belt_leather" />
+                <equipment
+					slot="Leg"
+					id="Item.leather_boots" />
+            </EquipmentRoster>
+            <EquipmentRoster>
+                <equipment
+					slot="Item0"
+					id="Item.peasant_sickle_1_t1" />
+                <equipment
+					slot="Body"
+					id="Item.tied_cloth_tunic" />
+                <equipment
+					slot="Leg"
+					id="Item.leather_boots" />
+                <equipment
+					slot="Gloves"
+					id="Item.eastern_wrapped_armguards" />
+            </EquipmentRoster>
+            <EquipmentSet
+				id="npc_wanderer_equipment_template_khuzait"
+				civilian="true" />
+        </Equipments>
+    </NPCCharacter>
+</NPCCharacters>

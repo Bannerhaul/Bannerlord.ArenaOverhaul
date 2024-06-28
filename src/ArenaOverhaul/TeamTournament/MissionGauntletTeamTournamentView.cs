@@ -121,7 +121,7 @@ namespace ArenaOverhaul.TeamTournament
         public override void OnPhotoModeActivated()
         {
             base.OnPhotoModeActivated();
-#if v125 || v126 || v127 || v128 || v129
+#if v125 || v126 || v127 || v128 || v129 || v1210
             _gauntletLayer!.UIContext.ContextAlpha = 0f;
 #else
             _gauntletLayer!._gauntletUIContext.ContextAlpha = 0f;
@@ -131,7 +131,7 @@ namespace ArenaOverhaul.TeamTournament
         public override void OnPhotoModeDeactivated()
         {
             base.OnPhotoModeDeactivated();
-#if v125 || v126 || v127 || v128 || v129
+#if v125 || v126 || v127 || v128 || v129 || v1210
             _gauntletLayer!.UIContext.ContextAlpha = 1f;
 #else
             _gauntletLayer!._gauntletUIContext.ContextAlpha = 1f;

@@ -1,6 +1,8 @@
 ﻿using ArenaOverhaul.CampaignBehaviors.BehaviorManagers;
 using ArenaOverhaul.ModSettings;
 
+using System;
+
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.ComponentInterfaces;
 using TaleWorlds.CampaignSystem.Settlements;
@@ -24,6 +26,7 @@ namespace ArenaOverhaul.Models
             var practiceEquipmentSetting = AOArenaBehaviorManager.Instance!.GetParticipantArmorType();
             var practiceEquipment = practiceEquipmentSetting switch
             {
+                PracticeEquipmentType.PracticeClothes => GetRandomPracticeClothes(),
                 PracticeEquipmentType.CivilianEquipment => participant.RandomCivilianEquipment,
                 PracticeEquipmentType.BattleEquipment => participant.RandomBattleEquipment,
                 _ => null,
@@ -48,5 +51,19 @@ namespace ArenaOverhaul.Models
         public override float GetTournamentSimulationScore(CharacterObject character) => _previouslyAssignedModel.GetTournamentSimulationScore(character);
 
         public override float GetTournamentStartChance(Town town) => _previouslyAssignedModel.GetTournamentStartChance(town);
+
+        /* service methods */
+
+        private static Equipment? GetRandomPracticeClothes()
+        {
+            if (CampaignMission.Current is not { } misson || misson.Mode != MissionMode.Battle || Settlement.CurrentSettlement is not { } settlement || AOArenaBehaviorManager.Instance!.PracticeMode != ArenaPracticeMode.Team)
+            {
+                return null;
+            }
+
+            var settlementCultureId = settlement.MapFaction?.Culture?.StringId ?? "empire";
+            var dummyCharacter = Game.Current.ObjectManager.GetObject<CharacterObject>("gear_team_practice_dummy_" + settlementCultureId);
+            return dummyCharacter?.RandomBattleEquipment;
+        }
     }
 }

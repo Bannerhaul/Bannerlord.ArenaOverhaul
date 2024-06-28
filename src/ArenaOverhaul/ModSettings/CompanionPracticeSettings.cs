@@ -1,6 +1,7 @@
-﻿using HarmonyLib.BUTR.Extensions;
+﻿using ArenaOverhaul.CampaignBehaviors.BehaviorManagers;
 
-using MCM.Abstractions;
+using HarmonyLib.BUTR.Extensions;
+
 using MCM.Abstractions.Base;
 using MCM.Abstractions.FluentBuilder;
 using MCM.Common;
@@ -17,25 +18,29 @@ namespace ArenaOverhaul.ModSettings
     internal static class CompanionPracticeSettings
     {
         //Group order does not work if group does not have any properties
-        private const string HeadingFamilyMembers = "{=}Family Members";
-        private const string HeadingCompanions = "{=}Companions";
+        private const string HeadingClanLeader = "{=}1. Clan Leader";
+        private const string HeadingFamilyMembers = "{=}2. Family Members";
+        private const string HeadingCompanions = "{=}3. Companions";
 
         private static Version? CurrentVersion => typeof(CompanionPracticeSettings).Assembly.GetName().Version;
 
         private static string SettingsId => $"{nameof(CompanionPracticeSettings)}_v{CurrentVersion?.ToString(1)}";
 
-        private static string SettingsName => $"{new TextObject("{=}AO Companion Practice Settings")} {CurrentVersion!.ToString(3)}";
+        private static string SettingsName => $"{new TextObject("{=}AO Hero Practice Settings")} {CurrentVersion!.ToString(3)}";
 
         public static ISettingsBuilder AddCompanionPracticeSettings(Dictionary<Hero, HeroPracticeSettings> heroPracticeSettings)
         {
             var builder = BaseSettingsBuilder.Create(SettingsId, SettingsName)!
                 .SetFormat("json2")
-                .SetFolderName("AO Companion Practice Settings");
+                .SetFolderName("AO Hero Practice Settings");
 
             var clanMembers = Hero.FindAll(x => x.IsAlive && !x.IsChild && x.Clan == Clan.PlayerClan && x != Hero.MainHero).OrderBy(x => x.Name.ToString()).ToList();
 
-            AddClanHeroes(builder, HeadingFamilyMembers, clanMembers.Where(x => !x.IsWanderer).ToList(), 10);
-            AddClanHeroes(builder, HeadingCompanions, clanMembers.Where(x => x.IsWanderer).ToList(), 20);
+            AddClanHeroes(builder, HeadingClanLeader, [Hero.MainHero], 2);
+            AddClanHeroes(builder, HeadingFamilyMembers, clanMembers.Where(x => !x.IsWanderer).ToList(), 2);
+            AddClanHeroes(builder, HeadingCompanions, clanMembers.Where(x => x.IsWanderer).ToList(), 3);
+
+            builder.CreatePreset(BaseSettings.DefaultPresetId, BaseSettings.DefaultPresetName, BuildDefaultPreset);
 
             return builder;
 
@@ -52,20 +57,27 @@ namespace ArenaOverhaul.ModSettings
                     heroPracticeSettings[hero] = new();
                     settingContainer = heroPracticeSettings[hero];
                 }
+                GetSettingNamesAndHints(hero, out var enableLoadoutChoiceText, out var enableLoadoutChoiceHint,
+                    out var onlyPriorityLoadoutsText, out var onlyPriorityLoadoutsHint,
+                    out var prioritizeExpensiveEquipmentText, out var prioritizeExpensiveEquipmentHint,
+                    out var firstPriorityText, out var firstPriorityHint, out var secondPriorityText,
+                    out var secondPriorityHint, out var thirdPriorityText, out var thirdPriorityHint);
                 builder
-                    .AddBool($"{hero.StringId}_enable_loadout_choice", "{=}Enable loadout choice", new PropertyRef(SymbolExtensions2.GetPropertyInfo((HeroPracticeSettings x) => x.EnableLoadoutChoice)!, settingContainer),
-                        propBuilder => propBuilder.SetRequireRestart(false).SetOrder(0).SetHintText("{=}When this option is enabled, the corresponding companion hero is allowed to choose weapons for arena practice matches, and you will have to pay the usual fee for this. Otherwise, the companion will use random weapons like everyone else. Default is True."))
-                    .AddBool($"{hero.StringId}_prioritize_expensive_equipment", "{=}Prioritize expensive equipment", new PropertyRef(SymbolExtensions2.GetPropertyInfo((HeroPracticeSettings x) => x.PrioritizeExpensiveEquipment)!, settingContainer),
-                        propBuilder => propBuilder.SetRequireRestart(false).SetOrder(1).SetHintText("{=}When this option is enabled, the corresponding companion hero will select weapons for arena practice matches, prioritizing better and more expensive equipment. Otherwise, the least expensive set of weapons that meets the given preferences will be selected. Default is False."))
-                    .AddDropdown($"{hero.StringId}_weapons_first_priority", "{=}First priority", settingContainer.FirstPriorityWeaponsDropdown.SelectedIndex,
+                    .AddBool($"{hero.StringId}_enable_loadout_choice", enableLoadoutChoiceText, new PropertyRef(SymbolExtensions2.GetPropertyInfo((HeroPracticeSettings x) => x.EnableLoadoutChoice)!, settingContainer),
+                        propBuilder => propBuilder.SetRequireRestart(false).SetOrder(0).SetHintText(enableLoadoutChoiceHint))
+                    .AddBool($"{hero.StringId}_only_priority_loadouts", onlyPriorityLoadoutsText, new PropertyRef(SymbolExtensions2.GetPropertyInfo((HeroPracticeSettings x) => x.OnlyPriorityLoadouts)!, settingContainer),
+                        propBuilder => propBuilder.SetRequireRestart(false).SetOrder(1).SetHintText(onlyPriorityLoadoutsHint))
+                    .AddBool($"{hero.StringId}_prioritize_expensive_equipment", prioritizeExpensiveEquipmentText, new PropertyRef(SymbolExtensions2.GetPropertyInfo((HeroPracticeSettings x) => x.PrioritizeExpensiveEquipment)!, settingContainer),
+                        propBuilder => propBuilder.SetRequireRestart(false).SetOrder(2).SetHintText(prioritizeExpensiveEquipmentHint))
+                    .AddDropdown($"{hero.StringId}_weapons_first_priority", firstPriorityText, settingContainer.FirstPriorityWeaponsDropdown.SelectedIndex,
                         new PropertyRef(SymbolExtensions2.GetPropertyInfo((HeroPracticeSettings x) => x.FirstPriorityWeaponsDropdown)!, settingContainer),
-                        propBuilder => propBuilder.SetRequireRestart(false).SetOrder(10).SetHintText("{=}Specify the weapon skill that has the highest priority for the corresponding hero companion to train. This companion will always choose a weapon loadout containing a weapon based on that skill, if available. Default is [None]."))
-                    .AddDropdown($"{hero.StringId}_weapons_second_priority", "{=}Second priority", settingContainer.SecondPriorityWeaponsDropdown.SelectedIndex,
+                        propBuilder => propBuilder.SetRequireRestart(false).SetOrder(10).SetHintText(firstPriorityHint))
+                    .AddDropdown($"{hero.StringId}_weapons_second_priority", secondPriorityText, settingContainer.SecondPriorityWeaponsDropdown.SelectedIndex,
                         new PropertyRef(SymbolExtensions2.GetPropertyInfo((HeroPracticeSettings x) => x.SecondPriorityWeaponsDropdown)!, settingContainer),
-                        propBuilder => propBuilder.SetRequireRestart(false).SetOrder(11).SetHintText("{=}Specify the weapon skill that has the second highest priority for the corresponding hero companion to train. This companion will choose a weapon loadout containing a weapon based on this skill if it is available and there are no higher priority alternatives. Default is [None]."))
-                    .AddDropdown($"{hero.StringId}_weapons_third_priority", "{=}Third priority", settingContainer.ThirdPriorityWeaponsDropdown.SelectedIndex,
+                        propBuilder => propBuilder.SetRequireRestart(false).SetOrder(11).SetHintText(secondPriorityHint))
+                    .AddDropdown($"{hero.StringId}_weapons_third_priority", thirdPriorityText, settingContainer.ThirdPriorityWeaponsDropdown.SelectedIndex,
                         new PropertyRef(SymbolExtensions2.GetPropertyInfo((HeroPracticeSettings x) => x.ThirdPriorityWeaponsDropdown)!, settingContainer),
-                        propBuilder => propBuilder.SetRequireRestart(false).SetOrder(12).SetHintText("{=}Specify the weapon skill that has the third highest priority for the corresponding hero companion to train. This companion will choose a weapon loadout containing a weapon based on this skill if it is available and there are no higher priority alternatives. Default is [None]."))
+                        propBuilder => propBuilder.SetRequireRestart(false).SetOrder(12).SetHintText(thirdPriorityHint))
                     .SetGroupOrder(groupOrder);
             }
 
@@ -73,11 +85,10 @@ namespace ArenaOverhaul.ModSettings
             {
                 clanMembers.ForEach(hero =>
                 {
-                    //var defaultSettingContainer = new HeroPracticeSettings();
-                    heroPracticeSettings[hero] = new();
-                    var defaultSettingContainer = heroPracticeSettings[hero];
+                    var defaultSettingContainer = new HeroPracticeSettings();
                     builder
                         .SetPropertyValue($"{hero.StringId}_enable_loadout_choice", defaultSettingContainer.EnableLoadoutChoice)
+                        .SetPropertyValue($"{hero.StringId}_only_priority_loadouts", defaultSettingContainer.OnlyPriorityLoadouts)
                         .SetPropertyValue($"{hero.StringId}_prioritize_expensive_equipment", defaultSettingContainer.PrioritizeExpensiveEquipment)
                         .SetPropertyValue($"{hero.StringId}_weapons_first_priority", defaultSettingContainer.FirstPriorityWeaponsDropdown)
                         .SetPropertyValue($"{hero.StringId}_weapons_second_priority", defaultSettingContainer.SecondPriorityWeaponsDropdown)
@@ -93,7 +104,66 @@ namespace ArenaOverhaul.ModSettings
                 {
                     builder.CreateGroup($"{heading}/{hero.Name}", spgb => BuildForHero(spgb, hero, i++));
                 }
-                builder.CreatePreset(BaseSettings.DefaultPresetId, BaseSettings.DefaultPresetName, BuildDefaultPreset);
+            }
+        }
+
+        internal static void RegisterCompanionPracticeSettings()
+        {
+            var builder = AddCompanionPracticeSettings(AOArenaBehaviorManager._companionPracticeSettings!);
+            SubModule.PerSaveSettings = builder.BuildAsPerSave();
+            SubModule.PerSaveSettings?.Register();
+        }
+
+        internal static void UnregisterCompanionPracticeSettings()
+        {
+            var oldSettings = SubModule.PerSaveSettings;
+            oldSettings?.Unregister();
+            SubModule.PerSaveSettings = null;
+
+            AOArenaBehaviorManager._companionPracticeSettings = null;
+        }
+
+        private static void GetSettingNamesAndHints(Hero hero, out string enableLoadoutChoiceText, out string enableLoadoutChoiceHint, out string onlyPriorityLoadoutsText, out string onlyPriorityLoadoutsHint, out string prioritizeExpensiveEquipmentText, out string prioritizeExpensiveEquipmentHint, out string firstPriorityText, out string firstPriorityHint, out string secondPriorityText, out string secondPriorityHint, out string thirdPriorityText, out string thirdPriorityHint)
+        {
+            if (hero != Hero.MainHero)
+            {
+                enableLoadoutChoiceText = "{=}Enable loadout choice";
+                enableLoadoutChoiceHint = "{=}When this option is enabled, corresponding hero is allowed to choose weapons for arena practice matches, and you will have to pay the usual fee for this. Otherwise, they will use random weapons like everyone else. Default is set in global mod settings.";
+
+                onlyPriorityLoadoutsText = "{=}Only priority loadouts";
+                onlyPriorityLoadoutsHint = "{=}When this option is enabled, corresponding hero will only choose practice weapons if any weapon preference is set and at least one matching weapon loadout is available in the arena. Otherwise, they will use random weapons like everyone else. Default is set in global mod settings.";
+
+                prioritizeExpensiveEquipmentText = "{=}Prioritize expensive equipment";
+                prioritizeExpensiveEquipmentHint = "{=}When this option is enabled, corresponding hero will select weapons for arena practice matches, prioritizing better and more expensive equipment. Otherwise, the least expensive set of weapons that meets the given preferences will be selected. Default is set in global mod settings.";
+
+                firstPriorityText = "{=}First priority";
+                firstPriorityHint = "{=}Specify the weapon skill that has the highest priority for the corresponding hero to train. This hero will always choose a weapon loadout containing a weapon based on that skill, if available. Default is [None].";
+
+                secondPriorityText = "{=}Second priority";
+                secondPriorityHint = "{=}Specify the weapon skill that has the second highest priority for the corresponding hero to train. This hero will choose a weapon loadout containing a weapon based on this skill if it is available and there are no higher priority alternatives. Default is [None].";
+
+                thirdPriorityText = "{=}Third priority";
+                thirdPriorityHint = "{=}Specify the weapon skill that has the third highest priority for the corresponding hero to train. This hero will choose a weapon loadout containing a weapon based on this skill if it is available and there are no higher priority alternatives. Default is [None].";
+            }
+            else
+            {
+                enableLoadoutChoiceText = "{=}Enable automatic loadout choice";
+                enableLoadoutChoiceHint = "{=}When this option is enabled, the weapon loadout will be automatically selected for the player based on other preferences set here when entering any arena practice mode from the menu. Default is set in global mod settings.";
+
+                onlyPriorityLoadoutsText = "{=}Choose only priority loadouts";
+                onlyPriorityLoadoutsHint = "{=}When this option is enabled, automatic weapon loadout will only happen for player if any weapon preference is set and at least one matching weapon loadout is available in the arena. Otherwise, they will use random weapons as usual. Default is set in global mod settings.";
+
+                prioritizeExpensiveEquipmentText = "{=}Prioritize expensive equipment";
+                prioritizeExpensiveEquipmentHint = "{=}When this option is enabled, better and more expensive equipment will be prefered for automatic weapon loadout selection for player. Otherwise, the least expensive set of weapons that meets the given preferences will be selected. Default is set in global mod settings.";
+
+                firstPriorityText = "{=}First priority";
+                firstPriorityHint = "{=}Specify the weapon skill that has the highest priority for the player character to train. A weapon loadout containing a weapon based on that skill will always be chosen, if available. Default is [None].";
+
+                secondPriorityText = "{=}Second priority";
+                secondPriorityHint = "{=}Specify the weapon skill that has the second highest priority for the player character to train. A weapon loadout containing a weapon based on this skill will be chosen if it is available and there are no higher priority alternatives. Default is [None].";
+
+                thirdPriorityText = "{=}Third priority";
+                thirdPriorityHint = "{=}Specify the weapon skill that has the third highest priority for the player character to train. A weapon loadout containing a weapon based on this skill will be chosen if it is available and there are no higher priority alternatives. Default is [None].";
             }
         }
     }

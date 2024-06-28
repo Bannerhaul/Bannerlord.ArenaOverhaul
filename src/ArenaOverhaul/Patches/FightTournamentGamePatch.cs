@@ -37,11 +37,7 @@ namespace ArenaOverhaul.Patches
 
         [HarmonyPrefix]
         [HarmonyPatch("GetParticipantCharacters")]
-#if v100 || v101 || v102 || v103
-        public static bool GetParticipantCharactersPrefix(FightTournamentGame __instance, ref List<CharacterObject> __result, Settlement settlement, bool includePlayer = true)
-#else
         public static bool GetParticipantCharactersPrefix(FightTournamentGame __instance, ref MBList<CharacterObject> __result, Settlement settlement, bool includePlayer = true)
-#endif
         {
             __result = _applicantManager.GetParticipantCharacters(__instance, settlement, includePlayer);
             return false;
@@ -226,7 +222,7 @@ namespace ArenaOverhaul.Patches
                 //Get top 10 most valued standard items by type with town culture
                 itemObjectCandidates =
                     Items.All
-                    .Where<ItemObject>(itemObject => IsSuitablePrize(itemObject, requiredCulture)).ToList()
+                    .Where(itemObject => IsSuitablePrize(itemObject, requiredCulture)).ToList()
                     .GroupBy(itemObject => (itemObject.Type))
                     .Select(accessGroup => (GroupKey: accessGroup.Key, TopTenItems: accessGroup.OrderByDescending(subg => subg.Value).Take(10)))
                     .SelectMany(x => x.TopTenItems.Select(y => (x.GroupKey, Item: y)))
@@ -255,16 +251,16 @@ namespace ArenaOverhaul.Patches
             //Add unique weapons and armors
             requiredCulture = culturalPrizesSelectedIndex >= 2 ? townCulture : null;
             
-            var uniqueWeapons = Items.All.Where<ItemObject>(itemObject => IsUniqueWeapon(itemObject, requiredCulture)).ToList();
+            var uniqueWeapons = Items.All.Where(itemObject => IsUniqueWeapon(itemObject, requiredCulture)).ToList();
             itemObjectList.AddRange(uniqueWeapons);
 
-            var uniqueArmors = Items.All.Where<ItemObject>(itemObject => IsUniqueArmor(itemObject, requiredCulture)).ToList();
+            var uniqueArmors = Items.All.Where(itemObject => IsUniqueArmor(itemObject, requiredCulture)).ToList();
             itemObjectList.AddRange(uniqueArmors);
 
             //Add unique mounts
             requiredCulture = culturalPrizesSelectedIndex == 3 ? townCulture : null;
 
-            var uniqueMounts = Items.All.Where<ItemObject>(itemObject => IsUniqueMount(itemObject, requiredCulture)).ToList();
+            var uniqueMounts = Items.All.Where(itemObject => IsUniqueMount(itemObject, requiredCulture)).ToList();
             itemObjectList.AddRange(uniqueMounts);
 
             //Save list in TW class

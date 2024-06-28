@@ -1,4 +1,5 @@
-﻿using ArenaOverhaul.CampaignBehaviors;
+﻿using ArenaOverhaul.ArenaPractice;
+using ArenaOverhaul.CampaignBehaviors;
 using ArenaOverhaul.CampaignBehaviors.BehaviorManagers;
 using ArenaOverhaul.Extensions;
 using ArenaOverhaul.Helpers;
@@ -6,6 +7,7 @@ using ArenaOverhaul.Models;
 using ArenaOverhaul.ModSettings;
 
 using Bannerlord.BUTR.Shared.Helpers;
+using Bannerlord.ButterLib.HotKeys;
 using Bannerlord.UIExtenderEx;
 
 using HarmonyLib;
@@ -13,8 +15,6 @@ using HarmonyLib;
 using MCM.Abstractions.Base.PerSave;
 
 using System;
-using System.Collections.Generic;
-using System.Runtime;
 
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.ComponentInterfaces;
@@ -32,6 +32,7 @@ namespace ArenaOverhaul
         private const string SErrorInitialising = "{=LRhyA9mqB}Error initialising Arena Overhaul! See details in the mod log. Error text: \"{EXCEPTION_MESSAGE}\"";
 
         private static readonly UIExtender Extender = UIExtender.Create("ArenaOverhaulUI");
+        private static HotKeyManager? AOHotKeyManager;
 
         internal static FluentPerSaveSettings? PerSaveSettings;
 
@@ -75,6 +76,13 @@ namespace ArenaOverhaul
                 {
                     MessageHelper.ErrorMessage(SErrorLoading.ToLocalizedString());
                 }
+
+                AOHotKeyManager ??= HotKeyManager.Create("ArenaOverhaul");
+                if (AOHotKeyManager is not null)
+                {
+                    var teamPracticeController = AOHotKeyManager.Add<TeamPracticeHotKeyController>();
+                    AOHotKeyManager.Build();
+                }
             }
             catch (Exception ex)
             {
@@ -109,18 +117,12 @@ namespace ArenaOverhaul
                 return;
             }
 
-            var builder = CompanionPracticeSettings.AddCompanionPracticeSettings(AOArenaBehaviorManager._companionPracticeSettings!);
-            PerSaveSettings = builder.BuildAsPerSave();
-            PerSaveSettings?.Register();
+            CompanionPracticeSettings.RegisterCompanionPracticeSettings();
         }
 
         public override void OnGameEnd(Game game)
         {
-            var oldSettings = PerSaveSettings;
-            oldSettings?.Unregister();
-            PerSaveSettings = null;
-
-            AOArenaBehaviorManager._companionPracticeSettings = null;
+            CompanionPracticeSettings.UnregisterCompanionPracticeSettings();
         }
     }
 }

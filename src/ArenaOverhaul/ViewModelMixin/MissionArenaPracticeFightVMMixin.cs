@@ -9,6 +9,8 @@ using Bannerlord.UIExtenderEx.ViewModels;
 using SandBox.Missions.MissionLogics.Arena;
 using SandBox.ViewModelCollection.Missions;
 
+using System;
+
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
@@ -16,11 +18,12 @@ using TaleWorlds.Localization;
 namespace ArenaOverhaul.ViewModelMixin
 {
     [ViewModelMixin(nameof(MissionArenaPracticeFightVM.UpdatePrizeText))]
-    internal sealed class MissionArenaPracticeFightVMMixin : BaseViewModelMixin<MissionArenaPracticeFightVM>
+    internal sealed class MissionArenaPracticeFightVMMixin(MissionArenaPracticeFightVM vm) : BaseViewModelMixin<MissionArenaPracticeFightVM>(vm)
     {
         private bool _isStandardPanelVisible;
-
         private bool _isParryPanelVisible;
+        private bool _isTeamPanelVisible;
+
         private bool _isSpecialPanelVisible;
 
 
@@ -28,9 +31,10 @@ namespace ArenaOverhaul.ViewModelMixin
         private string _perfectBlocksText = "";
         private string _chamberBlocksText = "";
         private string _hitsTakenText = "";
+        private string _alliesRemainingText = "";
 
-        private readonly MissionArenaPracticeFightVM baseVM;
-        private readonly ArenaPracticeFightMissionController? _practiceMissionController;
+        private readonly MissionArenaPracticeFightVM baseVM = vm;
+        private readonly ArenaPracticeFightMissionController? _practiceMissionController = FieldAccessHelper.MAPFVMPracticeMissionControllerByRef(vm);
 
         [DataSourceProperty]
         public bool IsStandardPanelVisible
@@ -70,6 +74,20 @@ namespace ArenaOverhaul.ViewModelMixin
                 {
                     _isParryPanelVisible = value;
                     OnPropertyChangedWithValue(value, nameof(IsParryPanelVisible));
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public bool IsTeamPanelVisible
+        {
+            get => _isTeamPanelVisible;
+            set
+            {
+                if (value != _isTeamPanelVisible)
+                {
+                    _isTeamPanelVisible = value;
+                    OnPropertyChangedWithValue(value, nameof(IsTeamPanelVisible));
                 }
             }
         }
@@ -130,10 +148,18 @@ namespace ArenaOverhaul.ViewModelMixin
             }
         }
 
-        public MissionArenaPracticeFightVMMixin(MissionArenaPracticeFightVM vm) : base(vm)
+        [DataSourceProperty]
+        public string AlliesRemainingText
         {
-            baseVM = vm;
-            _practiceMissionController = FieldAccessHelper.MAPFVMPracticeMissionControllerByRef(vm);
+            get => _alliesRemainingText;
+            set
+            {
+                if (value != _alliesRemainingText)
+                {
+                    _alliesRemainingText = value;
+                    OnPropertyChangedWithValue(value, nameof(AlliesRemainingText));
+                }
+            }
         }
 
         public override void OnRefresh()
@@ -145,6 +171,11 @@ namespace ArenaOverhaul.ViewModelMixin
                 UpdateParryPanelStats();
             }
 
+            if (IsTeamPanelVisible)
+            {
+                UpdateTeamPanelStats();
+            }
+
             if (!IsParryPanelVisible)
             {
                 UpdatePrizeText();
@@ -153,23 +184,36 @@ namespace ArenaOverhaul.ViewModelMixin
 
         private void UpdatePanelsVisibility()
         {
-            IsStandardPanelVisible = baseVM.IsPlayerPracticing && !AOArenaBehaviorManager.Instance!.PracticeMode.Contains(ArenaPracticeMode.Parry);
-            IsParryPanelVisible = baseVM.IsPlayerPracticing && AOArenaBehaviorManager.Instance!.PracticeMode.Contains(ArenaPracticeMode.Parry);
+            bool isParryPractice = AOArenaBehaviorManager.Instance!.PracticeMode.Contains(ArenaPracticeMode.Parry);
+            bool isTeamPractice = AOArenaBehaviorManager.Instance!.PracticeMode.Contains(ArenaPracticeMode.Team);
 
-            IsSpecialPanelVisible = IsParryPanelVisible;
+            IsStandardPanelVisible = baseVM.IsPlayerPracticing && !isParryPractice && !isTeamPractice;
+            IsParryPanelVisible = baseVM.IsPlayerPracticing && isParryPractice;
+            IsTeamPanelVisible = baseVM.IsPlayerPracticing && isTeamPractice;
+
+            IsSpecialPanelVisible = IsParryPanelVisible || IsTeamPanelVisible;
         }
 
         private void UpdateParryPanelStats()
         {
-            var successfulBlocks = new TextObject("{=}Prepared blocks: {PREPARED_BLOCKS}", new() { ["PREPARED_BLOCKS"] = ParryStatsManager.PreparedBlocks });
-            var perfectBlocks = new TextObject("{=}Perfect blocks: {PERFECT_BLOCKS}", new() { ["PERFECT_BLOCKS"] = ParryStatsManager.PerfectBlocks });
-            var chamberBlocks = new TextObject("{=}Chamber blocks: {CHAMBER_BLOCKS}", new() { ["CHAMBER_BLOCKS"] = ParryStatsManager.ChamberBlocks });
-            var hitsTaken = new TextObject("{=}Hits taken: {HITS_TAKEN}", new() { ["HITS_TAKEN"] = ParryStatsManager.HitsTaken });
+            var successfulBlocks = new TextObject("{=}Prepared blocks: {PREPARED_BLOCKS}", new() { ["PREPARED_BLOCKS"] = ParryPracticeStatsManager.PreparedBlocks });
+            var perfectBlocks = new TextObject("{=}Perfect blocks: {PERFECT_BLOCKS}", new() { ["PERFECT_BLOCKS"] = ParryPracticeStatsManager.PerfectBlocks });
+            var chamberBlocks = new TextObject("{=}Chamber blocks: {CHAMBER_BLOCKS}", new() { ["CHAMBER_BLOCKS"] = ParryPracticeStatsManager.ChamberBlocks });
+            var hitsTaken = new TextObject("{=}Hits taken: {HITS_TAKEN}", new() { ["HITS_TAKEN"] = ParryPracticeStatsManager.HitsTaken });
 
             SuccessfulBlocksText = successfulBlocks.ToString();
             PerfectBlocksText = perfectBlocks.ToString();
             ChamberBlocksText = chamberBlocks.ToString();
             HitsTakenText = hitsTaken.ToString();
+        }
+
+        private void UpdateTeamPanelStats()
+        {
+            var alliesRemaining = new TextObject("{=}Allies remaining: {ALLIES_REMAINING}", new() { ["ALLIES_REMAINING"] = TeamPracticeStatsManager.RemainingAlliesCount });
+            AlliesRemainingText = alliesRemaining.ToString();
+
+            GameTexts.SetVariable("BEATEN_OPPONENT_COUNT", _practiceMissionController!.OpponentCountBeatenByPlayer);
+            baseVM.OpponentsBeatenText = GameTexts.FindText("str_beaten_opponent").ToString();
         }
 
         private void UpdatePrizeText()

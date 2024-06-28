@@ -29,6 +29,7 @@ namespace ArenaOverhaul.Patches
         private static readonly MethodInfo? miSetStandardPracticeMode = AccessTools.Method(typeof(ArenaMasterPatch), "SetStandardPracticeMode");
         private static readonly MethodInfo? miCheckRematchIsAffordable = AccessTools.Method(typeof(ArenaMasterPatch), "CheckRematchIsAffordable");
         private static readonly MethodInfo? miGetMissionMode = AccessTools.Method(typeof(ArenaMasterPatch), "GetMissionMode");
+        private static readonly MethodInfo? miResetAfterPracticeTalkFlag = AccessTools.Method(typeof(ArenaMasterPatch), "ResetAfterPracticeTalkFlag");
 
         private static readonly MethodInfo? miSetMissionMode = AccessTools.Method(typeof(Mission), "SetMissionMode");
 
@@ -112,6 +113,10 @@ namespace ArenaOverhaul.Patches
             }
 
             missionBehavior.AfterPractice = false;
+            if (AOArenaBehaviorManager.Instance != null)
+            {
+                AOArenaBehaviorManager.Instance.IsAfterPracticeTalk = true;
+            }
             int countBeatenByPlayer = missionBehavior.OpponentCountBeatenByPlayer;
             int remainingOpponentCount = missionBehavior.RemainingOpponentCountFromLastPractice;
 
@@ -153,6 +158,7 @@ namespace ArenaOverhaul.Patches
         public static void GameMenuJoinFightPostfix()
         {
             SetStandardPracticeMode();
+            AOArenaBehaviorManager.Instance?.PayForPracticeMatch();
         }
 
         [HarmonyPostfix]
@@ -163,7 +169,7 @@ namespace ArenaOverhaul.Patches
             {
                 return;
             }
-            if (!behaviorManager.CheckAffordabilityForNextPracticeRound(ArenaPracticeMode.Standard, 0, out args.Tooltip))
+            if (!behaviorManager.CheckAffordabilityForNextPracticeRound(ArenaPracticeMode.Standard, 0, out args.Tooltip, true))
             {
                 args.IsEnabled = false;
             }
@@ -178,6 +184,7 @@ namespace ArenaOverhaul.Patches
             int indexToSetStandardPracticeMode = 0;
             int indexToCheckRematchIsAffordable = 0;
             int indexToCheckRematchIsAffordable2 = 0;
+            int indexToResetAfterPracticeTalkFlag = 0;
             int indexOfOnConsequenceNewobjOperand = 0;
             int indexOfOnClickableConditionNewobjOperand = 0;
             for (int i = 0; i < codes.Count; ++i)
@@ -232,29 +239,46 @@ namespace ArenaOverhaul.Patches
                 {
                     codes[i].operand = 10;
                     ++numberOfEdits;
+                    if (codes[i - 1].opcode == OpCodes.Ldnull)
+                    {
+                        indexToResetAfterPracticeTalkFlag = i; //we keep the Ldnull for static call
+                        ++numberOfEdits;
+                    }
                     break;
                 }
             }
             //Logging
-            const int RequiredNumberOfEdits = 10;
-            if (indexToSetStandardPracticeMode <= 0 || indexOfOnConsequenceNewobjOperand <= 0 || indexToCheckRematchIsAffordable <= 0 || indexToCheckRematchIsAffordable2 <= 0 || indexOfOnClickableConditionNewobjOperand <= 0
-                || numberOfEdits < RequiredNumberOfEdits || miCheckRematchIsAffordable is null || miSetStandardPracticeMode is null)
+            const int RequiredNumberOfEdits = 11;
+            if (indexToSetStandardPracticeMode <= 0 || indexOfOnConsequenceNewobjOperand <= 0 || indexToCheckRematchIsAffordable <= 0 || indexToCheckRematchIsAffordable2 <= 0 || indexToResetAfterPracticeTalkFlag <= 0 || indexOfOnClickableConditionNewobjOperand <= 0
+                || numberOfEdits < RequiredNumberOfEdits || miCheckRematchIsAffordable is null || miSetStandardPracticeMode is null || miResetAfterPracticeTalkFlag is null)
             {
                 LoggingHelper.LogNoHooksIssue(
                     codes, numberOfEdits, RequiredNumberOfEdits, __originalMethod,
                     [
-                        (nameof(indexToSetStandardPracticeMode), indexToSetStandardPracticeMode),
-                        (nameof(indexOfOnConsequenceNewobjOperand), indexOfOnConsequenceNewobjOperand),
+                        (nameof(indexToSetStandardPracticeMode), indexToSetStandardPracticeMode),                        
                         (nameof(indexToCheckRematchIsAffordable), indexToCheckRematchIsAffordable),
                         (nameof(indexToCheckRematchIsAffordable2), indexToCheckRematchIsAffordable2),
+                        (nameof(indexToResetAfterPracticeTalkFlag), indexToResetAfterPracticeTalkFlag),
+                        (nameof(indexOfOnConsequenceNewobjOperand), indexOfOnConsequenceNewobjOperand),
                         (nameof(indexOfOnClickableConditionNewobjOperand), indexOfOnClickableConditionNewobjOperand),
+
                     ],
                     [
                         (nameof(miCheckRematchIsAffordable), miCheckRematchIsAffordable),
-                        (nameof(miSetStandardPracticeMode), miSetStandardPracticeMode)
+                        (nameof(miSetStandardPracticeMode), miSetStandardPracticeMode),
+                        (nameof(miResetAfterPracticeTalkFlag), miResetAfterPracticeTalkFlag),
                     ]);
             }
 
+
+            if (indexToResetAfterPracticeTalkFlag > 0 && indexOfOnConsequenceNewobjOperand > 0)
+            {
+                codes.InsertRange(indexToResetAfterPracticeTalkFlag, [new CodeInstruction(opcode: OpCodes.Ldftn, operand: miResetAfterPracticeTalkFlag), new CodeInstruction(opcode: OpCodes.Newobj, operand: codes[indexOfOnConsequenceNewobjOperand].operand)]);
+            }
+            else
+            {
+                MessageHelper.ErrorMessage("Harmony transpiler for ArenaMasterCampaignBehavior. AddDialogs could not find code hooks for adding rematch affordability check!");
+            }
             if (indexToCheckRematchIsAffordable2 > 0 && indexOfOnClickableConditionNewobjOperand > 0)
             {
                 codes.InsertRange(indexToCheckRematchIsAffordable2, [new CodeInstruction(opcode: OpCodes.Ldftn, operand: miCheckRematchIsAffordable), new CodeInstruction(opcode: OpCodes.Newobj, operand: codes[indexOfOnClickableConditionNewobjOperand].operand)]);
@@ -298,6 +322,15 @@ namespace ArenaOverhaul.Patches
         internal static MissionMode GetMissionMode()
         {
             return AOArenaBehaviorManager.Instance?.GetArenaPracticeMissionMode() ?? MissionMode.Battle;
+        }
+
+        internal static void ResetAfterPracticeTalkFlag()
+        {
+            if (AOArenaBehaviorManager.Instance is null)
+            {
+                return;
+            }
+            AOArenaBehaviorManager.Instance!.IsAfterPracticeTalk = false;
         }
     }
 }

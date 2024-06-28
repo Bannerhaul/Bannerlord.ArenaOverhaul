@@ -11,13 +11,8 @@ namespace ArenaOverhaul.Tournament
 {
     public class FightTournamentApplicantManager : AbstractTournamentApplicantManager<FightTournamentApplicant, MobileParty>
     {
-#if v100 || v101 || v102 || v103
-        public List<CharacterObject> GetParticipantCharacters(FightTournamentGame instance, Settlement settlement, bool includePlayer = true)
-        {
-#else
         public MBList<CharacterObject> GetParticipantCharacters(FightTournamentGame instance, Settlement settlement, bool includePlayer = true)
         {
-#endif
             List<CharacterObject> participantCharacters = new();
 
             int maximumParticipantCount = instance.MaximumParticipantCount;
@@ -59,13 +54,15 @@ namespace ArenaOverhaul.Tournament
             {
                 //We ran out of unique applicants, so we fill the rest with available troop copies, or randoom troops - if we run out of copies.
                 var extraApplicantCharacters = FillUpApplicants(applicantCharacters, settlement, maximumParticipantCount);
-                applicantGroups = applicantCharacters.GroupBy(x => x.GrouppingObject).Select(group => (group.Key, Importance: (int) group.Average(item => item.Importance))).OrderByDescending(x => x.Importance).Take(maximumParticipantCount).ToList();
+                applicantGroups = extraApplicantCharacters.GroupBy(x => x.GrouppingObject).Select(group => (group.Key, Importance: (int) group.Average(item => item.Importance))).OrderByDescending(x => x.Importance).Take(maximumParticipantCount).ToList();
                 index = 0;
-                while (participantCharacters.Count < maximumParticipantCount)
+                previousIterationCount = -1;
+                while (participantCharacters.Count < maximumParticipantCount && previousIterationCount < participantCharacters.Count)
                 {
+                    previousIterationCount = participantCharacters.Count;
                     foreach (var troopGroup in applicantGroups)
                     {
-                        var participant = applicantCharacters.Where(x => x.GrouppingObject == troopGroup.Key).Skip(index).Take(1).FirstOrDefault();
+                        var participant = extraApplicantCharacters.Where(x => x.GrouppingObject == troopGroup.Key).Skip(index).Take(1).FirstOrDefault();
                         if (participant != null)
                         {
                             participantCharacters.Add(participant.CharacterObject);
@@ -79,11 +76,19 @@ namespace ArenaOverhaul.Tournament
                 }
             }
 
-#if v100 || v101 || v102 || v103
-            return participantCharacters;
-#else
+            if (participantCharacters.Count < maximumParticipantCount)
+            {
+                //if we somehow still not done, we reuse all the existing troop applicants              
+                previousIterationCount = -1;
+                while (participantCharacters.Count < maximumParticipantCount && previousIterationCount < participantCharacters.Count)
+                {
+                    previousIterationCount = participantCharacters.Count;
+                    applicantCharacters = applicantCharacters.Where(x => !x.CharacterObject.IsHero).OrderByDescending(x => x.Importance).ToList();
+                    participantCharacters.AddRange(applicantCharacters.Take(maximumParticipantCount - participantCharacters.Count).Select(x => x.CharacterObject));
+                }
+            }
+
             return new MBList<CharacterObject>(participantCharacters);
-#endif
         }
 
         protected override FightTournamentApplicant GetApplicantInternal(CharacterObject characterObject, MobileParty? originParty, int importance, int availableCount = 1)

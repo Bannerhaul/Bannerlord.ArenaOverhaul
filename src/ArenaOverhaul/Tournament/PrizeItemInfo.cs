@@ -1,6 +1,4 @@
-﻿using System;
-
-using TaleWorlds.Core;
+﻿using TaleWorlds.Core;
 using TaleWorlds.SaveSystem;
 
 namespace ArenaOverhaul.Tournament

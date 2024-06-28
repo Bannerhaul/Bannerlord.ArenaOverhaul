@@ -20,6 +20,7 @@ using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Roster;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
+using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 
 namespace ArenaOverhaul.Patches
@@ -29,29 +30,43 @@ namespace ArenaOverhaul.Patches
     [HarmonyPatch(typeof(ArenaPracticeFightMissionController))]
     public static class ArenaPracticeFightMissionControllerPatch
     {
-        private static readonly MethodInfo? miGetInitialParticipantsCount = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetInitialParticipantsCount");
-        private static readonly MethodInfo? miGetTotalParticipantsCount = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetTotalParticipantsCount");
-        private static readonly MethodInfo? miGetActiveOpponentCount = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetActiveOpponentCount");
-        private static readonly MethodInfo? miGetMinimumActiveOpponentCount = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetMinimumActiveOpponentCount");
-        private static readonly MethodInfo? miSpawnArenaAgents = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "SpawnArenaAgents");
-        private static readonly MethodInfo? miGetParticipantCharactersLocal = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetPlayerRelatedParticipantCharacters");
-        private static readonly MethodInfo? miFilterAvailableWeapons = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "FilterAvailableWeapons");
-        private static readonly MethodInfo? miGetChosenEquipmentStage = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetChosenEquipmentStage");
-        private static readonly MethodInfo? miGetChosenEquipment = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetChosenEquipment");
-        private static readonly MethodInfo? miInitializeParticipantCharacters = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "InitializeParticipantCharacters");
-        private static readonly MethodInfo? miGetAITeamsCount = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetAITeamsCount");
-        private static readonly MethodInfo? miGetParticipantTeam = AccessTools.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetParticipantTeam");
+        private static readonly MethodInfo? miGetInitialParticipantsCount = AccessTools2.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetInitialParticipantsCount");
+        private static readonly MethodInfo? miGetTotalParticipantsCount = AccessTools2.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetTotalParticipantsCount");
+        private static readonly MethodInfo? miGetActiveOpponentCount = AccessTools2.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetActiveOpponentCount");
+        private static readonly MethodInfo? miGetMinimumActiveOpponentCount = AccessTools2.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetMinimumActiveOpponentCount");
+        private static readonly MethodInfo? miSpawnArenaAgents = AccessTools2.Method(typeof(ArenaPracticeFightMissionControllerPatch), "SpawnArenaAgents");
+        private static readonly MethodInfo? miGetParticipantCharactersLocal = AccessTools2.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetPlayerRelatedParticipantCharacters");
+        private static readonly MethodInfo? miFilterAvailableWeapons = AccessTools2.Method(typeof(ArenaPracticeFightMissionControllerPatch), "FilterAvailableWeapons");
+        private static readonly MethodInfo? miGetChosenEquipmentStage = AccessTools2.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetChosenEquipmentStage");
+        private static readonly MethodInfo? miGetChosenEquipment = AccessTools2.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetChosenEquipment");
+        private static readonly MethodInfo? miInitializeParticipantCharacters = AccessTools2.Method(typeof(ArenaPracticeFightMissionControllerPatch), "InitializeParticipantCharacters");
+        private static readonly MethodInfo? miGetAITeamsCount = AccessTools2.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetAITeamsCount");
+        private static readonly MethodInfo? miGetAITeamColor = AccessTools2.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetAITeamColor");
+        private static readonly MethodInfo? miGetAITeamBanner = AccessTools2.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetAITeamBanner");
+        private static readonly MethodInfo? miGetPlayerTeamBanner = AccessTools2.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetPlayerTeamBanner");
+        private static readonly MethodInfo? miSpawnInitialAITeamAgents = AccessTools2.Method(typeof(ArenaPracticeFightMissionControllerPatch), "SpawnInitialAITeamAgents");
+        private static readonly MethodInfo? miGetPlayerCharacter = AccessTools2.Method(typeof(ArenaPracticeFightMissionControllerPatch), "GetPlayerCharacter");
 
-        private static readonly MethodInfo? miSelectRandomAiTeam = AccessTools.Method(typeof(ArenaPracticeFightMissionController), "SelectRandomAiTeam");
-        private static readonly MethodInfo? miGetParticipantCharacters = AccessTools.Method(typeof(ArenaPracticeFightMissionController), "GetParticipantCharacters");
+        private static readonly FieldInfo? fiParticipantAgents = AccessTools2.Field(typeof(ArenaPracticeFightMissionController), "_participantAgents");
 
-        private delegate Agent SpawnArenaAgentDelegate(ArenaPracticeFightMissionController instance, Team team, MatrixFrame frame);
+        private static readonly MethodInfo? miGetParticipantCharacters = AccessTools2.Method(typeof(ArenaPracticeFightMissionController), "GetParticipantCharacters");
+        private static readonly MethodInfo? miSelectRandomAiTeam = AccessTools2.Method(typeof(ArenaPracticeFightMissionController), "SelectRandomAiTeam");
+        private static readonly MethodInfo? miSpawnArenaAgent = AccessTools2.Method(typeof(ArenaPracticeFightMissionController), "SpawnArenaAgent");
+
+        private static readonly MethodInfo? miPlayerCharacterGetter = AccessTools2.PropertyGetter(typeof(CharacterObject), "PlayerCharacter");
+        private static readonly MethodInfo? miClothingColor1 = AccessTools2.Method(typeof(AgentBuildData), "ClothingColor1");
+        private static readonly MethodInfo? miTeamColorGetter = AccessTools2.PropertyGetter(typeof(Team), "Color");
+        private static readonly MethodInfo? miSpawnAgent = AccessTools2.Method(typeof(Mission), "SpawnAgent");
+
+        internal delegate Agent SpawnArenaAgentDelegate(ArenaPracticeFightMissionController instance, Team team, MatrixFrame frame);
         private delegate Team SelectRandomAiTeamDelegate(ArenaPracticeFightMissionController instance);
-        private delegate MatrixFrame GetSpawnFrameDelegate(ArenaPracticeFightMissionController instance, bool considerPlayerDistance, bool isInitialSpawn);
+        internal delegate MatrixFrame GetSpawnFrameDelegate(ArenaPracticeFightMissionController instance, bool considerPlayerDistance, bool isInitialSpawn);
+        private delegate void InitializeTeamsDelegate(ArenaPracticeFightMissionController instance);
 
-        private static readonly SpawnArenaAgentDelegate? deSpawnArenaAgent = AccessTools2.GetDelegate<SpawnArenaAgentDelegate>(typeof(ArenaPracticeFightMissionController), "SpawnArenaAgent");
+        internal static readonly SpawnArenaAgentDelegate? deSpawnArenaAgent = AccessTools2.GetDelegate<SpawnArenaAgentDelegate>(typeof(ArenaPracticeFightMissionController), "SpawnArenaAgent");
         private static readonly SelectRandomAiTeamDelegate? deSelectRandomAiTeam = AccessTools2.GetDelegate<SelectRandomAiTeamDelegate>(typeof(ArenaPracticeFightMissionController), "SelectRandomAiTeam");
-        private static readonly GetSpawnFrameDelegate? deGetSpawnFrame = AccessTools2.GetDelegate<GetSpawnFrameDelegate>(typeof(ArenaPracticeFightMissionController), "GetSpawnFrame");
+        internal static readonly GetSpawnFrameDelegate? deGetSpawnFrame = AccessTools2.GetDelegate<GetSpawnFrameDelegate>(typeof(ArenaPracticeFightMissionController), "GetSpawnFrame");
+        private static readonly InitializeTeamsDelegate? deInitializeTeams = AccessTools2.GetDelegate<InitializeTeamsDelegate>(typeof(ArenaPracticeFightMissionController), "InitializeTeams");
 
         private static bool wasInitialSpawnLastTime = false;
         private static int spawnCounter = 0;
@@ -211,11 +226,34 @@ namespace ArenaOverhaul.Patches
         {
             List<CodeInstruction> codes = new(instructions);
             int numberOfEdits = 0;
-            if (miGetAITeamsCount != null)
+            if (miGetAITeamsCount != null && miGetAITeamColor != null && miGetAITeamBanner != null && miGetPlayerTeamBanner != null)
             {
                 for (int i = 0; i < codes.Count; ++i)
                 {
-                    if (codes[i].opcode == OpCodes.Ldc_I4_6)
+                    if (numberOfEdits == 0 && codes[i].opcode == OpCodes.Ldnull && codes[i + 1].opcode == OpCodes.Ldc_I4_1 && codes[i + 2].opcode == OpCodes.Ldc_I4_0 && codes[i + 3].opcode == OpCodes.Ldc_I4_1)
+                    {
+                        codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetPlayerTeamBanner);
+                        ++numberOfEdits;
+                    }
+                    if (numberOfEdits == 1 && codes[i - 1].opcode == OpCodes.Ldc_I4_1 && codes[i].opcode == OpCodes.Ldc_I4_M1 && codes[i + 1].opcode == OpCodes.Ldc_I4_M1)
+                    {
+                        codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetAITeamColor);
+                        codes.InsertRange(i, [new CodeInstruction(OpCodes.Ldarg_0)]);
+                        ++numberOfEdits;
+                    }
+                    else if (numberOfEdits == 2 && codes[i].opcode == OpCodes.Ldc_I4_M1)
+                    {
+                        codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetAITeamColor);
+                        codes.InsertRange(i, [new CodeInstruction(OpCodes.Ldarg_0)]);
+                        ++numberOfEdits;
+                    }
+                    else if (numberOfEdits == 3 && codes[i].opcode == OpCodes.Ldnull)
+                    {
+                        codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetAITeamBanner);
+                        codes.InsertRange(i, [new CodeInstruction(OpCodes.Ldarg_0)]);
+                        ++numberOfEdits;
+                    }
+                    else if (numberOfEdits == 4 && codes[i].opcode == OpCodes.Ldc_I4_6)
                     {
                         codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetAITeamsCount);
                         ++numberOfEdits;
@@ -225,13 +263,16 @@ namespace ArenaOverhaul.Patches
             }
 
             //Logging
-            const int RequiredNumberOfEdits = 1;
+            const int RequiredNumberOfEdits = 5;
             if (numberOfEdits < RequiredNumberOfEdits)
             {
                 LoggingHelper.LogNoHooksIssue(
                     codes, numberOfEdits, RequiredNumberOfEdits, __originalMethod, [],
                     [
                         (nameof(miGetAITeamsCount), miGetAITeamsCount),
+                        (nameof(miGetAITeamColor), miGetAITeamColor),
+                        (nameof(miGetAITeamBanner), miGetAITeamBanner),
+                        (nameof(miGetPlayerTeamBanner), miGetPlayerTeamBanner),
                     ]);
             }
 
@@ -244,11 +285,22 @@ namespace ArenaOverhaul.Patches
         {
             List<CodeInstruction> codes = new(instructions);
             int numberOfEdits = 0;
-            if (miGetInitialParticipantsCount != null)
+            int spawnAIAgentsStartIndex = -1, spawnAIAgentsEndIndex = -1;
+            if (fiParticipantAgents != null && miSpawnArenaAgent != null && miGetInitialParticipantsCount != null)
             {
-                for (int i = 0; i < codes.Count; ++i)
+                for (int i = 2; i < codes.Count; ++i)
                 {
-                    if (codes[i].opcode == OpCodes.Ldc_I4_6)
+                    if (numberOfEdits == 0 && codes[i].opcode == OpCodes.Ldarg_0 && codes[i + 1].opcode == OpCodes.Ldfld && (FieldInfo) codes[i + 1].operand == fiParticipantAgents && codes[i + 2].opcode == OpCodes.Ldarg_0 && codes[i + 3].opcode == OpCodes.Ldarg_0)
+                    {
+                        spawnAIAgentsStartIndex = i + 1;
+                        ++numberOfEdits;
+                    }
+                    else if (numberOfEdits == 1 && codes[i].Calls(miSpawnArenaAgent) && codes[i + 1].opcode == OpCodes.Callvirt && codes[i + 1].operand.ToString()!.Contains("Add"))
+                    {
+                        spawnAIAgentsEndIndex = i + 1;
+                        ++numberOfEdits;
+                    }
+                    else if (numberOfEdits == 2 && codes[i].opcode == OpCodes.Ldc_I4_6)
                     {
                         codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetInitialParticipantsCount);
                         ++numberOfEdits;
@@ -258,22 +310,51 @@ namespace ArenaOverhaul.Patches
             }
 
             //Logging
-            const int RequiredNumberOfEdits = 1;
-            if (numberOfEdits < RequiredNumberOfEdits)
+            const int RequiredNumberOfEdits = 3;
+            if (spawnAIAgentsStartIndex < 0 || spawnAIAgentsEndIndex < 0 || numberOfEdits < RequiredNumberOfEdits || miSpawnInitialAITeamAgents is null)
             {
                 LoggingHelper.LogNoHooksIssue(
-                    codes, numberOfEdits, RequiredNumberOfEdits, __originalMethod, [],
+                    codes, numberOfEdits, RequiredNumberOfEdits, __originalMethod,
                     [
+                        (nameof(spawnAIAgentsStartIndex), spawnAIAgentsStartIndex),
+                        (nameof(spawnAIAgentsEndIndex), spawnAIAgentsEndIndex),
+                    ],
+                    [
+                        (nameof(fiParticipantAgents), fiParticipantAgents),
+                        (nameof(miSpawnArenaAgent), miSpawnArenaAgent),
                         (nameof(miGetInitialParticipantsCount), miGetInitialParticipantsCount),
+                        (nameof(miSpawnInitialAITeamAgents), miSpawnInitialAITeamAgents),
                     ]);
+            }
+
+            if (spawnAIAgentsStartIndex >= 0 && spawnAIAgentsEndIndex > 0)
+            {
+                codes.RemoveRange(spawnAIAgentsStartIndex, spawnAIAgentsEndIndex - spawnAIAgentsStartIndex + 1);
+                codes.InsertRange(spawnAIAgentsStartIndex, [new CodeInstruction(opcode: OpCodes.Ldloc_2), new CodeInstruction(opcode: OpCodes.Ldloc_0), new CodeInstruction(opcode: OpCodes.Call, operand: miSpawnInitialAITeamAgents)]);
+            }
+            else
+            {
+                MessageHelper.ErrorMessage("Harmony transpiler for ArenaPracticeFightMissionController. StartPractice could not find code hooks for spwaning initial participants!");
             }
 
             return codes.AsEnumerable();
         }
 
-        [HarmonyPostfix]
+        [HarmonyPrefix]
         [HarmonyPatch("StartPractice")]
-        public static void StartPracticePostfix() => ParryStatsManager.Reset();
+        public static void StartPracticePrefix(ArenaPracticeFightMissionController __instance)
+        {
+            if (!AOArenaBehaviorManager.Instance?.IsPlayerPrePractice ?? false)
+            {
+                ReInitializeTeams(__instance);
+            }
+            if (AOArenaBehaviorManager.Instance != null)
+            {
+                AOArenaBehaviorManager.Instance.IsPlayerPrePractice = false;
+            }
+            ParryPracticeStatsManager.Reset();
+            TeamPracticeStatsManager.Reset();
+        }
 
         [HarmonyTranspiler]
         [HarmonyPatch("InitializeParticipantCharacters")]
@@ -367,46 +448,127 @@ namespace ArenaOverhaul.Patches
             return codes.AsEnumerable();
         }
 
-        /*
         [HarmonyTranspiler]
         [HarmonyPatch("SpawnArenaAgent")]
-        public static IEnumerable<CodeInstruction> SpawnArenaAgentTranspiler(IEnumerable<CodeInstruction> instructions)
+        public static IEnumerable<CodeInstruction> SpawnArenaAgentTranspiler(IEnumerable<CodeInstruction> instructions, MethodBase __originalMethod)
         {
             List<CodeInstruction> codes = new(instructions);
-            int insertIndex = 0;
-            for (int i = 0; i < codes.Count; ++i)
+            int numberOfEdits = 0;
+            if (miPlayerCharacterGetter != null && miGetPlayerCharacter != null)
             {
-                if (codes[i].opcode == OpCodes.Stloc_2)
+                for (int i = 0; i < codes.Count; ++i)
                 {
-                    insertIndex = i + 1;
-                    break;
+                    if (numberOfEdits == 0 && codes[i].Calls(miPlayerCharacterGetter))
+                    {
+                        codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetPlayerCharacter);
+                        ++numberOfEdits;
+                    }
+                    else if (numberOfEdits == 1 && codes[i].Calls(miPlayerCharacterGetter))
+                    {
+                        codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetPlayerCharacter);
+                        ++numberOfEdits;
+                    }
+                    else if (numberOfEdits == 2 && codes[i].Calls(miPlayerCharacterGetter))
+                    {
+                        codes[i] = new CodeInstruction(opcode: OpCodes.Call, operand: miGetPlayerCharacter);
+                        ++numberOfEdits;
+                        break;
+                    }
                 }
             }
-            codes.InsertRange(insertIndex, [new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(OpCodes.Ldarg_1), new CodeInstruction(opcode: OpCodes.Call, operand: miGetParticipantTeam), new CodeInstruction(OpCodes.Starg, 1)]);
+
+            //Logging
+            const int RequiredNumberOfEdits = 3;
+            if (numberOfEdits < RequiredNumberOfEdits)
+            {
+                LoggingHelper.LogNoHooksIssue(
+                    codes, numberOfEdits, RequiredNumberOfEdits, __originalMethod, [],
+                    [
+                        (nameof(miPlayerCharacterGetter), miPlayerCharacterGetter),
+                        (nameof(miGetPlayerCharacter), miGetPlayerCharacter),
+                    ]);
+            }
+
             return codes.AsEnumerable();
         }
-        */
+
+        [HarmonyPrefix]
+        [HarmonyPatch("SpawnArenaAgent")]
+        public static bool SpawnArenaAgentPrefix(Team team, MatrixFrame frame, ref Agent __result, ArenaPracticeFightMissionController __instance) //Bool prefixes compete with each other and skip others, as well as original, if return false
+        {
+            if (GetPracticeMode() != ArenaPracticeMode.Team)
+            {
+                return true;
+            }
+            return TeamPracticeController.SpawnArenaAgent(__instance, team, frame, out __result);
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch("OnAgentRemoved")]
+        public static bool OnAgentRemovedPrefix(ArenaPracticeFightMissionController __instance, Agent? affectedAgent, Agent? affectorAgent, AgentState agentState, KillingBlow killingBlow) //Bool prefixes compete with each other and skip others, as well as original, if return false
+        {
+            if (!IsTeamPractice(__instance))
+            {
+                return true;
+            }
+            return TeamPracticeController.OnAgentRemovedInternal(__instance, affectedAgent, affectorAgent);
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch("CheckPracticeEndedForPlayer")]
+        public static bool CheckPracticeEndedForPlayerPrefix(ArenaPracticeFightMissionController __instance, ref bool __result) //Bool prefixes compete with each other and skip others, as well as original, if return false
+        {
+            if (!IsTeamPractice(__instance))
+            {
+                return true;
+            }
+            __result = ((__instance.Mission.MainAgent == null || !__instance.Mission.MainAgent.IsActive()) && TeamPracticeStatsManager.RemainingAlliesCount == 0) || __instance.RemainingOpponentCount == 0;
+            return false;
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch("OnEndMissionRequest")]
+        public static bool OnEndMissionRequestPrefix(ArenaPracticeFightMissionController __instance, ref InquiryData? __result, out bool canPlayerLeave) //Bool prefixes compete with each other and skip others, as well as original, if return false
+        {
+            canPlayerLeave = true;
+            if (!IsTeamPractice(__instance) || TeamPracticeStatsManager.RemainingAlliesCount <= 0 || (__instance.Mission.MainAgent?.IsActive() ?? false))
+            {
+                return true;
+            }
+
+            __result = !__instance.IsPlayerPracticing 
+                ? null
+                : new InquiryData(new TextObject("{=zv49qE35}Practice Fight").ToString(), new TextObject("{=}Your teammates are still fighting. Do you want to leave the arena?").ToString(), true, true, GameTexts.FindText("str_ok").ToString(), GameTexts.FindText("str_cancel").ToString(), new Action(__instance.Mission.OnEndMissionResult), null);
+            return false;
+        }
 
         [HarmonyPostfix]
         [HarmonyPatch("OnScoreHit")]
         public static void OnScoreHitPostfix(Agent affectedAgent, Agent affectorAgent, bool isBlocked, AttackCollisionData collisionData, ArenaPracticeFightMissionController __instance)
         {
-            if (affectorAgent != null && affectedAgent != null && affectedAgent == Agent.Main && affectorAgent.IsEnemyOf(affectedAgent) && GetPracticeMode() == ArenaPracticeMode.Parry)
+            if (affectorAgent != null && affectedAgent != null && affectorAgent.IsEnemyOf(affectedAgent) && GetPracticeMode() == ArenaPracticeMode.Parry)
             {
-                switch (collisionData.CollisionResult)
+                if (affectedAgent == Agent.Main)
                 {
-                    case CombatCollisionResult.StrikeAgent:
-                        ParryStatsManager.HitsTaken++;
-                        break;
-                    case CombatCollisionResult.Blocked:
-                        ParryStatsManager.PreparedBlocks++;
-                        break;
-                    case CombatCollisionResult.Parried:
-                        ParryStatsManager.PerfectBlocks++;
-                        break;
-                    case CombatCollisionResult.ChamberBlocked:
-                        ParryStatsManager.ChamberBlocks++;
-                        break;
+                    switch (collisionData.CollisionResult)
+                    {
+                        case CombatCollisionResult.StrikeAgent:
+                            ParryPracticeStatsManager.HitsTaken++;
+                            break;
+                        case CombatCollisionResult.Blocked:
+                            ParryPracticeStatsManager.PreparedBlocks++;
+                            break;
+                        case CombatCollisionResult.Parried:
+                            ParryPracticeStatsManager.PerfectBlocks++;
+                            break;
+                        case CombatCollisionResult.ChamberBlocked:
+                            ParryPracticeStatsManager.ChamberBlocks++;
+                            break;
+                    }
+                }
+                else if (affectorAgent == Agent.Main && collisionData.CollisionResult == CombatCollisionResult.StrikeAgent)
+                {
+                    ParryPracticeStatsManager.HitsMade++;
                 }
             }
         }
@@ -415,7 +577,9 @@ namespace ArenaOverhaul.Patches
         [HarmonyPatch("EnemyHitReward")]
         public static void EnemyHitRewardPostfix(Agent affectedAgent, Agent affectorAgent, float lastSpeedBonus, float lastShotDifficulty, WeaponComponentData? attackerWeapon, float hitpointRatio, float damageAmount, ArenaPracticeFightMissionController __instance)
         {
-            if (affectedAgent.Origin == null || affectorAgent == null || affectorAgent.Origin == null || !IsExpansivePractice(__instance) || !Settings.Instance!.EnableViewerExperienceGain)
+            bool expansivePracticeExpGain = IsExpansivePractice(__instance) && Settings.Instance!.EnableViewerExperienceGain;
+            bool teamPracticeExpGain = (IsTeamPractice(__instance) && Settings.Instance!.TeamEnableViewerExperienceGain);
+            if (affectedAgent?.Origin == null || affectorAgent == null || affectorAgent.Origin == null || !affectedAgent.IsEnemyOf(affectorAgent) || !expansivePracticeExpGain || !teamPracticeExpGain)
             {
                 return;
             }
@@ -423,7 +587,7 @@ namespace ArenaOverhaul.Patches
             PartyBase party = Hero.MainHero.PartyBelongedTo.Party;
             CharacterObject affectorCharacter = (CharacterObject) affectorAgent.Character;
 
-            bool affectorIsAliedHero = affectorCharacter.IsPlayerCharacter || (affectorCharacter.IsHero && party.MemberRoster.Contains(affectorCharacter));
+            bool affectorIsAliedHero = (affectorCharacter == GetPlayerCharacter()) || (affectorCharacter.IsHero && party.MemberRoster.Contains(affectorCharacter));
             if (!affectorIsAliedHero)
             {
                 return;
@@ -433,11 +597,11 @@ namespace ArenaOverhaul.Patches
             SkillObject? relevantSkill = attackerWeapon?.RelevantSkill;
             foreach (TroopRosterElement troopRosterElement in party.MemberRoster.GetTroopRoster())
             {
-                if (!troopRosterElement.Character.IsHero && !troopRosterElement.Character.IsPlayerCharacter)
+                if (!troopRosterElement.Character.IsHero && troopRosterElement.Character != GetPlayerCharacter())
                 {
                     party.MemberRoster.AddXpToTroop((int) xpAmount, troopRosterElement.Character);
                 }
-                else if (relevantSkill is not null && troopRosterElement.Character.IsHero && !troopRosterElement.Character.IsPlayerCharacter && !FieldAccessHelper.APFMCParticipantAgentsByRef(__instance).Select(a => a.Character).Contains(troopRosterElement.Character))
+                else if (relevantSkill is not null && troopRosterElement.Character.IsHero && troopRosterElement.Character != GetPlayerCharacter() && !FieldAccessHelper.APFMCParticipantAgentsByRef(__instance).Select(a => a.Character).Contains(troopRosterElement.Character))
                 {
                     Hero heroObject = troopRosterElement.Character.HeroObject;
                     if (affectorCharacter.HeroObject.GetSkillValue(relevantSkill) > heroObject.GetSkillValue(relevantSkill))
@@ -464,16 +628,6 @@ namespace ArenaOverhaul.Patches
 
         /* service methods */
 
-        internal static Team GetParticipantTeam(ArenaPracticeFightMissionController instance, Team team)
-        {
-            var character = FieldAccessHelper.APFMCParticipantCharactersByRef(instance)[FieldAccessHelper.APFMCSpawnedOpponentAgentCountByRef(instance)];
-            if (character.IsHero && character.HeroObject.PartyBelongedTo == MobileParty.MainParty && instance.Mission.PlayerTeam.ActiveAgents.Count <= 4)
-            {
-                return instance.Mission.PlayerTeam;
-            }
-            return team;
-        }
-
         internal static int GetInitialParticipantsCount()
         {
             return AOArenaBehaviorManager.GetInitialParticipantsCount(GetPracticeMode());
@@ -486,7 +640,7 @@ namespace ArenaOverhaul.Patches
 
         internal static int GetActiveOpponentCount()
         {
-            return AOArenaBehaviorManager.GetActiveOpponentCount(GetPracticeMode(false));
+            return AOArenaBehaviorManager.GetActiveOpponentCount(GetPracticeMode());
         }
 
         internal static int GetMinimumActiveOpponentCount()
@@ -496,7 +650,23 @@ namespace ArenaOverhaul.Patches
 
         internal static int GetAITeamsCount()
         {
-            return AOArenaBehaviorManager.GetAITeamsCount(GetPracticeMode(false));
+            return AOArenaBehaviorManager.GetAITeamsCount(GetPracticeMode());
+        }
+
+        internal static uint GetAITeamColor(ArenaPracticeFightMissionController instance)
+        {
+            return AOArenaBehaviorManager.GetAITeamColor(GetPracticeMode(), FieldAccessHelper.APFMCAIParticipantTeamsByRef(instance).Count);
+        }
+
+
+        internal static Banner GetAITeamBanner(ArenaPracticeFightMissionController instance)
+        {
+            return Banner.CreateOneColoredEmptyBanner(BannerManager.GetColorId(GetAITeamColor(instance)));
+        }
+
+        internal static Banner GetPlayerTeamBanner()
+        {
+            return Hero.MainHero.ClanBanner;
         }
 
         internal static List<Equipment> FilterAvailableWeapons(List<Equipment> loadoutList)
@@ -504,29 +674,40 @@ namespace ArenaOverhaul.Patches
             return AOArenaBehaviorManager.Instance?.FilterAvailableWeapons(loadoutList) ?? loadoutList;
         }
 
+        private static int GetCurrentStage(int spawnIndex)
+        {
+            return 1 + spawnIndex * 3 / GetTotalParticipantsCount();
+        }
+
         internal static int GetChosenEquipmentStage(ArenaPracticeFightMissionController instance, int spawnIndex)
         {
-            int chosenStage = 1 + spawnIndex * 3 / GetTotalParticipantsCount();
-            return IsPlayerSpawn(instance, spawnIndex) ? (AOArenaBehaviorManager.Instance?.ChosenLoadoutStage ?? chosenStage) : chosenStage;
+            int currentStage = GetCurrentStage(spawnIndex);
+            return ShouldUseCustomLoadout(instance, spawnIndex, out var loadout) ? loadout.ChosenLoadoutStage : currentStage;
         }
 
         internal static int GetChosenEquipment(ArenaPracticeFightMissionController instance, int spawnIndex, List<Equipment> equipmentList)
         {
-            int chosenLoadout = AOArenaBehaviorManager.Instance?.ChosenLoadout ?? -1;
-            return IsPlayerSpawn(instance, spawnIndex) && chosenLoadout >= 0 ? chosenLoadout : MBRandom.RandomInt(equipmentList.Count);
+            return ShouldUseCustomLoadout(instance, spawnIndex, out var loadout) ? loadout.ChosenLoadout : MBRandom.RandomInt(equipmentList.Count);
         }
 
         internal static void SpawnArenaAgents(ArenaPracticeFightMissionController instance)
         {
-            int countToAddAtOnce = Math.Max(FieldAccessHelper.APFMCSpawnFramesByRef(instance).Count - 1, 1);
+            int countToAddAtOnce = IsExpansivePractice(instance)
+                ? Math.Max(FieldAccessHelper.APFMCSpawnFramesByRef(instance).Count - 1, 1)
+                : MBRandom.RandomInt(2, Math.Max(3, GetActiveOpponentCount() / GetAITeamsCount() + 1));
+
             if (IsExpansivePractice(instance) && IsUndercrowded() && GetTotalParticipantsCount() >= FieldAccessHelper.APFMCSpawnedOpponentAgentCountByRef(instance) + countToAddAtOnce)
-            {                
+            {
                 int num = 0;
                 while (num < countToAddAtOnce && FieldAccessHelper.APFMCSpawnedOpponentAgentCountByRef(instance) <= GetTotalParticipantsCount())
                 {
                     FieldAccessHelper.APFMCParticipantAgentsByRef(instance).Add(deSpawnArenaAgent!(instance, deSelectRandomAiTeam!(instance), deGetSpawnFrame!(instance, true, UseInitialSpawnForDiversity(instance))));
                     ++num;
                 }
+            }
+            else if (IsTeamPractice(instance))
+            {
+                TeamPracticeController.SpawnArenaAgentsForTeamPractice(instance, countToAddAtOnce);
             }
             else
             {
@@ -537,7 +718,7 @@ namespace ArenaOverhaul.Patches
             bool IsUndercrowded() => FieldAccessHelper.APFMCNextSpawnTimeByRef(instance) > instance.Mission.CurrentTime;
         }
 
-        private static bool UseInitialSpawnForDiversity(ArenaPracticeFightMissionController instance)
+        internal static bool UseInitialSpawnForDiversity(ArenaPracticeFightMissionController instance)
         {
             var spawnFramesCount = FieldAccessHelper.APFMCSpawnFramesByRef(instance).Count;
             if (GetMinimumActiveOpponentCount() <= spawnFramesCount * 2 || FieldAccessHelper.APFMCAliveOpponentCountByRef(instance) <= spawnFramesCount * 3)
@@ -565,9 +746,31 @@ namespace ArenaOverhaul.Patches
             return participantCharacters;
         }
 
+        internal static void ReInitializeTeams(ArenaPracticeFightMissionController instance)
+        {
+            instance.Mission.Teams.Clear();
+            deInitializeTeams!(instance);
+        }
+
         internal static List<CharacterObject> GetPlayerRelatedParticipantCharacters()
         {
             return AOArenaBehaviorManager.GetPlayerRelatedParticipantCharacters(GetPracticeMode(), GetTotalParticipantsCount());
+        }
+
+        internal static void SpawnInitialAITeamAgents(ArenaPracticeFightMissionController instance, int spawnIndex, int teamCount)
+        {
+            if (GetPracticeMode() == ArenaPracticeMode.Team)
+            {
+                var frame = deGetSpawnFrame!(instance, true, true);
+                var numberToSpawn = Math.DivRem(GetInitialParticipantsCount(), teamCount, out var reminder) + (reminder > spawnIndex ? 1 : 0);
+                var team = FieldAccessHelper.APFMCAIParticipantTeamsByRef(instance)[spawnIndex];
+                for (int i = 0; i < numberToSpawn; ++i)
+                {
+                    FieldAccessHelper.APFMCParticipantAgentsByRef(instance).Add(deSpawnArenaAgent!(instance, team, frame));
+                }
+                return;
+            }
+            FieldAccessHelper.APFMCParticipantAgentsByRef(instance).Add(deSpawnArenaAgent!(instance, FieldAccessHelper.APFMCAIParticipantTeamsByRef(instance)[spawnIndex % teamCount], deGetSpawnFrame!(instance, false, true)));
         }
 
         private static MatrixFrame GetSpawnFrameInternal(ArenaPracticeFightMissionController instance, bool considerPlayerDistance, bool isInitialSpawn)
@@ -585,16 +788,64 @@ namespace ArenaOverhaul.Patches
             return matrixFrameList.OrderBy(x => x.origin.DistanceSquared(agent.Position)).First();
         }
 
-        private static bool IsPlayerSpawn(ArenaPracticeFightMissionController instance, int spawnIndex)
+        private static bool ShouldUseCustomLoadout(ArenaPracticeFightMissionController instance, int spawnIndex, out (int ChosenLoadoutStage, int ChosenLoadout) loadoutToUse)
         {
-            return instance.IsPlayerPracticing && spawnIndex == 0 && FieldAccessHelper.APFMCParticipantAgentsByRef(instance).IsEmpty();
+            loadoutToUse = (0, -1);
+            if (instance.IsPlayerPracticing)
+            {
+                if (GetPracticeMode() == ArenaPracticeMode.Team && TeamPracticeController.SpawningCharacterObject != null)
+                {
+                    if (TeamPracticeController.SpawningCharacterObject == GetPlayerCharacter())
+                    {
+                        return GetPlayerLoadout(spawnIndex, out loadoutToUse);
+                    }
+                    return GetCompanionLoadout(TeamPracticeController.SpawningCharacterObject, ref loadoutToUse);
+                }
+
+                //Player
+                if (spawnIndex == 0 && FieldAccessHelper.APFMCParticipantAgentsByRef(instance).IsEmpty())
+                {
+                    return GetPlayerLoadout(spawnIndex, out loadoutToUse);
+                }
+
+                //Companions
+                var character = FieldAccessHelper.APFMCParticipantCharactersByRef(instance)[spawnIndex];
+                return GetCompanionLoadout(character, ref loadoutToUse);
+            }
+
+            return false;
+
+            //Local methods
+            static bool GetPlayerLoadout(int spawnIndex, out (int ChosenLoadoutStage, int ChosenLoadout) loadoutToUse)
+            {
+                int chosenLoadoutStage = AOArenaBehaviorManager.Instance?.ChosenLoadoutStage ?? GetCurrentStage(spawnIndex);
+                int chosenLoadout = AOArenaBehaviorManager.Instance?.ChosenLoadout ?? -1;
+
+                loadoutToUse = (chosenLoadoutStage, chosenLoadout);
+                return chosenLoadoutStage > 0 && chosenLoadout >= 0;
+            }
+
+            static bool GetCompanionLoadout(CharacterObject character, ref (int ChosenLoadoutStage, int ChosenLoadout) loadoutToUse)
+            {
+                if (character.IsHero && character.HeroObject.Clan == Clan.PlayerClan)
+                {
+                    return (AOArenaBehaviorManager.Instance?.CompanionLoadouts.TryGetValue(character.HeroObject, out loadoutToUse) ?? false) && loadoutToUse.ChosenLoadoutStage > 0 && loadoutToUse.ChosenLoadout >= 0;
+                }
+                return false;
+            }
         }
 
-        private static bool IsExpansivePractice(ArenaPracticeFightMissionController instance) => (instance?.IsPlayerPracticing ?? false) && ((AOArenaBehaviorManager.Instance?.PracticeMode ?? ArenaPracticeMode.Standard) == ArenaPracticeMode.Expansive);
+        internal static CharacterObject GetPlayerCharacter() =>
+            !(Mission.Current?.GetMissionBehavior<ArenaPracticeFightMissionController>()?.IsPlayerPracticing ?? false)
+                ? CharacterObject.PlayerCharacter
+                : AOArenaBehaviorManager.Instance?.ChosenCharacter ?? CharacterObject.PlayerCharacter;
 
-        private static ArenaPracticeMode GetPracticeMode(bool checkPlayerIsPracticing = true) 
+        private static bool IsExpansivePractice(ArenaPracticeFightMissionController instance) => (instance?.IsPlayerPracticing ?? false) && ((AOArenaBehaviorManager.Instance?.PracticeMode ?? ArenaPracticeMode.Standard) == ArenaPracticeMode.Expansive);
+        private static bool IsTeamPractice(ArenaPracticeFightMissionController instance) => (instance?.IsPlayerPracticing ?? false) && ((AOArenaBehaviorManager.Instance?.PracticeMode ?? ArenaPracticeMode.Standard) == ArenaPracticeMode.Team);
+
+        internal static ArenaPracticeMode GetPracticeMode() 
         {
-            if (checkPlayerIsPracticing && !(Mission.Current?.GetMissionBehavior<ArenaPracticeFightMissionController>()?.IsPlayerPracticing ?? false))
+            if (!(AOArenaBehaviorManager.Instance?.IsPlayerPrePractice ?? false) && !(Mission.Current?.GetMissionBehavior<ArenaPracticeFightMissionController>()?.IsPlayerPracticing ?? false))
             {
                 return ArenaPracticeMode.Standard;
             }

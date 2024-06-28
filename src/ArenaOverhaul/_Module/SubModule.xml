@@ -47,5 +47,14 @@
 		<XmlNode>
 			<XmlName id="GameText" path="module_strings"/>
 		</XmlNode>
-	</Xmls>
+        <XmlNode>
+            <XmlName id="NPCCharacters" path="spnpccharacters"/>
+            <IncludedGameTypes>
+                <GameType value="Campaign"/>
+                <GameType value="CampaignStoryMode"/>
+                <GameType value="CustomGame"/>
+                <GameType value="EditorGame"/>
+            </IncludedGameTypes>
+        </XmlNode>
+    </Xmls>
 </Module>

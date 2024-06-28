@@ -1,8 +1,12 @@
-﻿using MCM.Abstractions.Attributes;
+﻿using ArenaOverhaul.Extensions;
+
+using MCM.Abstractions;
+using MCM.Abstractions.Attributes;
 using MCM.Abstractions.Attributes.v2;
 using MCM.Abstractions.Base.Global;
-
 using MCM.Common;
+
+using System.Collections.Generic;
 
 using TaleWorlds.Localization;
 
@@ -14,6 +18,10 @@ namespace ArenaOverhaul.ModSettings
         public override string DisplayName => $"{new TextObject("{=n3lrq7FfM}Arena Overhaul")} {typeof(Settings).Assembly.GetName().Version!.ToString(3)}";
         public override string FolderName => "Arena Overhaul";
         public override string FormatType => "json2";
+
+        //Presets
+        private const string PresetSavingMoney = "{=}Optimized to save money";
+        private const string PresetBetterTraining = "{=}Optimized to train heroes";
 
         //Headings
         private const string HeadingGeneral = "{=}General settings";
@@ -28,6 +36,13 @@ namespace ArenaOverhaul.ModSettings
 
         private const string HeadingParryPractice = "{=}Parry Practice settings";
         private const string HeadingParryPracticeExperience = HeadingParryPractice + "/{=oywDR1MSm}Experience";
+
+        private const string HeadingTeamPractice = "{=}Team Arena Practice settings";
+        private const string HeadingTeamPracticeRewards = HeadingTeamPractice + "/{=C5nJgxepr}Rewards";
+        private const string HeadingTeamPracticeExperience = HeadingTeamPractice + "/{=oywDR1MSm}Experience";
+        private const string HeadingTeamPracticeTechnicalSettings = HeadingTeamPractice + "/{=}Technical settings";
+
+        private const string HeadingPracticeCompanionDefaults = "{=}Default Arena Practice settings for heroes";
 
         private const string HeadingTournaments = "{=RRmGS7t6x}Tournament settings";
         private const string HeadingTournamentsMaterialRewards = HeadingTournaments + "/{=ZlvTL5D4T}Material rewards";
@@ -52,37 +67,54 @@ namespace ArenaOverhaul.ModSettings
         internal const string DropdownValueAlwaysExceptForMounts = "{=}Always, except for unique mounts";
         internal const string DropdownValueAlways = "{=}Always";
 
+        //Default Arena Practice settings for Companions
+        [SettingPropertyBool("{=}Enable loadout choice", Order = 0, RequireRestart = true, HintText = "{=}This is a default value that will be used to configure hero loadout options. When enabled, corresponding hero is allowed to choose weapons for arena practice matches, and you will have to pay the usual fee for this. Otherwise, they will use random weapons like everyone else. Default is True.")]
+        [SettingPropertyGroup(HeadingPracticeCompanionDefaults, GroupOrder = 0)]
+        public bool EnableLoadoutChoice { get; set; } = true;
+
+        [SettingPropertyBool("{=}Only priority loadouts", Order = 1, RequireRestart = true, HintText = "{=}This is a default value that will be used to configure hero loadout options. When enabled, corresponding hero will only choose practice weapons if any weapon preference is set and at least one matching weapon loadout is available in the arena. Otherwise, they will use random weapons like everyone else. Default is True.")]
+        [SettingPropertyGroup(HeadingPracticeCompanionDefaults, GroupOrder = 0)]
+        public bool OnlyPriorityLoadouts { get; set; } = true;
+
+        [SettingPropertyBool("{=}Prioritize expensive equipment", Order = 2, RequireRestart = true, HintText = "{=}This is a default value that will be used to configure hero loadout options. When enabled, corresponding hero will select weapons for arena practice matches, prioritizing better and more expensive equipment. Otherwise, the least expensive set of weapons that meets the given preferences will be selected. Default is False.")]
+        [SettingPropertyGroup(HeadingPracticeCompanionDefaults, GroupOrder = 0)]
+        public bool PrioritizeExpensiveEquipment { get; set; } = false;
+
         //Arena Practice settings
-        [SettingPropertyInteger("{=wtKB2udZJ}Total participants", 10, 150, Order = 0, RequireRestart = false, HintText = "{=89f5zrS7i}The total number of participants in the Arena Practice. It is recommended to be a multiple of 3. Default = 30.")]
-        [SettingPropertyGroup(HeadingPractice, GroupOrder = 0)]
+        [SettingPropertyBool("{=}Enable playing as a companion hero", Order = 0, RequireRestart = false, HintText = "{=}When this option is enabled, you will be allowed to send a companion to participate in the Arena Practice in your place and control that companion in the arena. Native is False. Default is True.")]
+        [SettingPropertyGroup(HeadingPractice, GroupOrder = 10)]
+        public bool EnablePracticeAgentSwitching { get; set; } = true;
+
+        [SettingPropertyInteger("{=wtKB2udZJ}Total participants", 10, 150, Order = 10, RequireRestart = false, HintText = "{=89f5zrS7i}The total number of participants in the Arena Practice. It is recommended to be a multiple of 3. Default = 30.")]
+        [SettingPropertyGroup(HeadingPractice, GroupOrder = 10)]
         public int PracticeTotalParticipants { get; set; } = 30;
 
-        [SettingPropertyInteger("{=gaGpV2GcX}Active participants", 1, 21, Order = 1, RequireRestart = false, HintText = "{=oqpocFdUs}Еstimated number of the active participants in the Arena Practice. It is recommended to be a multiple of 3. Default = 6.")]
+        [SettingPropertyInteger("{=gaGpV2GcX}Active participants", 1, 21, Order = 11, RequireRestart = false, HintText = "{=oqpocFdUs}Еstimated number of the active participants in the Arena Practice. It is recommended to be a multiple of 3. Default = 6.")]
         [SettingPropertyGroup(HeadingPractice, GroupOrder = 0)]
         public int PracticeActiveParticipants { get; set; } = 6;
 
-        [SettingPropertyInteger("{=0IOg4Ureb}Active participants minimum", 1, 10, Order = 2, RequireRestart = false, HintText = "{=iFjrzKw9e}The minimum number of active participants in the Arena Practice. It is recommended to be a multiple of 2. Default = 2.")]
-        [SettingPropertyGroup(HeadingPractice, GroupOrder = 0)]
+        [SettingPropertyInteger("{=0IOg4Ureb}Active participants minimum", 1, 10, Order = 12, RequireRestart = false, HintText = "{=iFjrzKw9e}The minimum number of active participants in the Arena Practice. It is recommended to be a multiple of 2. Default = 2.")]
+        [SettingPropertyGroup(HeadingPractice, GroupOrder = 10)]
         public int PracticeActiveParticipantsMinimum { get; set; } = 2;
 
-        [SettingPropertyInteger("{=dAhEzcAlx}Initial participants", 1, 15, Order = 3, RequireRestart = false, HintText = "{=UuSkcTQSd}Initial number of the active participants in the Arena Practice. Any number greater than 7 will result in multiple fighters spawning together. Default = 6.")]
-        [SettingPropertyGroup(HeadingPractice, GroupOrder = 0)]
+        [SettingPropertyInteger("{=dAhEzcAlx}Initial participants", 1, 15, Order = 13, RequireRestart = false, HintText = "{=UuSkcTQSd}Initial number of the active participants in the Arena Practice. Any number greater than 7 will result in multiple fighters spawning together. Default = 6.")]
+        [SettingPropertyGroup(HeadingPractice, GroupOrder = 10)]
         public int PracticeInitialParticipants { get; set; } = 6;
 
-        [SettingPropertyInteger("{=}AI teams", 0, 21, Order = 4, RequireRestart = false, HintText = "{=}Number of AI teams in the Arena Practice match. Zero means it will be equal to the number of active participants, which minimizes the chances of encountering AI teammates working together. Setting it to 1 means that everyone will fight you. Default = 0.")]
-        [SettingPropertyGroup(HeadingPractice, GroupOrder = 0)]
+        [SettingPropertyInteger("{=}AI teams", 0, 21, Order = 14, RequireRestart = false, HintText = "{=}Number of AI teams in the Arena Practice match. Zero means it will be equal to the number of active participants, which minimizes the chances of encountering AI teammates working together. Setting it to 1 means that everyone will fight you. Default = 0.")]
+        [SettingPropertyGroup(HeadingPractice, GroupOrder = 10)]
         public int PracticeAITeamsCount { get; set; } = 0;
 
-        [SettingPropertyBool("{=BVhryIKKF}Enable loadout choice", Order = 10, RequireRestart = false, HintText = "{=zGQrZqevv}When this option is enabled, you are alowed to choose weapons for the Arena Practice.")]
-        [SettingPropertyGroup(HeadingPractice, GroupOrder = 0)]
+        [SettingPropertyBool("{=BVhryIKKF}Enable loadout choice", Order = 20, RequireRestart = false, HintText = "{=zGQrZqevv}When this option is enabled, you are alowed to choose weapons for the Arena Practice.")]
+        [SettingPropertyGroup(HeadingPractice, GroupOrder = 10)]
         public bool PracticeEnableLoadoutChoice { get; set; } = true;
 
-        [SettingPropertyInteger("{=L73kYZTnf}Price for picking weapons", 0, 100, Order = 11, RequireRestart = false, HintText = "{=rZH6qYOrT}You will have to pay this sum per a wepon stage (tier) when picking a weapon for the Arena Practice. Default = 10.")]
-        [SettingPropertyGroup(HeadingPractice, GroupOrder = 0)]
+        [SettingPropertyInteger("{=L73kYZTnf}Price for picking weapons", 0, 100, Order = 21, RequireRestart = false, HintText = "{=rZH6qYOrT}You will have to pay this sum per a wepon stage (tier) when picking a weapon for the Arena Practice. Default = 10.")]
+        [SettingPropertyGroup(HeadingPractice, GroupOrder = 10)]
         public int PracticeLoadoutChoiceCost { get; set; } = 10;
 
-        [SettingPropertyDropdown("{=}Defensive practice equipment", Order = 12, RequireRestart = false, HintText = "{=}Specify what armor or clothing should be worn by Arena Practice participants. Choosing [Tournament Armor] will give the same result as [Battle Equipment] unless changed by other mods. It's not recommended to change this setting unless you have a specific goal in mind. While it can be fun, wearing armor renders most ranged practice weapons ineffective. Native is [Practice clothes]. Default is [Practice Clothes].")]
-        [SettingPropertyGroup(HeadingPractice, GroupOrder = 0)]
+        [SettingPropertyDropdown("{=}Defensive practice equipment", Order = 22, RequireRestart = false, HintText = "{=}Specify what armor or clothing should be worn by Arena Practice participants. Choosing [Tournament Armor] will give the same result as [Battle Equipment] unless changed by other mods. It's not recommended to change this setting unless you have a specific goal in mind. While it can be fun, wearing armor renders most ranged practice weapons ineffective. Native is [Practice clothes]. Default is [Practice Clothes].")]
+        [SettingPropertyGroup(HeadingPractice, GroupOrder = 10)]
         public Dropdown<DropdownEnumItem<PracticeEquipmentType>> PracticeEquipment { get; set; } = new Dropdown<DropdownEnumItem<PracticeEquipmentType>>(DropdownEnumItem<PracticeEquipmentType>.SetDropdownListFromEnum(), 0);
 
         [SettingPropertyInteger("{=v7NfMok7L}Valor reward class I", 0, 50, Order = 0, RequireRestart = false, HintText = "{=GrjIc6hKr}Prize for defeating at least 3 fighters in the Arena Practice. Default = 5.")]
@@ -123,36 +155,40 @@ namespace ArenaOverhaul.ModSettings
         public float PracticeExperienceRate { get; set; } = 0.165f;
 
         //Expansive Arena Practice settings
-        [SettingPropertyInteger("{=wtKB2udZJ}Total participants", 10, 300, Order = 0, RequireRestart = false, HintText = "{=65Ny4vNEE}The total number of participants in the Expansive Arena Practice. It is recommended to be a multiple of 3. Default = 90.")]
-        [SettingPropertyGroup(HeadingExpansivePractice, GroupOrder = 1)]
+        [SettingPropertyBool("{=}Enable playing as a companion hero", Order = 0, RequireRestart = false, HintText = "{=}When this option is enabled, you will be allowed to send a companion to participate in the Expansive Arena Practice in your place and control that companion in the arena. Native is False. Default is True.")]
+        [SettingPropertyGroup(HeadingPracticeExperience, GroupOrder = 11)]
+        public bool EnableExpansivePracticeAgentSwitching { get; set; } = true;
+
+        [SettingPropertyInteger("{=wtKB2udZJ}Total participants", 10, 300, Order = 10, RequireRestart = false, HintText = "{=65Ny4vNEE}The total number of participants in the Expansive Arena Practice. It is recommended to be a multiple of 3. Default = 90.")]
+        [SettingPropertyGroup(HeadingExpansivePractice, GroupOrder = 11)]
         public int ExpansivePracticeTotalParticipants { get; set; } = 90;
 
-        [SettingPropertyInteger("{=gaGpV2GcX}Active participants", 1, 30, Order = 1, RequireRestart = false, HintText = "{=sIQdRBwg9}Еstimated number of the active participants in the Expansive Arena Practice. It is recommended to be a multiple of 3. Default = 9.")]
-        [SettingPropertyGroup(HeadingExpansivePractice, GroupOrder = 1)]
+        [SettingPropertyInteger("{=gaGpV2GcX}Active participants", 1, 30, Order = 11, RequireRestart = false, HintText = "{=sIQdRBwg9}Еstimated number of the active participants in the Expansive Arena Practice. It is recommended to be a multiple of 3. Default = 9.")]
+        [SettingPropertyGroup(HeadingExpansivePractice, GroupOrder = 11)]
         public int ExpansivePracticeActiveParticipants { get; set; } = 9;
 
-        [SettingPropertyInteger("{=0IOg4Ureb}Active participants minimum", 1, 20, Order = 2, RequireRestart = false, HintText = "{=ZaLfvG7eX}The minimum number of active participants in the Expansive Arena Practice. It is recommended to be a multiple of 2. Default = 4.")]
-        [SettingPropertyGroup(HeadingExpansivePractice, GroupOrder = 1)]
+        [SettingPropertyInteger("{=0IOg4Ureb}Active participants minimum", 1, 20, Order = 12, RequireRestart = false, HintText = "{=ZaLfvG7eX}The minimum number of active participants in the Expansive Arena Practice. It is recommended to be a multiple of 2. Default = 4.")]
+        [SettingPropertyGroup(HeadingExpansivePractice, GroupOrder = 11)]
         public int ExpansivePracticeActiveParticipantsMinimum { get; set; } = 4;
 
-        [SettingPropertyInteger("{=dAhEzcAlx}Initial participants", 1, 15, Order = 3, RequireRestart = false, HintText = "{=XwzmSDpAr}Initial number of the active participants in the Expansive Arena Practice. Any number greater than 7 will result in multiple fighters spawning together. Default = 7.")]
-        [SettingPropertyGroup(HeadingExpansivePractice, GroupOrder = 1)]
+        [SettingPropertyInteger("{=dAhEzcAlx}Initial participants", 1, 15, Order = 13, RequireRestart = false, HintText = "{=XwzmSDpAr}Initial number of the active participants in the Expansive Arena Practice. Any number greater than 7 will result in multiple fighters spawning together. Default = 7.")]
+        [SettingPropertyGroup(HeadingExpansivePractice, GroupOrder = 11)]
         public int ExpansivePracticeInitialParticipants { get; set; } = 7;
 
-        [SettingPropertyInteger("{=}AI teams", 0, 30, Order = 4, RequireRestart = false, HintText = "{=}Number of AI teams in the Expansive Arena Practice match. Zero means it will be equal to the number of active participants, which minimizes the chances of encountering AI teammates working together. Setting it to 1 means that everyone will fight you. Default = 0.")]
-        [SettingPropertyGroup(HeadingExpansivePractice, GroupOrder = 1)]
+        [SettingPropertyInteger("{=}AI teams", 0, 30, Order = 14, RequireRestart = false, HintText = "{=}Number of AI teams in the Expansive Arena Practice match. Zero means it will be equal to the number of active participants, which minimizes the chances of encountering AI teammates working together. Setting it to 1 means that everyone will fight you. Default = 0.")]
+        [SettingPropertyGroup(HeadingExpansivePractice, GroupOrder = 11)]
         public int ExpansivePracticeAITeamsCount { get; set; } = 0;
 
-        [SettingPropertyBool("{=BVhryIKKF}Enable loadout choice", Order = 10, RequireRestart = false, HintText = "{=9otxYlTUa}When this option is enabled, you are alowed to choose weapons for the Expansive Arena Practice.")]
-        [SettingPropertyGroup(HeadingExpansivePractice, GroupOrder = 1)]
+        [SettingPropertyBool("{=BVhryIKKF}Enable loadout choice", Order = 20, RequireRestart = false, HintText = "{=9otxYlTUa}When this option is enabled, you are alowed to choose weapons for the Expansive Arena Practice.")]
+        [SettingPropertyGroup(HeadingExpansivePractice, GroupOrder = 11)]
         public bool ExpansivePracticeEnableLoadoutChoice { get; set; } = true;
 
-        [SettingPropertyInteger("{=L73kYZTnf}Price for picking weapons", 0, 100, Order = 11, RequireRestart = false, HintText = "{=B9xXCFneS}You will have to pay this sum per a wepon stage (tier) when picking a weapon for the Expansive Arena Practice. Default = 10.")]
-        [SettingPropertyGroup(HeadingExpansivePractice, GroupOrder = 1)]
+        [SettingPropertyInteger("{=L73kYZTnf}Price for picking weapons", 0, 100, Order = 21, RequireRestart = false, HintText = "{=B9xXCFneS}You will have to pay this sum per a wepon stage (tier) when picking a weapon for the Expansive Arena Practice. Default = 10.")]
+        [SettingPropertyGroup(HeadingExpansivePractice, GroupOrder = 11)]
         public int ExpansivePracticeLoadoutChoiceCost { get; set; } = 10;
 
-        [SettingPropertyDropdown("{=}Defensive practice equipment", Order = 12, RequireRestart = false, HintText = "{=}Specify what armor or clothing should be worn by Expansive Arena Practice participants. Choosing [Tournament Armor] will give the same result as [Battle Equipment] unless changed by other mods. It's not recommended to change this setting unless you have a specific goal in mind. While it can be fun, wearing armor renders most ranged practice weapons ineffective. Default is [Practice Clothes].")]
-        [SettingPropertyGroup(HeadingExpansivePractice, GroupOrder = 1)]
+        [SettingPropertyDropdown("{=}Defensive practice equipment", Order = 22, RequireRestart = false, HintText = "{=}Specify what armor or clothing should be worn by Expansive Arena Practice participants. Choosing [Tournament Armor] will give the same result as [Battle Equipment] unless changed by other mods. It's not recommended to change this setting unless you have a specific goal in mind. While it can be fun, wearing armor renders most ranged practice weapons ineffective. Default is [Practice Clothes].")]
+        [SettingPropertyGroup(HeadingExpansivePractice, GroupOrder = 11)]
         public Dropdown<DropdownEnumItem<PracticeEquipmentType>> ExpansivePracticeEquipment { get; set; } = new Dropdown<DropdownEnumItem<PracticeEquipmentType>>(DropdownEnumItem<PracticeEquipmentType>.SetDropdownListFromEnum(), 0);
 
         [SettingPropertyInteger("{=v7NfMok7L}Valor reward class I", 0, 50, Order = 0, RequireRestart = false, HintText = "{=M7utBJV6O}Prize for defeating at least 3 fighters in the Expansive Arena Practice. Default = 10.")]
@@ -198,64 +234,178 @@ namespace ArenaOverhaul.ModSettings
 
         //Parry Practice settings
         [SettingPropertyBool("{=}Enable parry practice", Order = 0, RequireRestart = false, HintText = "{=}When this option is enabled, Parry Practice mode is enabled in the Arena. Native is False. Default is True.")]
-        [SettingPropertyGroup(HeadingParryPractice, GroupOrder = 2)]
+        [SettingPropertyGroup(HeadingParryPractice, GroupOrder = 12)]
         public bool EnableParryPractice { get; set; } = true;
 
-        [SettingPropertyInteger("{=}Parry practice setup cost", 0, 1000, Order = 1, RequireRestart = false, HintText = "{=}The cost Arena Master charges for organizing a parry practice match. Default = 200.")]
-        [SettingPropertyGroup(HeadingParryPractice, GroupOrder = 2)]
+        [SettingPropertyInteger("{=}Parry practice setup cost", 0, 1000, Order = 1, RequireRestart = false, HintText = "{=}The cost Arena Master charges for organizing a Parry Practice match. Default = 200.")]
+        [SettingPropertyGroup(HeadingParryPractice, GroupOrder = 12)]
         public int ParryPracticeSetupCost { get; set; } = 200;
 
+        [SettingPropertyBool("{=}Enable playing as a companion hero", Order = 2, RequireRestart = false, HintText = "{=}When this option is enabled, you will be allowed to send a companion to practice parrying in your place and control that companion in the arena. Native is False. Default is True.")]
+        [SettingPropertyGroup(HeadingParryPractice, GroupOrder = 12)]
+        public bool EnableParryPracticeAgentSwitching { get; set; } = true;
+
         [SettingPropertyInteger("{=wtKB2udZJ}Total participants", 3, 30, Order = 10, RequireRestart = false, HintText = "{=}The total number of participants in the Parry Practice. Default = 15.")]
-        [SettingPropertyGroup(HeadingParryPractice, GroupOrder = 2)]
+        [SettingPropertyGroup(HeadingParryPractice, GroupOrder = 12)]
         public int ParryPracticeTotalParticipants { get; set; } = 15;
 
         [SettingPropertyInteger("{=gaGpV2GcX}Active participants", 1, 5, Order = 11, RequireRestart = false, HintText = "{=}Еstimated number of the active participants in the Parry Practice. Default = 1.")]
-        [SettingPropertyGroup(HeadingParryPractice, GroupOrder = 2)]
+        [SettingPropertyGroup(HeadingParryPractice, GroupOrder = 12)]
         public int ParryPracticeActiveParticipants { get; set; } = 1;
 
         [SettingPropertyInteger("{=0IOg4Ureb}Active participants minimum", 1, 5, Order = 12, RequireRestart = false, HintText = "{=}The minimum number of active participants in the Parry Practice. Default = 1.")]
-        [SettingPropertyGroup(HeadingParryPractice, GroupOrder = 2)]
+        [SettingPropertyGroup(HeadingParryPractice, GroupOrder = 12)]
         public int ParryPracticeActiveParticipantsMinimum { get; set; } = 1;
 
         [SettingPropertyInteger("{=dAhEzcAlx}Initial participants", 1, 5, Order = 13, RequireRestart = false, HintText = "{=}Initial number of the active participants in the Parry Practice. Default = 1.")]
-        [SettingPropertyGroup(HeadingParryPractice, GroupOrder = 2)]
+        [SettingPropertyGroup(HeadingParryPractice, GroupOrder = 21)]
         public int ParryPracticeInitialParticipants { get; set; } = 1;
 
-        [SettingPropertyInteger("{=}AI teams", 0, 30, Order = 14, RequireRestart = false, HintText = "{=}Number of AI teams in the Parry Practice match. Zero means it will be equal to the number of active participants, which minimizes the chances of encountering AI teammates working together. Setting it to 1 means that everyone will fight you. Default = 1.")]
-        [SettingPropertyGroup(HeadingParryPractice, GroupOrder = 2)]
+        [SettingPropertyInteger("{=}AI teams", 1, 5, Order = 14, RequireRestart = false, HintText = "{=}Number of AI teams in the Parry Practice match. Zero means it will be equal to the number of active participants, which minimizes the chances of encountering AI teammates working together. Setting it to 1 means that everyone will fight you. Default = 1.")]
+        [SettingPropertyGroup(HeadingParryPractice, GroupOrder = 12)]
         public int ParryPracticeAITeamsCount { get; set; } = 1;
 
         [SettingPropertyBool("{=BVhryIKKF}Enable loadout choice", Order = 20, RequireRestart = false, HintText = "{=}When this option is enabled, you are alowed to choose weapons for the Parry Practice.")]
-        [SettingPropertyGroup(HeadingParryPractice, GroupOrder = 2)]
+        [SettingPropertyGroup(HeadingParryPractice, GroupOrder = 12)]
         public bool ParryPracticeEnableLoadoutChoice { get; set; } = true;
 
         [SettingPropertyInteger("{=L73kYZTnf}Price for picking weapons", 0, 100, Order = 21, RequireRestart = false, HintText = "{=}You will have to pay this sum per a wepon stage (tier) when picking a weapon for the Parry Practice. Default = 10.")]
-        [SettingPropertyGroup(HeadingParryPractice, GroupOrder = 1)]
+        [SettingPropertyGroup(HeadingParryPractice, GroupOrder = 12)]
         public int ParryPracticeLoadoutChoiceCost { get; set; } = 10;
 
         [SettingPropertyDropdown("{=}Defensive practice equipment", Order = 22, RequireRestart = false, HintText = "{=}Specify what armor or clothing should be worn by Parry Practice participants. Choosing [Tournament Armor] will give the same result as [Battle Equipment] unless changed by other mods. Default is [Battle equipment].")]
-        [SettingPropertyGroup(HeadingParryPractice, GroupOrder = 1)]
+        [SettingPropertyGroup(HeadingParryPractice, GroupOrder = 12)]
         public Dropdown<DropdownEnumItem<PracticeEquipmentType>> ParryPracticeEquipment { get; set; } = new Dropdown<DropdownEnumItem<PracticeEquipmentType>>(DropdownEnumItem<PracticeEquipmentType>.SetDropdownListFromEnum(), 3);
 
         [SettingPropertyFloatingInteger("{=9dP3VJpOG}Experience gain rate", 0f, 1f, "#0.0%", Order = 0, RequireRestart = false, HintText = "{=}Experience gain rate in the Parry Practice fights. Native = 6%. Default = 6%.")]
         [SettingPropertyGroup(HeadingParryPracticeExperience, GroupOrder = 0)]
         public float ParryPracticeExperienceRate { get; set; } = 0.06f;
 
+        //Team Arena Practice settings
+        [SettingPropertyBool("{=}Enable parry practice", Order = 0, RequireRestart = false, HintText = "{=}When this option is enabled, Team Practice mode is enabled in the Arena. Native is False. Default is True.")]
+        [SettingPropertyGroup(HeadingTeamPractice, GroupOrder = 3)]
+        public bool EnableTeamPractice { get; set; } = true;
+
+        [SettingPropertyInteger("{=}Parry practice setup cost", 0, 1000, Order = 1, RequireRestart = false, HintText = "{=}The cost Arena Master charges for organizing a Team Practice match. Default = 200.")]
+        [SettingPropertyGroup(HeadingTeamPractice, GroupOrder = 13)]
+        public int TeamPracticeSetupCost { get; set; } = 200;
+
+        [SettingPropertyBool("{=}Enable playing as a companion hero", Order = 2, RequireRestart = false, HintText = "{=}When this option is enabled, you will be allowed to send a companion to participate in the Team Arena Practice in your place and control that companion in the arena. Native is False. Default is True.")]
+        [SettingPropertyGroup(HeadingTeamPractice, GroupOrder = 13)]
+        public bool EnableTeamPracticeAgentSwitching { get; set; } = true;
+
+        [SettingPropertyInteger("{=wtKB2udZJ}Total participants", 50, 600, Order = 10, RequireRestart = false, HintText = "{=}The total number of participants in the Team Arena Practice. It is recommended to be a multiple of 3 and AI teams count. Default = 300.")]
+        [SettingPropertyGroup(HeadingTeamPractice, GroupOrder = 13)]
+        public int TeamPracticeTotalParticipants { get; set; } = 300;
+
+        [SettingPropertyInteger("{=gaGpV2GcX}Active participants", 10, 120, Order = 11, RequireRestart = false, HintText = "{=}Еstimated number of the active participants in the Team Arena Practice. It is recommended to be a multiple of AI teams count. Default = 20.")]
+        [SettingPropertyGroup(HeadingTeamPractice, GroupOrder = 13)]
+        public int TeamPracticeActiveParticipants { get; set; } = 20;
+
+        [SettingPropertyInteger("{=0IOg4Ureb}Active participants minimum", 5, 90, Order = 12, RequireRestart = false, HintText = "{=}The minimum number of active participants in the Team Arena Practice. It is recommended to be a multiple of 2 and AI teams count. Default = 12.")]
+        [SettingPropertyGroup(HeadingTeamPractice, GroupOrder = 13)]
+        public int TeamPracticeActiveParticipantsMinimum { get; set; } = 12;
+
+        [SettingPropertyInteger("{=dAhEzcAlx}Initial participants", 5, 90, Order = 13, RequireRestart = false, HintText = "{=}Initial number of the active participants in the Team Arena Practice. It is recommended to be a multiple of AI teams count. Default = 20.")]
+        [SettingPropertyGroup(HeadingTeamPractice, GroupOrder = 13)]
+        public int TeamPracticeInitialParticipants { get; set; } = 20;
+
+        [SettingPropertyInteger("{=}AI teams", 1, 6, Order = 14, RequireRestart = false, HintText = "{=}Number of AI teams in the Team Arena Practice match. Setting it to 1 means that everyone will fight your team. Default = 4.")]
+        [SettingPropertyGroup(HeadingTeamPractice, GroupOrder = 13)]
+        public int TeamPracticeAITeamsCount { get; set; } = 4;
+
+        [SettingPropertyBool("{=BVhryIKKF}Enable loadout choice", Order = 20, RequireRestart = false, HintText = "{=}When this option is enabled, you are alowed to choose weapons for the Team Arena Practice.")]
+        [SettingPropertyGroup(HeadingTeamPractice, GroupOrder = 13)]
+        public bool TeamPracticeEnableLoadoutChoice { get; set; } = true;
+
+        [SettingPropertyInteger("{=L73kYZTnf}Price for picking weapons", 0, 100, Order = 21, RequireRestart = false, HintText = "{=}You will have to pay this sum per a wepon stage (tier) when picking a weapon for the Team Arena Practice. Default = 50.")]
+        [SettingPropertyGroup(HeadingTeamPractice, GroupOrder = 13)]
+        public int TeamPracticeLoadoutChoiceCost { get; set; } = 50;
+
+        [SettingPropertyDropdown("{=}Defensive practice equipment", Order = 22, RequireRestart = false, HintText = "{=}Specify what armor or clothing should be worn by Team Arena Practice participants. Choosing [Tournament Armor] will give the same result as [Battle Equipment] unless changed by other mods. It's not recommended to change this setting unless you have a specific goal in mind. While it can be fun, wearing armor renders most ranged practice weapons ineffective. Default is [Practice Clothes].")]
+        [SettingPropertyGroup(HeadingTeamPractice, GroupOrder = 13)]
+        public Dropdown<DropdownEnumItem<PracticeEquipmentType>> TeamPracticeEquipment { get; set; } = new Dropdown<DropdownEnumItem<PracticeEquipmentType>>(DropdownEnumItem<PracticeEquipmentType>.SetDropdownListFromEnum(), 0);
+
+        [SettingPropertyInteger("{=v7NfMok7L}Valor reward class I", 0, 50, Order = 0, RequireRestart = false, HintText = "{=}Prize for your team defeating at least 30 fighters in the Team Arena Practice. Default = 30.")]
+        [SettingPropertyGroup(HeadingTeamPracticeRewards, GroupOrder = 0)]
+        public int TeamPracticeValorReward1 { get; set; } = 30;
+
+        [SettingPropertyInteger("{=AFzr1BhC4}Valor reward class II", 0, 100, Order = 1, RequireRestart = false, HintText = "{=}Prize for your team defeating at least 50 fighters in the Team Arena Practice. Default = 60.")]
+        [SettingPropertyGroup(HeadingTeamPracticeRewards, GroupOrder = 0)]
+        public int TeamPracticeValorReward2 { get; set; } = 60;
+
+        [SettingPropertyInteger("{=wjlHVn6cG}Valor reward class III", 0, 250, Order = 2, RequireRestart = false, HintText = "{=}Prize for your team defeating at least 75 fighters in the Team Arena Practice. Default = 150.")]
+        [SettingPropertyGroup(HeadingTeamPracticeRewards, GroupOrder = 0)]
+        public int TeamPracticeValorReward3 { get; set; } = 150;
+
+        [SettingPropertyInteger("{=1JAQ3hGAk}Valor reward class IV", 0, 600, Order = 3, RequireRestart = false, HintText = "{=}Prize for your team defeating at least 100 fighters in the Team Arena Practice. Default = 350.")]
+        [SettingPropertyGroup(HeadingTeamPracticeRewards, GroupOrder = 0)]
+        public int TeamPracticeValorReward4 { get; set; } = 350;
+
+        [SettingPropertyInteger("{=MHzw7JXgh}Valor reward class V", 0, 1500, Order = 4, RequireRestart = false, HintText = "{=}Prize for your team defeating at least 135 fighters in the Team Arena Practice. Default = 800.")]
+        [SettingPropertyGroup(HeadingTeamPracticeRewards, GroupOrder = 0)]
+        public int TeamPracticeValorReward5 { get; set; } = 800;
+
+        [SettingPropertyDropdown("{=rQHQBnmZL}Champion prize calculation", Order = 5, RequireRestart = false, HintText = "{=}Specify how last team standing in the Team Arena Practice should be rewarded. Standard - with a special prize. Additive - with a special prize and any valor reward earned. Multiplicative - with a special prize for each valor class earned above class I. Default is [Additive].")]
+        [SettingPropertyGroup(HeadingTeamPracticeRewards, GroupOrder = 0)]
+        public Dropdown<string> TeamPracticeChampionPrizeCalculation { get; set; } = new Dropdown<string>(
+        [
+            DropdownValueStandard,
+            DropdownValueAdditive,
+            DropdownValueMultiplicative
+        ], 1);
+
+        [SettingPropertyInteger("{=oTOFfuU2c}Champion prize", 0, 2500, Order = 6, RequireRestart = false, HintText = "{=}Base prize for being the last team standing in the Team Arena Practice. Default = 1000.")]
+        [SettingPropertyGroup(HeadingTeamPracticeRewards, GroupOrder = 0)]
+        public int TeamPracticeChampionReward { get; set; } = 1000;
+
+        [SettingPropertyBool("{=zDfS2JtnA}Enable experience gain for viewers", Order = 0, RequireRestart = false, HintText = "{=}Only heroes and troops of rank 3 and up are allowed to enter Team Arena Practice. When this option is enabled, lower-ranking troops will gain some experience when their comrades successfully land hits and make takedowns in the arena.")]
+        [SettingPropertyGroup(HeadingTeamPracticeExperience, GroupOrder = 1)]
+        public bool TeamEnableViewerExperienceGain { get; set; } = true;
+
+        [SettingPropertyFloatingInteger("{=9dP3VJpOG}Experience gain rate", 0f, 1f, "#0.0%", Order = 1, RequireRestart = false, HintText = "{=}Experience gain rate in the Team Arena Practice fights. Native = 6%. Default = 33.3%.")]
+        [SettingPropertyGroup(HeadingTeamPracticeExperience, GroupOrder = 1)]
+        public float TeamPracticeExperienceRate { get; set; } = 0.333f;
+
+        [SettingPropertyInteger("{=}AI Team 1 Color Index", 0, 157, Order = 10, RequireRestart = false, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.")]
+        [SettingPropertyGroup(HeadingTeamPracticeTechnicalSettings, GroupOrder = 10)]
+        public int TeamPracticeTeamOneColor { get; set; } = 83;
+
+        [SettingPropertyInteger("{=}AI Team 2 Color Index", 0, 157, Order = 11, RequireRestart = false, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.")]
+        [SettingPropertyGroup(HeadingTeamPracticeTechnicalSettings, GroupOrder = 10)]
+        public int TeamPracticeTeamTwoColor { get; set; } = 119;
+
+        [SettingPropertyInteger("{=}AI Team 3 Color Index", 0, 157, Order = 12, RequireRestart = false, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.")]
+        [SettingPropertyGroup(HeadingTeamPracticeTechnicalSettings, GroupOrder = 10)]
+        public int TeamPracticeTeamThreeColor { get; set; } = 88;
+
+        [SettingPropertyInteger("{=}AI Team 4 Color Index", 0, 157, Order = 13, RequireRestart = false, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.")]
+        [SettingPropertyGroup(HeadingTeamPracticeTechnicalSettings, GroupOrder = 10)]
+        public int TeamPracticeTeamFourColor { get; set; } = 84;
+
+        [SettingPropertyInteger("{=}AI Team 5 Color Index", 0, 157, Order = 14, RequireRestart = false, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.")]
+        [SettingPropertyGroup(HeadingTeamPracticeTechnicalSettings, GroupOrder = 10)]
+        public int TeamPracticeTeamFiveColor { get; set; } = 82;
+
+        [SettingPropertyInteger("{=}AI Team 6 Color Index", 0, 157, Order = 15, RequireRestart = false, HintText = "{=3r3TStZPU}Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors.")]
+        [SettingPropertyGroup(HeadingTeamPracticeTechnicalSettings, GroupOrder = 10)]
+        public int TeamPracticeTeamSixColor { get; set; } = 35;
+
         //Tournament settings
         [SettingPropertyInteger("{=hS7XbrLGG}Maximum bet", 100, 1500, Order = 0, RequireRestart = false, HintText = "{=gQvJ8Vvsk}The maximum amount of gold that is usually allowed to be wagered in each round of a tournament. Native = 150. Default = 500.")]
-        [SettingPropertyGroup(HeadingTournaments, GroupOrder = 10)]
+        [SettingPropertyGroup(HeadingTournaments, GroupOrder = 20)]
         public int TournamentMaximumBet { get; set; } = 500;
 
         [SettingPropertyBool("{=qPAga7DLd}Enable randomized betting odds", Order = 1, RequireRestart = false, HintText = "{=kGyR7NsKh}When this option is enabled, bet odds are slightly randomized, but still mostly based on the prediction of the player's success. Native is False. Default is True.")]
-        [SettingPropertyGroup(HeadingTournaments, GroupOrder = 10)]
+        [SettingPropertyGroup(HeadingTournaments, GroupOrder = 20)]
         public bool EnableRandomizedBettingOdds { get; set; } = true;
 
         [SettingPropertyBool("{=hARcKe6Jt}Allow notables participation", Order = 2, RequireRestart = false, HintText = "{=YqIOYTV0P}Allow settlement notables to participate in Tournaments. Recommended with tournament armor mods. Native is False. Default is True.")]
-        [SettingPropertyGroup(HeadingTournaments, GroupOrder = 10)]
+        [SettingPropertyGroup(HeadingTournaments, GroupOrder = 20)]
         public bool AllowNotablesParticipation { get; set; } = true;
 
         [SettingPropertyDropdown("{=cCAOeRdmt}Prize reroll condition", Order = 3, RequireRestart = false, HintText = "{=CDGmDeYii}Specify when and if tournament prizes should be rerolled. Normally prizes are rerolled when player joins the tournament - if the nubmber of participating nobles changed since the tournament was created (affects prize quality). Native is [When situation changed]. Default is [When prize tier can be improved].")]
-        [SettingPropertyGroup(HeadingTournaments, GroupOrder = 10)]
+        [SettingPropertyGroup(HeadingTournaments, GroupOrder = 20)]
         public Dropdown<string> TournamentPrizeRerollCondition { get; set; } = new Dropdown<string>(
         [
             DropdownValueNever,
@@ -357,5 +507,28 @@ namespace ArenaOverhaul.ModSettings
         [SettingPropertyBool("{=}Log technical Transpiler info", RequireRestart = false, HintText = "{=}When enabled, logs a lot of technical data about failed Harmony Transpiler calls.", Order = 15)]
         [SettingPropertyGroup(HeadingLogging, GroupOrder = 101)]
         public bool LogTechnicalTranspilerInfo { get; set; } = false;
+
+        public override IEnumerable<ISettingsPreset> GetBuiltInPresets()
+        {
+            // include all the presets that MCM provides
+            foreach (var preset in base.GetBuiltInPresets())
+            {
+                yield return preset;
+            }
+
+            yield return new MemorySettingsPreset(Id, "saving_money", PresetSavingMoney.ToLocalizedString(), () => new Settings()
+            {
+                //Default Arena Practice settings for Companions
+                EnableLoadoutChoice = false,
+            });
+
+            yield return new MemorySettingsPreset(Id, "better_training", PresetBetterTraining.ToLocalizedString(), () => new Settings()
+            {
+                //Default Arena Practice settings for Companions
+                EnableLoadoutChoice = true,
+                OnlyPriorityLoadouts = false,
+                PrioritizeExpensiveEquipment = true
+            });
+        }
     }
 }
