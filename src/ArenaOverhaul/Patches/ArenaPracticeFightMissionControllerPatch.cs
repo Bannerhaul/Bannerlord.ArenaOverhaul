@@ -206,8 +206,13 @@ namespace ArenaOverhaul.Patches
                 codes.RemoveRange(equipmentDefinitionStartIndex, equipmentDefinitionEndIndex - equipmentDefinitionStartIndex + 1);
                 codes.InsertRange(equipmentDefinitionStartIndex,
                     [
-                        new CodeInstruction(OpCodes.Ldloc_1), new CodeInstruction(opcode: OpCodes.Call, operand: miFilterAvailableWeapons), new CodeInstruction(OpCodes.Stloc_1),
-                        new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(OpCodes.Ldarg_2), new CodeInstruction(OpCodes.Ldloc_1), new CodeInstruction(opcode: OpCodes.Call, operand: miGetChosenEquipment)
+                        new CodeInstruction(OpCodes.Ldloc_1),
+                        new CodeInstruction(opcode: OpCodes.Call, operand: miFilterAvailableWeapons),
+                        new CodeInstruction(OpCodes.Stloc_1),
+                        new CodeInstruction(OpCodes.Ldarg_0),
+                        new CodeInstruction(OpCodes.Ldarg_2),
+                        new CodeInstruction(OpCodes.Ldloc_1),
+                        new CodeInstruction(opcode: OpCodes.Call, operand: miGetChosenEquipment)
                     ]);
                 codes.RemoveRange(stageDefinitionStartIndex, stageDefinitionEndIndex - stageDefinitionStartIndex + 1);
                 codes.InsertRange(stageDefinitionStartIndex, [new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(OpCodes.Ldarg_2), new CodeInstruction(opcode: OpCodes.Call, operand: miGetChosenEquipmentStage)]);
@@ -536,7 +541,7 @@ namespace ArenaOverhaul.Patches
                 return true;
             }
 
-            __result = !__instance.IsPlayerPracticing 
+            __result = !__instance.IsPlayerPracticing
                 ? null
                 : new InquiryData(new TextObject("{=zv49qE35}Practice Fight").ToString(), new TextObject("{=}Your teammates are still fighting. Do you want to leave the arena?").ToString(), true, true, GameTexts.FindText("str_ok").ToString(), GameTexts.FindText("str_cancel").ToString(), new Action(__instance.Mission.OnEndMissionResult), null);
             return false;
@@ -842,7 +847,7 @@ namespace ArenaOverhaul.Patches
         private static bool IsExpansivePractice(ArenaPracticeFightMissionController instance) => (instance?.IsPlayerPracticing ?? false) && ((AOArenaBehaviorManager.Instance?.PracticeMode ?? ArenaPracticeMode.Standard) == ArenaPracticeMode.Expansive);
         private static bool IsTeamPractice(ArenaPracticeFightMissionController instance) => (instance?.IsPlayerPracticing ?? false) && ((AOArenaBehaviorManager.Instance?.PracticeMode ?? ArenaPracticeMode.Standard) == ArenaPracticeMode.Team);
 
-        internal static ArenaPracticeMode GetPracticeMode() 
+        internal static ArenaPracticeMode GetPracticeMode()
         {
             if (!(AOArenaBehaviorManager.Instance?.IsPlayerPrePractice ?? false) && !(Mission.Current?.GetMissionBehavior<ArenaPracticeFightMissionController>()?.IsPlayerPracticing ?? false))
             {

@@ -16,11 +16,11 @@ namespace ArenaOverhaul.ViewModelMixin
     {
         public override List<Attribute> Attributes =>
         [
-            new Attribute( "IsVisible", "@IsStandardPanelVisible" ),
-            new Attribute( "Id", "StandardPanel" ),
+            new Attribute("IsVisible", "@IsStandardPanelVisible"),
+            new Attribute("Id", "StandardPanel"),
         ];
     }
-    
+
     [PrefabExtension("ArenaPracticeFight", "descendant::ListPanel[@Id='StandardPanel']")]
     [UsedImplicitly]
     internal sealed class ArenaPracticeFightPrefabInsertExtension : PrefabExtensionInsertPatch

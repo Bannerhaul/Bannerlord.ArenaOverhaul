@@ -250,7 +250,7 @@ namespace ArenaOverhaul.Patches
 
             //Add unique weapons and armors
             requiredCulture = culturalPrizesSelectedIndex >= 2 ? townCulture : null;
-            
+
             var uniqueWeapons = Items.All.Where(itemObject => IsUniqueWeapon(itemObject, requiredCulture)).ToList();
             itemObjectList.AddRange(uniqueWeapons);
 

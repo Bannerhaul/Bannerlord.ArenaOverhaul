@@ -644,7 +644,7 @@ namespace ArenaOverhaul.CampaignBehaviors.BehaviorManagers
 
                 List<int> list = [oneHandedSV, twoHandedSV, polearmSV, bowSV, crossbowSV, throwingSV];
                 list.Sort();
-                
+
                 return 100 * (weaponGroupSV - list.First()) / (list.Last() - list.First());
             }
         }
