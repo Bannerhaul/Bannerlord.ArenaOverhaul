@@ -206,9 +206,11 @@ namespace ArenaOverhaul.Patches
                 codes.RemoveRange(equipmentDefinitionStartIndex, equipmentDefinitionEndIndex - equipmentDefinitionStartIndex + 1);
                 codes.InsertRange(equipmentDefinitionStartIndex,
                     [
+                        //Call miFilterAvailableWeapons
                         new CodeInstruction(OpCodes.Ldloc_1),
                         new CodeInstruction(opcode: OpCodes.Call, operand: miFilterAvailableWeapons),
                         new CodeInstruction(OpCodes.Stloc_1),
+                        //Call miGetChosenEquipment
                         new CodeInstruction(OpCodes.Ldarg_0),
                         new CodeInstruction(OpCodes.Ldarg_2),
                         new CodeInstruction(OpCodes.Ldloc_1),
