@@ -7,6 +7,7 @@ using ArenaOverhaul.TeamTournament;
 using ArenaOverhaul.Tournament;
 
 using Bannerlord.ButterLib.Common.Helpers;
+using Bannerlord.ButterLib.SaveSystem.Extensions;
 
 using Helpers;
 
@@ -44,10 +45,6 @@ namespace ArenaOverhaul.CampaignBehaviors
     {
         private ArenaMasterCampaignBehavior? _arenaMasterBehavior;
 
-        private int _practiceListOffset;
-        private int _practiceListTotalCount;
-        private const int _practiceListEntriesPerPage = 5;
-
         private int _tournamentListOffset;
         private int _tournamentListTotalCount;
         private const int _tournamentListEntriesPerPage = 4;
@@ -57,7 +54,7 @@ namespace ArenaOverhaul.CampaignBehaviors
 
         private AOArenaBehaviorManager _AOArenaBehaviorManager = new();
 
-        public AOArenaBehaviorManager BehaviorManager => _AOArenaBehaviorManager;
+        public AOArenaBehaviorManager BehaviorManager => _AOArenaBehaviorManager!;
 
         public AOArenaBehavior()
         {
@@ -688,7 +685,9 @@ namespace ArenaOverhaul.CampaignBehaviors
 
         public override void SyncData(IDataStore dataStore)
         {
-            dataStore.SyncData("_AOArenaBehaviorManager", ref _AOArenaBehaviorManager);
+#pragma warning disable CS8601 // Possible null reference assignment.
+            dataStore.SyncDataAsJson("_AOArenaBehaviorManager", ref _AOArenaBehaviorManager);
+#pragma warning restore CS8601 // Possible null reference assignment.
             if (dataStore.IsLoading)
             {
                 _AOArenaBehaviorManager ??= new AOArenaBehaviorManager();
