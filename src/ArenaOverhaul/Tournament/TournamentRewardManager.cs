@@ -1,4 +1,7 @@
-﻿using ArenaOverhaul.Helpers;
+﻿using ArenaOverhaul.CampaignBehaviors.BehaviorManagers;
+using ArenaOverhaul.Helpers;
+using ArenaOverhaul.ModSettings;
+
 using ArenaOverhaul.TeamTournament;
 
 using SandBox.Tournaments.MissionLogics;
@@ -11,6 +14,7 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.TournamentGames;
+using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
@@ -23,9 +27,12 @@ namespace ArenaOverhaul.Tournament
 
         private static readonly Dictionary<Town, List<(Hero AffectorHero, Hero AffectedHero)>> _noticableTakedowns = new();
         private static readonly Dictionary<Town, List<(Hero Awardee, int RenownAward)>> _renownAwardees = new();
+        private static readonly Dictionary<Town, PrizeItemInfo?> _tournamentPrizeAwards = new();
 
         public static Dictionary<Town, List<(Hero Participant, int Winnings)>> RoundPrizeWinners => _roundPrizeWinners;
         public static Dictionary<Town, List<(Hero Participant, int Winnings)>> RenownAwardees => _renownAwardees;
+        public static Dictionary<Town, PrizeItemInfo?> PlannedTournamentPrizes => AOArenaBehaviorManager.Instance!.TournamentPrizes;
+        public static Dictionary<Town, PrizeItemInfo?> TournamentPrizeAwards => _tournamentPrizeAwards;
 
         internal static void Initialize()
         {
@@ -33,6 +40,7 @@ namespace ArenaOverhaul.Tournament
             _roundPrizeWinners.Clear();
             _noticableTakedowns.Clear();
             _renownAwardees.Clear();
+            _tournamentPrizeAwards.Clear();
         }
 
         public static void InitiateTournament(Town town)
@@ -41,6 +49,7 @@ namespace ArenaOverhaul.Tournament
             _roundPrizeWinners.Remove(town);
             _noticableTakedowns.Remove(town);
             _renownAwardees.Remove(town);
+            _tournamentPrizeAwards.Remove(town);
 
             _roundWinners.Add(town, new());
             _roundPrizeWinners.Add(town, new());
@@ -112,11 +121,7 @@ namespace ArenaOverhaul.Tournament
 
         public static int GetTournamentGoldPrize(Town tournamentTown)
         {
-#if v100 || v101 || v102 || v103 || v110 || v111 || v112 || v113 || v114 || v115 || v116
-            return (int) (Math.Floor((Settings.Instance!.EnableTournamentGoldPrizes ? MathHelper.GetSoftCappedValue(tournamentTown.Settlement.Prosperity) + (Settings.Instance!.EnableTournamentPrizeScaling ? MathHelper.GetSoftCappedValue(Clan.PlayerClan.Renown) : 0.0) : 0.0) / 50.0) * 50.0);
-#else
             return (int) (Math.Floor((Settings.Instance!.EnableTournamentGoldPrizes ? MathHelper.GetSoftCappedValue(tournamentTown.Settlement.Town.Prosperity) + (Settings.Instance!.EnableTournamentPrizeScaling ? MathHelper.GetSoftCappedValue(Clan.PlayerClan.Renown) : 0.0) : 0.0) / 50.0) * 50.0);
-#endif
         }
 
         public static void ResolveTournament(CharacterObject winner, MBReadOnlyList<CharacterObject> participants, Town town)
@@ -195,6 +200,12 @@ namespace ArenaOverhaul.Tournament
             {
                 _renownAwardees[town] = new();
             }
+
+            if (PlannedTournamentPrizes.TryGetValue(town, out var prizeItemInfo))
+            {
+                _tournamentPrizeAwards[town] = prizeItemInfo;
+                PlannedTournamentPrizes[town] = null;
+            }
         }
 
         private static int GetGetTournamentGoldPrizePerRoundWon()
@@ -206,5 +217,99 @@ namespace ArenaOverhaul.Tournament
         {
             return Settings.Instance!.TournamentTakedownRenownReward;
         }
+
+        #region Prize Item Quality
+        public static void RegisterPrizeModifier(Town town, ItemObject? itemObject, ItemModifier? itemModifier)
+        {
+            if (CurrentPrizeHasRegisteredModifier(town, itemObject))
+            {
+                return;
+            }
+            PlannedTournamentPrizes[town] = itemObject != null ? new(itemObject, itemModifier) : null;
+        }
+
+        internal static bool CurrentPrizeHasRegisteredModifier(TournamentGame tournamentGame)
+        {
+            return PlannedTournamentPrizes.TryGetValue(tournamentGame.Town, out var prizeItemInfo) && prizeItemInfo?.ItemObject.StringId == tournamentGame.Prize?.StringId;
+        }
+
+        internal static bool CurrentPrizeHasRegisteredModifier(Town town, ItemObject? itemObject)
+        {
+            return PlannedTournamentPrizes.TryGetValue(town, out var prizeItemInfo) && prizeItemInfo?.ItemObject.StringId == itemObject?.StringId;
+        }
+
+        public static string GetPrizeItemName(TournamentGame tournamentGame)
+        {
+            return TryGetPrizeItemModifier(tournamentGame, out var prizeItemInfo)
+                ? new EquipmentElement(prizeItemInfo!.ItemObject, prizeItemInfo.ItemModifier).GetModifiedItemName().ToString()
+                : tournamentGame.Prize.Name.ToString();
+        }
+
+        public static void ShowPrizeItemHint(TournamentGame tournamentGame)
+        {
+            EquipmentElement equipmentElement = TryGetPrizeItemModifier(tournamentGame, out var prizeItemInfo)
+                ? new EquipmentElement(prizeItemInfo!.ItemObject, prizeItemInfo.ItemModifier)
+                : new EquipmentElement(tournamentGame.Prize);
+            InformationManager.ShowTooltip(typeof(ItemObject), equipmentElement);
+        }
+
+        public static bool TryGetPrizeItemModifier(TournamentGame tournamentGame, out PrizeItemInfo? prizeItemInfo)
+        {
+            return PlannedTournamentPrizes.TryGetValue(tournamentGame.Town, out prizeItemInfo) && prizeItemInfo != null && prizeItemInfo.ItemObject.StringId == tournamentGame.Prize.StringId && prizeItemInfo.ItemModifier != null;
+        }
+
+        public static ItemModifier? GetRandomItemModifier(ItemObject? __result)
+        {
+            if (!Settings.Instance!.EnableHighQualityPrizes)
+            {
+                return null;
+            }
+
+            ItemModifier? itemModifier = null;
+            ItemModifierGroup? itemModifierGroup = __result?.ItemComponent.ItemModifierGroup;
+            if (itemModifierGroup != null)
+            {
+                var desiredItemQuality = GetDesiredItemQuality();
+                for (ItemQuality itemQuality = desiredItemQuality.MaxQuality; itemQuality >= desiredItemQuality.MinQuality; --itemQuality)
+                {
+                    itemModifier = itemModifierGroup?.GetModifiersBasedOnQuality(itemQuality).FirstOrDefault();
+                    if (itemModifier != null)
+                    {
+                        break;
+                    }
+                }
+            }
+            if (itemModifier?.ItemQuality <= ItemQuality.Common)
+            {
+                itemModifier = null;
+            }
+
+            return itemModifier;
+        }
+
+        private static (ItemQuality MaxQuality, ItemQuality MinQuality) GetDesiredItemQuality()
+        {
+            (int MaxQuality, int MinQuality) qualityRestrictions;
+            if (Settings.Instance!.EnableTournamentPrizeScaling)
+            {
+                qualityRestrictions = Clan.PlayerClan.Tier switch
+                {
+                    > 5 => ((int) ItemQuality.Legendary + 2, (int) ItemQuality.Common),
+                    5 => ((int) ItemQuality.Legendary + 1, (int) ItemQuality.Common),
+                    4 => ((int) ItemQuality.Legendary, (int) ItemQuality.Common),
+                    3 => ((int) ItemQuality.Masterwork, (int) ItemQuality.Common),
+                    >= 1 => ((int) ItemQuality.Fine, (int) ItemQuality.Inferior),
+                    _ => ((int) ItemQuality.Fine, (int) ItemQuality.Poor)
+                };
+            }
+            else
+            {
+                qualityRestrictions = ((int) ItemQuality.Legendary, (int) ItemQuality.Poor);
+            }
+            //The tournament prize should never be worse than of Common quality, lower values ​​are only used to calculate the drop chance for higher qualities.
+            var maxQuality = (ItemQuality) MBMath.ClampInt(MBRandom.RandomInt(qualityRestrictions.MinQuality, qualityRestrictions.MaxQuality + 1), (int) ItemQuality.Common, (int) ItemQuality.Legendary);
+            return (maxQuality, ItemQuality.Fine); //Since we default to Common quality, there's no need to check for anything lower than ItemQuality.Fine.
+        }
+        #endregion Prize Item Quality
     }
 }

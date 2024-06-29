@@ -1,12 +1,24 @@
-﻿using ArenaOverhaul.CampaignBehaviors;
+﻿using ArenaOverhaul.ArenaPractice;
+using ArenaOverhaul.CampaignBehaviors;
+using ArenaOverhaul.CampaignBehaviors.BehaviorManagers;
 using ArenaOverhaul.Extensions;
 using ArenaOverhaul.Helpers;
+using ArenaOverhaul.Models;
+using ArenaOverhaul.ModSettings;
+
+using Bannerlord.BUTR.Shared.Helpers;
+using Bannerlord.ButterLib.HotKeys;
+using Bannerlord.UIExtenderEx;
 
 using HarmonyLib;
+
+using MCM.Abstractions.Base.PerSave;
 
 using System;
 
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.ComponentInterfaces;
+using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -19,6 +31,11 @@ namespace ArenaOverhaul
         private const string SErrorLoading = "{=5KIeqRJJX}Arena Overhaul failed to load! See details in the mod log.";
         private const string SErrorInitialising = "{=LRhyA9mqB}Error initialising Arena Overhaul! See details in the mod log. Error text: \"{EXCEPTION_MESSAGE}\"";
 
+        private static readonly UIExtender Extender = UIExtender.Create("ArenaOverhaulUI");
+        private static HotKeyManager? AOHotKeyManager;
+
+        internal static FluentPerSaveSettings? PerSaveSettings;
+
         public bool Patched { get; private set; }
         public bool OnBeforeInitialModuleScreenSetAsRootWasCalled { get; private set; } = false;
 
@@ -29,6 +46,9 @@ namespace ArenaOverhaul
         {
             base.OnSubModuleLoad();
             Patched = false;
+
+            Extender.Register(typeof(SubModule).Assembly);
+            Extender.Enable();
         }
 
         protected override void OnSubModuleUnloaded()
@@ -56,6 +76,13 @@ namespace ArenaOverhaul
                 {
                     MessageHelper.ErrorMessage(SErrorLoading.ToLocalizedString());
                 }
+
+                AOHotKeyManager ??= HotKeyManager.Create("ArenaOverhaul");
+                if (AOHotKeyManager is not null)
+                {
+                    var teamPracticeController = AOHotKeyManager.Add<TeamPracticeHotKeyController>();
+                    AOHotKeyManager.Build();
+                }
             }
             catch (Exception ex)
             {
@@ -71,8 +98,31 @@ namespace ArenaOverhaul
                 //CampaignGameStarter
                 CampaignGameStarter gameStarter = (CampaignGameStarter) gameStarterObject;
                 //Behaviors
+                AOArenaBehaviorManager._companionPracticeSettings ??= [];
                 gameStarter.AddBehavior(new AOArenaBehavior());
+                //Models
+                AddGameModels(gameStarterObject, gameStarter);
             }
+        }
+
+        private void AddGameModels(IGameStarter gameStarterObject, CampaignGameStarter gameStarter)
+        {
+            DecoratorModelHelper.AddDecoratorModel<TournamentModel, ArenaOverhaulTournamentModel, DefaultTournamentModel>(gameStarterObject, gameStarter, (previouslyAssignedModel) => new ArenaOverhaulTournamentModel(previouslyAssignedModel));
+        }
+
+        public override void OnAfterGameInitializationFinished(Game game, object starterObject)
+        {
+            if (game.GameType is not Campaign campaign)
+            {
+                return;
+            }
+
+            CompanionPracticeSettings.RegisterCompanionPracticeSettings();
+        }
+
+        public override void OnGameEnd(Game game)
+        {
+            CompanionPracticeSettings.UnregisterCompanionPracticeSettings();
         }
     }
 }

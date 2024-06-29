@@ -3,7 +3,7 @@
 
     <!--Module Version-->
     <PropertyGroup>
-        <Version>1.4.2</Version>
+        <Version>1.5.0</Version>
     </PropertyGroup>
 
     <!-- Versions of Major Dependencies (for Package References & SubModule.xml Substitution) -->
@@ -11,13 +11,15 @@
         <!--Harmony Version-->
         <HarmonyVersion>2.3.3</HarmonyVersion>
         <!--ButterLib Version-->
-        <ButterLibVersion>2.9.8</ButterLibVersion>
-        <!--BuildResources Version-->
-        <BuildResourcesVersion>1.1.0.104</BuildResourcesVersion>
+        <ButterLibVersion>2.9.9</ButterLibVersion>
+        <!--UIExtenderEx Version-->
+        <UIExtenderExVersion>2.11.0</UIExtenderExVersion>
         <!--MCM Version-->
-        <MCMVersion>5.9.2</MCMVersion>
+        <MCMVersion>5.10.1</MCMVersion>
         <!--BUTRShared Version-->
-        <BUTRSharedVersion>3.0.0.139</BUTRSharedVersion>
+        <BUTRSharedVersion>3.0.0.142</BUTRSharedVersion>
+        <!--BuildResources Version-->
+        <BuildResourcesVersion>1.1.0.104</BuildResourcesVersion>        
         <!--BUTRModuleManager Version-->
         <BUTRModuleManagerVersion>5.0.222</BUTRModuleManagerVersion>
         <!--ModuleLoader Version-->
@@ -73,7 +75,7 @@
         <GameStableVersion>$(SecondLine)</GameStableVersion>
         <GameMinimalVersion>$(LastLine)</GameMinimalVersion>
         <!-- -->
-        <GameVersionWithPrefix>e1.1.0</GameVersionWithPrefix>
+        <GameVersionWithPrefix>v1.2.0</GameVersionWithPrefix>
         <GameVersionWithPrefix Condition="$(IsMinimal)">$(GameMinimalVersion)</GameVersionWithPrefix>
         <GameVersionWithPrefix Condition="$(IsStable)">$(GameStableVersion)</GameVersionWithPrefix>
         <GameVersionWithPrefix Condition="$(IsBeta)">$(GameBetaVersion)</GameVersionWithPrefix>

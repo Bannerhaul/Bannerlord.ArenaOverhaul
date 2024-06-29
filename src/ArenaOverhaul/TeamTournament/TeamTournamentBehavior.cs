@@ -1,4 +1,5 @@
 ﻿using ArenaOverhaul.Helpers;
+using ArenaOverhaul.ModSettings;
 using ArenaOverhaul.Tournament;
 
 using SandBox.Tournaments;
@@ -274,11 +275,7 @@ namespace ArenaOverhaul.TeamTournament
                     }
 
                     var list = new List<CharacterObject>(_teams!.SelectMany(x => x.Members).Select(y => y.Character));
-#if v100 || v101 || v102 || v103
-                    CampaignEventDispatcher.Instance.OnTournamentFinished(Winner?.Character, list.GetReadOnlyList<CharacterObject>(), Settlement.Town, TournamentGame.Prize);
-#else   
                     CampaignEventDispatcher.Instance.OnTournamentFinished(Winner?.Character, new(list), Settlement.Town, TournamentGame.Prize);
-#endif
 
                     CurrentInfo.Finish();
 

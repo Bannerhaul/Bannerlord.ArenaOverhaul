@@ -1,0 +1,22 @@
+﻿<ListPanel Id="SpecialPanel" WidthSizePolicy = "CoverChildren" HeightSizePolicy = "CoverChildren" SuggestedWidth = "440" HorizontalAlignment = "Left" VerticalAlignment="Top" Sprite="conversation_frame_canvas_9" Color="#000000DD" IsVisible="@IsSpecialPanelVisible" StackLayout.LayoutMethod="VerticalBottomToTop">
+    <Children>
+        <ListPanel Id="ParryPanel" WidthSizePolicy = "Fixed" HeightSizePolicy = "CoverChildren" SuggestedWidth = "440" HorizontalAlignment = "Left" VerticalAlignment="Top" IsVisible="@IsParryPanelVisible" StackLayout.LayoutMethod="VerticalBottomToTop">
+            <Children>
+                <TextWidget WidthSizePolicy = "StretchToParent" HeightSizePolicy = "CoverChildren" MarginLeft="5" MarginRight="5" MarginTop="20" Text="@OpponentsRemainingText" Brush="ArenaPracticeFight.Text" />
+                <TextWidget WidthSizePolicy = "StretchToParent" HeightSizePolicy = "CoverChildren" MarginLeft="5" MarginRight="5" MarginTop="20" Text="@SuccessfulBlocksText" Brush="ArenaPracticeFight.Text" />
+                <TextWidget WidthSizePolicy = "StretchToParent" HeightSizePolicy = "CoverChildren" MarginLeft="5" MarginRight="5" MarginTop="10" Text="@PerfectBlocksText" Brush="ArenaPracticeFight.Text" />
+                <TextWidget WidthSizePolicy = "StretchToParent" HeightSizePolicy = "CoverChildren" MarginLeft="5" MarginRight="5" MarginTop="10" Text="@ChamberBlocksText" Brush="ArenaPracticeFight.Text" />
+                <TextWidget WidthSizePolicy = "StretchToParent" HeightSizePolicy = "CoverChildren" MarginLeft="5" MarginRight="5" MarginTop="20" MarginBottom="20" Text="@HitsTakenText" Brush="ArenaPracticeFight.Text" />
+            </Children>
+        </ListPanel>
+
+        <ListPanel Id="TeamPanel" WidthSizePolicy = "Fixed" HeightSizePolicy = "CoverChildren" SuggestedWidth = "440" HorizontalAlignment = "Left" VerticalAlignment="Top" IsVisible="@IsTeamPanelVisible" StackLayout.LayoutMethod="VerticalBottomToTop">
+            <Children>
+                <TextWidget WidthSizePolicy = "StretchToParent" HeightSizePolicy = "CoverChildren" MarginLeft="5" MarginRight="5" MarginTop="20" Text="@OpponentsBeatenText" Brush="ArenaPracticeFight.Text"/>
+                <TextWidget WidthSizePolicy = "StretchToParent" HeightSizePolicy = "CoverChildren" MarginLeft="5" MarginRight="5" MarginTop="10" Text="@OpponentsRemainingText" Brush="ArenaPracticeFight.Text" />
+                <TextWidget WidthSizePolicy = "StretchToParent" HeightSizePolicy = "CoverChildren" MarginLeft="5" MarginRight="5" MarginTop="10" Text="@AlliesRemainingText" Brush="ArenaPracticeFight.Text" />                
+                <RichTextWidget WidthSizePolicy = "StretchToParent" HeightSizePolicy = "CoverChildren" MarginLeft="5" MarginRight="5" MarginTop="20" MarginBottom="20" Text="@PrizeText" Brush="ArenaPracticeFight.Text" />
+            </Children>
+        </ListPanel>
+    </Children>
+</ListPanel>

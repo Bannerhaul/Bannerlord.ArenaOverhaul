@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using ArenaOverhaul.ModSettings;
+
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using TaleWorlds.CampaignSystem;
@@ -22,8 +25,6 @@ namespace ArenaOverhaul.Tournament
         protected const int DefaultTroopImportance = 15000;
         protected const int TroopImportanceStep = 2000;
 
-        private const float DefaultHeroParticipantsCount = 10f;
-
         protected static int GetImportance(CharacterObject character, bool isPartyLeader)
         {
             bool isHighStatus = isPartyLeader || (character.IsHero && character.HeroObject.IsLord);
@@ -31,22 +32,13 @@ namespace ArenaOverhaul.Tournament
             return (character.IsPlayerCharacter ? DefaultPlayerImportance : 0) + (isHighStatus ? DefaultPartyLeaderImportance : 0) + GetRandomizedImportance(baseImportance);
         }
 
-        private static int GetRandomizedImportance(int baseImportance)
+        internal static int GetRandomizedImportance(int baseImportance)
         {
-            return MBRandom.RandomInt(3 * baseImportance / 4, 5 * baseImportance / 4);
+            return MBRandom.RandomInt(3 * baseImportance / 4, 5 * baseImportance / 4 + 1);
         }
 
         public static bool IsRightTypeOfHero(Hero hero, bool allowNotables = false) =>
             hero != null && !hero.IsWounded && !hero.IsNoncombatant && !hero.IsChild && (hero.IsLord || hero.IsWanderer || (allowNotables && hero.IsNotable));
-
-        protected static int GetNonHeroParticipantsCount(int applicantHeroCount, int maximumParticipantCount)
-        {
-            if (applicantHeroCount >= maximumParticipantCount)
-            {
-                return MBRandom.RandomInt(0, (int) MathF.Max(maximumParticipantCount - (DefaultHeroParticipantsCount + applicantHeroCount / applicantHeroCount), 1f));
-            }
-            return maximumParticipantCount - applicantHeroCount;
-        }
 
         protected static void GetUpgradeTargets(CharacterObject troop, List<CharacterObject> list)
         {
@@ -54,9 +46,12 @@ namespace ArenaOverhaul.Tournament
             {
                 list.Add(troop);
             }
-            foreach (CharacterObject upgradeTarget in troop.UpgradeTargets)
+            foreach (var upgradeTarget in troop.UpgradeTargets)
             {
-                GetUpgradeTargets(upgradeTarget, list);
+                if (upgradeTarget != null)
+                {
+                    GetUpgradeTargets(upgradeTarget, list);
+                }
             }
         }
     }
@@ -158,24 +153,27 @@ namespace ArenaOverhaul.Tournament
             return extraApplicantCharacters;
         }
 
-        public virtual void FillUpWithRandomTroops(Settlement settlement, List<Ta> extraApplicantCharacters, int requiredCount)
+        public virtual void FillUpWithRandomTroops(Settlement? settlement, List<Ta> extraApplicantCharacters, int requiredCount)
         {
+            var defaultCulture = Game.Current.ObjectManager.GetObject<CultureObject>("empire") ?? Game.Current.ObjectManager.GetObject<CultureObject>(x => x.IsMainCulture);
+            var baseSettlementCulture = settlement?.Culture ?? defaultCulture;
+            var settlementFactionCulture = settlement?.MapFaction?.Culture ?? baseSettlementCulture;
+
+            var troopList = GetTroopList([(defaultCulture, 1), (baseSettlementCulture, 10), (settlementFactionCulture, 10)], extraApplicantCharacters);
+            if (troopList.Count <= 0)
+            {
+                var allCulturesArray = Game.Current.ObjectManager.GetObjectTypeList<CultureObject>().Where(x => !x.IsBandit).Select(x => (x, 1)).ToArray();
+                troopList = GetTroopList(allCulturesArray!, extraApplicantCharacters);
+                if (troopList.Count <= 0)
+                {
+                    return;
+                }
+            }
+
             while (extraApplicantCharacters.Count <= requiredCount)
             {
-                CultureObject cultureObject = settlement != null ? settlement.Culture : Game.Current.ObjectManager.GetObject<CultureObject>("empire");
-                CharacterObject? characterObject = (double) MBRandom.RandomFloat > 0.5 ? cultureObject.BasicTroop : cultureObject.EliteBasicTroop;
-
-                var list = new List<CharacterObject>();
-                GetUpgradeTargets(characterObject, list);
-
-                list = list.Where(x => CanBeAParticipant(x, extraApplicantCharacters, true)).ToList();
-                list.Shuffle();
-                characterObject = list.FirstOrDefault();
-
-                if (characterObject != null && CanBeAParticipant(characterObject, extraApplicantCharacters, true))
-                {
-                    extraApplicantCharacters.Add(GetApplicant(characterObject, null, false));
-                }
+                var characterObject = GetRandomElementFromWeightedList(troopList);
+                extraApplicantCharacters.Add(GetApplicant(characterObject, null, false));
             }
         }
 
@@ -207,7 +205,7 @@ namespace ArenaOverhaul.Tournament
                 IsRightTypeOfHero(hero, allowNotables)
                 && hero != Hero.MainHero
                 && (!considerSkills || hero.GetSkillValue(DefaultSkills.OneHanded) >= 100 || hero.GetSkillValue(DefaultSkills.TwoHanded) >= 100 || hero.GetSkillValue(DefaultSkills.Polearm) >= 100)
-                && !applicantCharacters.Any(applicant => applicant.CharacterObject == hero.CharacterObject);
+                && !applicantCharacters.Any(applicant => applicant.CharacterObject == character);
         }
 
         private void AddApplicantsFromRoster(Settlement settlement, List<Ta> applicantCharacters, MobileParty party)
@@ -246,6 +244,54 @@ namespace ArenaOverhaul.Tournament
                 }
                 GetUpgradeTargets(character, upgradeTargets);
             }
+        }
+
+        private static CharacterObject GetRandomElementFromWeightedList(List<(CharacterObject Character, int Weight)> troopList)
+        {
+            int totalWeight = troopList.Sum(x => x.Weight);
+            int randomNumber = MBRandom.RandomInt(totalWeight);
+
+            foreach (var (character, weight) in troopList)
+            {
+                if (randomNumber < weight)
+                {
+                    return character;
+                }
+                randomNumber -= weight;
+            }
+
+            // If we reach this point, it means there's a problem with the weights.
+            return troopList.GetRandomElementInefficiently().Character;
+        }
+
+        private List<(CharacterObject Character, int Weight)> GetTroopList((CultureObject? Culture, int Weight)[] cultures, List<Ta> extraApplicantCharacters)
+        {
+            var list = new List<(CharacterObject Character, int Weight)>();
+            foreach (var (cultureObject, weight) in cultures)
+            {
+                if (cultureObject != null)
+                {
+                    if (cultureObject.BasicTroop is CharacterObject basicTroop)
+                    {
+                        list.Add((basicTroop, weight * 5));
+                    }
+                    if (cultureObject.EliteBasicTroop is CharacterObject eliteBasicTroop)
+                    {
+                        list.Add((eliteBasicTroop, weight * 3));
+                    }
+                    list.AddRange(cultureObject.BasicMercenaryTroops.Where(x => x != null).Select(x => (x, weight * 2)));
+                }
+            }
+
+            foreach (var (character, weight) in list.ToList())
+            {
+                var upgradesList = new List<CharacterObject>();
+                GetUpgradeTargets(character, upgradesList);
+                list.AddRange(upgradesList.Select(x => (x, weight)));
+            }
+
+            list = list.Where(x => CanBeAParticipant(x.Character, extraApplicantCharacters, true)).OrderBy(x => x.Weight).ThenBy(x => x.Character.Tier).ToList();
+            return list;
         }
     }
 }

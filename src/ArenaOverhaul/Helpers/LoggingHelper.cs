@@ -1,4 +1,5 @@
 ﻿using ArenaOverhaul.Extensions.Harmony;
+using ArenaOverhaul.ModSettings;
 
 using HarmonyLib;
 
@@ -29,6 +30,7 @@ namespace ArenaOverhaul.Helpers
                 }
             }
         }
+
         public static void Log(string message, string sectionName)
         {
             lock (AOLogFile)
@@ -39,7 +41,40 @@ namespace ArenaOverhaul.Helpers
                 }
             }
         }
-        public static void LogILAndPatches(List<CodeInstruction> codes, StringBuilder issueInfo, MethodBase currentMethod)
+
+        public static void LogNoHooksIssue(List<CodeInstruction> codes, int numberOfEdits, int requiredNumberOfEdits, MethodBase originalMethod, (string IndexName, int IndexValue)[] indexArgs, (string MethodInfoName, MemberInfo? MemberInfo)[] memberInfoArgs)
+        {
+            StringBuilder issueInfo = new();
+            if (indexArgs.Length > 0)
+            {
+                issueInfo.Append("Indexes:");
+                foreach (var indexInfo in indexArgs)
+                {
+                    issueInfo.Append($"\n\t{indexInfo.IndexName}={indexInfo.IndexValue}");
+                }
+            }
+            issueInfo.Append($"\nNumberOfEdits: {numberOfEdits} out of {requiredNumberOfEdits}");
+            if (memberInfoArgs.Length > 0)
+            {
+                issueInfo.Append($"\nMemberInfos:");
+                foreach (var memberInfo in memberInfoArgs)
+                {
+                    issueInfo.Append($"\n\t{memberInfo.MethodInfoName}={(memberInfo.MemberInfo != null ? memberInfo.MemberInfo.ToString() : "not found")}");
+                }
+            }
+            if (Settings.Instance!.LogTechnicalTranspilerInfo)
+            {
+                LogILAndPatches(codes, issueInfo, originalMethod);
+            }
+            Log(issueInfo.ToString(), $"Transpiler for {originalMethod.DeclaringType?.Name}.{originalMethod.Name}");
+
+            if (numberOfEdits < requiredNumberOfEdits)
+            {
+                MessageHelper.ErrorMessage($"Harmony transpiler for  {originalMethod.DeclaringType?.Name}. {originalMethod.Name} was not able to make all required changes!");
+            }
+        }
+
+        private static void LogILAndPatches(List<CodeInstruction> codes, StringBuilder issueInfo, MethodBase originalMethod)
         {
             issueInfo.Append($"\nIL:");
             for (int i = 0; i < codes.Count; ++i)
@@ -48,8 +83,8 @@ namespace ArenaOverhaul.Helpers
             }
             // get info about other transpilers on OriginalMethod        
             HarmonyLib.Patches patches;
-            patches = Harmony.GetPatchInfo(currentMethod);
-            if (patches != null)
+            patches = Harmony.GetPatchInfo(originalMethod);
+            if (patches != null && patches.Transpilers.Count > 0)
             {
                 issueInfo.Append($"\nOther transpilers:");
                 foreach (Patch patch in patches.Transpilers)

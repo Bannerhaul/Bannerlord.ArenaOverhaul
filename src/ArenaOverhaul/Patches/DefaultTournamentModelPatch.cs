@@ -1,4 +1,6 @@
-﻿using HarmonyLib;
+﻿using ArenaOverhaul.ModSettings;
+
+using HarmonyLib;
 
 using System.Collections.Generic;
 using System.Linq;
