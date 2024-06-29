@@ -240,7 +240,7 @@ namespace ArenaOverhaul.ArenaPractice
                 }
                 if (affectedAgent.IsMainAgent && Settings.Instance!.EnableTeamPracticeAgentSwitching && TeamPracticeHotKeyController.HasTargetsToSwitchTo())
                 {
-                    MBInformationManager.AddQuickInformation(new("{=}You are defeated, but your team is still fighting and you can switch to another teammate if you like."));
+                    MBInformationManager.AddQuickInformation(new("{=YxVkSN8sn}You are defeated, but your team is still fighting and you can switch to another hero if you like."));
                 }
                 if (affectorAgent != null && affectorAgent.IsHuman && affectorAgent.Team == playerTeam && affectedAgent.IsEnemyOf(affectorAgent))
                 {

@@ -6,7 +6,7 @@ Game Versions: v1.2.x
 * Fixed a number of problems with the selection of Tournament participants that were introduced in v1.4.0.
 * Added an option for Tournament prizes to be of high quality (masterwork, lordly, etc).
 * Added an option for elite Tournament prizes to be depend on settlement culture.
-* Added customizable team count setting for arena practice.
+* Added customizable team count setting for the arena practice.
 * Added an option to use combat, civilian, or Tournament armor for the arena practice.
 * On high intensity arena practice settings, starting spawn points will be used in addition to the main ones to prevent overcrowding and some glitches associated with it.
 * Added customizable weapon preferences for companions. This will help them practice the skills they need in the arena. There will be a usual fee for selecting a loadout for each companion.

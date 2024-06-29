@@ -4,19 +4,19 @@ namespace ArenaOverhaul.ModSettings
 {
     public enum WeaponPreference : byte
     {
-        [Description("{=}None")]
+        [Description("{=6SD77Zo1C}None")]
         None = 0,
-        [Description("{=}One handed weapons")]
+        [Description("{=7OL4eTdan}One handed weapons")]
         OneHanded = 1,
-        [Description("{=}Two handed weapons")]
+        [Description("{=rvCVOGi0s}Two handed weapons")]
         TwoHanded = 2,
-        [Description("{=}Polearms")]
+        [Description("{=bDnJRrfRH}Polearms")]
         Polearm = 3,
-        [Description("{=}Bows")]
+        [Description("{=KZt7cDhKn}Bows")]
         Bow = 4,
-        [Description("{=}Crossbows")]
+        [Description("{=s0JLnYAxx}Crossbows")]
         Crossbow = 5,
-        [Description("{=}Throwing weapons")]
+        [Description("{=CvVDmEhou}Throwing weapons")]
         Throwing = 6,
     }
 }

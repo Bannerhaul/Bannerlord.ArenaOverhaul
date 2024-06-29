@@ -18,15 +18,15 @@ namespace ArenaOverhaul.ModSettings
     internal static class CompanionPracticeSettings
     {
         //Group order does not work if group does not have any properties
-        private const string HeadingClanLeader = "{=}1. Clan Leader";
-        private const string HeadingFamilyMembers = "{=}2. Family Members";
-        private const string HeadingCompanions = "{=}3. Companions";
+        private const string HeadingClanLeader = "{=NcXn6Ow7O}1. Clan Leader";
+        private const string HeadingFamilyMembers = "{=NowOsng0A}2. Family Members";
+        private const string HeadingCompanions = "{=vTyduFjuF}3. Companions";
 
         private static Version? CurrentVersion => typeof(CompanionPracticeSettings).Assembly.GetName().Version;
 
         private static string SettingsId => $"{nameof(CompanionPracticeSettings)}_v{CurrentVersion?.ToString(1)}";
 
-        private static string SettingsName => $"{new TextObject("{=}AO Hero Practice Settings")} {CurrentVersion!.ToString(3)}";
+        private static string SettingsName => $"{new TextObject("{=fFlUJjUl0}AO Hero Practice Settings")} {CurrentVersion!.ToString(3)}";
 
         public static ISettingsBuilder AddCompanionPracticeSettings(Dictionary<Hero, HeroPracticeSettings> heroPracticeSettings)
         {
@@ -127,43 +127,43 @@ namespace ArenaOverhaul.ModSettings
         {
             if (hero != Hero.MainHero)
             {
-                enableLoadoutChoiceText = "{=}Enable loadout choice";
-                enableLoadoutChoiceHint = "{=}When this option is enabled, corresponding hero is allowed to choose weapons for arena practice matches, and you will have to pay the usual fee for this. Otherwise, they will use random weapons like everyone else. Default is set in global mod settings.";
+                enableLoadoutChoiceText = "{=fL485YX24}Enable loadout choice";
+                enableLoadoutChoiceHint = "{=QLQYQTctQ}When this option is enabled, corresponding hero is allowed to choose weapons for arena practice matches, and you will have to pay the usual fee for this. Otherwise, they will use random weapons like everyone else. Default is set in global mod settings.";
 
-                onlyPriorityLoadoutsText = "{=}Only priority loadouts";
-                onlyPriorityLoadoutsHint = "{=}When this option is enabled, corresponding hero will only choose practice weapons if any weapon preference is set and at least one matching weapon loadout is available in the arena. Otherwise, they will use random weapons like everyone else. Default is set in global mod settings.";
+                onlyPriorityLoadoutsText = "{=zC7CG8kwF}Only priority loadouts";
+                onlyPriorityLoadoutsHint = "{=ieRmdET16}When this option is enabled, corresponding hero will only choose practice weapons if any weapon preference is set and at least one matching weapon loadout is available in the arena. Otherwise, they will use random weapons like everyone else. Default is set in global mod settings.";
 
-                prioritizeExpensiveEquipmentText = "{=}Prioritize expensive equipment";
-                prioritizeExpensiveEquipmentHint = "{=}When this option is enabled, corresponding hero will select weapons for arena practice matches, prioritizing better and more expensive equipment. Otherwise, the least expensive set of weapons that meets the given preferences will be selected. Default is set in global mod settings.";
+                prioritizeExpensiveEquipmentText = "{=cWdhDpsOS}Prioritize expensive equipment";
+                prioritizeExpensiveEquipmentHint = "{=YwbIZExy1}When this option is enabled, corresponding hero will select weapons for arena practice matches, prioritizing better and more expensive equipment. Otherwise, the least expensive set of weapons that meets the given preferences will be selected. Default is set in global mod settings.";
 
-                firstPriorityText = "{=}First priority";
-                firstPriorityHint = "{=}Specify the weapon skill that has the highest priority for the corresponding hero to train. This hero will always choose a weapon loadout containing a weapon based on that skill, if available. Default is [None].";
+                firstPriorityText = "{=G2IdbqB8p}First priority";
+                firstPriorityHint = "{=ZWh07gP41}Specify the weapon skill that has the highest priority for the corresponding hero to train. This hero will always choose a weapon loadout containing a weapon based on that skill, if available. Default is [None].";
 
-                secondPriorityText = "{=}Second priority";
-                secondPriorityHint = "{=}Specify the weapon skill that has the second highest priority for the corresponding hero to train. This hero will choose a weapon loadout containing a weapon based on this skill if it is available and there are no higher priority alternatives. Default is [None].";
+                secondPriorityText = "{=bcgL8E4Ol}Second priority";
+                secondPriorityHint = "{=Yideeiww5}Specify the weapon skill that has the second highest priority for the corresponding hero to train. This hero will choose a weapon loadout containing a weapon based on this skill if it is available and there are no higher priority alternatives. Default is [None].";
 
-                thirdPriorityText = "{=}Third priority";
-                thirdPriorityHint = "{=}Specify the weapon skill that has the third highest priority for the corresponding hero to train. This hero will choose a weapon loadout containing a weapon based on this skill if it is available and there are no higher priority alternatives. Default is [None].";
+                thirdPriorityText = "{=t45rwWZc5}Third priority";
+                thirdPriorityHint = "{=lHiP6Z2Qo}Specify the weapon skill that has the third highest priority for the corresponding hero to train. This hero will choose a weapon loadout containing a weapon based on this skill if it is available and there are no higher priority alternatives. Default is [None].";
             }
             else
             {
-                enableLoadoutChoiceText = "{=}Enable automatic loadout choice";
-                enableLoadoutChoiceHint = "{=}When this option is enabled, the weapon loadout will be automatically selected for the player based on other preferences set here when entering any arena practice mode from the menu. Default is set in global mod settings.";
+                enableLoadoutChoiceText = "{=kbL2QnpuF}Enable automatic loadout choice";
+                enableLoadoutChoiceHint = "{=vGIOM104P}When this option is enabled, the weapon loadout will be automatically selected for the player based on other preferences set here when entering any arena practice mode from the menu. Default is set in global mod settings.";
 
-                onlyPriorityLoadoutsText = "{=}Choose only priority loadouts";
-                onlyPriorityLoadoutsHint = "{=}When this option is enabled, automatic weapon loadout will only happen for player if any weapon preference is set and at least one matching weapon loadout is available in the arena. Otherwise, they will use random weapons as usual. Default is set in global mod settings.";
+                onlyPriorityLoadoutsText = "{=zC7CG8kwF}Only priority loadouts";
+                onlyPriorityLoadoutsHint = "{=JidAUNLNo}When this option is enabled, automatic weapon loadout will only happen for player if any weapon preference is set and at least one matching weapon loadout is available in the arena. Otherwise, they will use random weapons as usual. Default is set in global mod settings.";
 
-                prioritizeExpensiveEquipmentText = "{=}Prioritize expensive equipment";
-                prioritizeExpensiveEquipmentHint = "{=}When this option is enabled, better and more expensive equipment will be prefered for automatic weapon loadout selection for player. Otherwise, the least expensive set of weapons that meets the given preferences will be selected. Default is set in global mod settings.";
+                prioritizeExpensiveEquipmentText = "{=cWdhDpsOS}Prioritize expensive equipment";
+                prioritizeExpensiveEquipmentHint = "{=Wse8QGJyQ}When this option is enabled, better and more expensive equipment will be prefered for automatic weapon loadout selection for player. Otherwise, the least expensive set of weapons that meets the given preferences will be selected. Default is set in global mod settings.";
 
-                firstPriorityText = "{=}First priority";
-                firstPriorityHint = "{=}Specify the weapon skill that has the highest priority for the player character to train. A weapon loadout containing a weapon based on that skill will always be chosen, if available. Default is [None].";
+                firstPriorityText = "{=G2IdbqB8p}First priority";
+                firstPriorityHint = "{=DOGp7LBDe}Specify the weapon skill that has the highest priority for the player character to train. A weapon loadout containing a weapon based on that skill will always be chosen, if available. Default is [None].";
 
-                secondPriorityText = "{=}Second priority";
-                secondPriorityHint = "{=}Specify the weapon skill that has the second highest priority for the player character to train. A weapon loadout containing a weapon based on this skill will be chosen if it is available and there are no higher priority alternatives. Default is [None].";
+                secondPriorityText = "{=bcgL8E4Ol}Second priority";
+                secondPriorityHint = "{=bhSUfmKir}Specify the weapon skill that has the second highest priority for the player character to train. A weapon loadout containing a weapon based on this skill will be chosen if it is available and there are no higher priority alternatives. Default is [None].";
 
-                thirdPriorityText = "{=}Third priority";
-                thirdPriorityHint = "{=}Specify the weapon skill that has the third highest priority for the player character to train. A weapon loadout containing a weapon based on this skill will be chosen if it is available and there are no higher priority alternatives. Default is [None].";
+                thirdPriorityText = "{=t45rwWZc5}Third priority";
+                thirdPriorityHint = "{=IP7JZx9bb}Specify the weapon skill that has the third highest priority for the player character to train. A weapon loadout containing a weapon based on this skill will be chosen if it is available and there are no higher priority alternatives. Default is [None].";
             }
         }
     }

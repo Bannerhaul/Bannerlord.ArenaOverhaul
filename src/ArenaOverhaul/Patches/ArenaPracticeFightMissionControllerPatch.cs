@@ -545,7 +545,7 @@ namespace ArenaOverhaul.Patches
 
             __result = !__instance.IsPlayerPracticing
                 ? null
-                : new InquiryData(new TextObject("{=zv49qE35}Practice Fight").ToString(), new TextObject("{=}Your teammates are still fighting. Do you want to leave the arena?").ToString(), true, true, GameTexts.FindText("str_ok").ToString(), GameTexts.FindText("str_cancel").ToString(), new Action(__instance.Mission.OnEndMissionResult), null);
+                : new InquiryData(new TextObject("{=zv49qE35}Practice Fight").ToString(), new TextObject("{=UuAz2vxM3}Your team is still fighting. Do you want to leave the arena?").ToString(), true, true, GameTexts.FindText("str_ok").ToString(), GameTexts.FindText("str_cancel").ToString(), new Action(__instance.Mission.OnEndMissionResult), null);
             return false;
         }
 

@@ -85,25 +85,25 @@ namespace ArenaOverhaul.CampaignBehaviors.BehaviorManagers
             int totalPrice = matchPrice + playerLoadoutPrice + companionLoadoutPrice;
             if (totalPrice > 0)
             {
-                var arrangementExpenses = new TextObject("{=}{?PRACTICE_CHOICE_HAS_PRICE}{NEW_LINE} - Fee for a special type of practice in the amount of {PRACTICE_CHOICE_PRICE}{GOLD_ICON}.{?}{\\?}", new()
+                var arrangementExpenses = new TextObject("{=OXad58sEV}{?PRACTICE_CHOICE_HAS_PRICE}{NEW_LINE} - Fee for a special type of practice in the amount of {PRACTICE_CHOICE_PRICE}{GOLD_ICON}.{?}{\\?}", new()
                 {
                     ["PRACTICE_CHOICE_HAS_PRICE"] = (matchPrice > 0 ? 1 : 0).ToString(),
                     ["PRACTICE_CHOICE_PRICE"] = matchPrice.ToString(),
                     ["NEW_LINE"] = Environment.NewLine
                 });
-                var playerLoadoutExpenses = new TextObject("{=}{?WEAPON_CHOICE_HAS_PRICE}{NEW_LINE} - Fee for using custom weapon set in the amount of {WEAPON_CHOICE_PRICE}{GOLD_ICON}.{?}{\\?}", new()
+                var playerLoadoutExpenses = new TextObject("{=bO70zCDVt}{?WEAPON_CHOICE_HAS_PRICE}{NEW_LINE} - Fee for using custom weapon set in the amount of {WEAPON_CHOICE_PRICE}{GOLD_ICON}.{?}{\\?}", new()
                 {
                     ["WEAPON_CHOICE_HAS_PRICE"] = (playerLoadoutPrice > 0 ? 1 : 0).ToString(),
                     ["WEAPON_CHOICE_PRICE"] = playerLoadoutPrice.ToString(),
                     ["NEW_LINE"] = Environment.NewLine
                 });
-                var companionLoadoutExpenses = new TextObject("{=}{?COMPANION_WEAPON_CHOICES_HAVE_PRICE}{NEW_LINE} - Fee for the use of a custom set of weapons by your companions in the amount of {COMPANION_WEAPON_CHOICES_PRICE}{GOLD_ICON} for all of them.{?}{\\?}", new()
+                var companionLoadoutExpenses = new TextObject("{=M8fIDW2lQ}{?COMPANION_WEAPON_CHOICES_HAVE_PRICE}{NEW_LINE} - Fee for the use of a custom set of weapons by your companions in the amount of {COMPANION_WEAPON_CHOICES_PRICE}{GOLD_ICON} for all of them.{?}{\\?}", new()
                 {
                     ["COMPANION_WEAPON_CHOICES_HAVE_PRICE"] = (companionLoadoutPrice > 0 ? 1 : 0).ToString(),
                     ["COMPANION_WEAPON_CHOICES_PRICE"] = companionLoadoutPrice.ToString(),
                     ["NEW_LINE"] = Environment.NewLine
                 });
-                var expensesBreakdown = new TextObject("{=}Arranging a practice round based on the requested set of rules and preferences will cost you a total of {TOTAL_EXPENSES}{GOLD_ICON}.{NEW_LINE}{NEW_LINE}This consists of:{ARRANGEMENT_EXPENSES}{PLAYER_LOADOUT_EXPENSES}{COMPANION_LOADOUT_EXPENSES}", new()
+                var expensesBreakdown = new TextObject("{=Oz5qSUyk9}Arranging a practice round based on the requested set of rules and preferences will cost you a total of {TOTAL_EXPENSES}{GOLD_ICON}.{NEW_LINE}{NEW_LINE}This consists of:{ARRANGEMENT_EXPENSES}{PLAYER_LOADOUT_EXPENSES}{COMPANION_LOADOUT_EXPENSES}", new()
                 {
                     ["TOTAL_EXPENSES"] = totalPrice.ToString(),
                     ["ARRANGEMENT_EXPENSES"] = arrangementExpenses,

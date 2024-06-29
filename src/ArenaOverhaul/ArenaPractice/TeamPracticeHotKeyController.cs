@@ -28,8 +28,8 @@ namespace ArenaOverhaul.ArenaPractice
 
         public TeamPracticeHotKeyController() : base(nameof(TeamPracticeHotKeyController))
         {
-            DisplayName = "{=}Switch to other hero";
-            Description = "{=}Switches to another active hero of your choice in a Team Practice match in the arena.";
+            DisplayName = "{=DXiVYMIUL}Switch to other hero";
+            Description = "{=morP28atv}Switches to another active hero of your choice in a Team Practice match in the arena.";
             DefaultKey = InputKey.Slash;
             Category = HotKeyManager.Categories[HotKeyCategory.Action];
 
@@ -56,8 +56,8 @@ namespace ArenaOverhaul.ArenaPractice
                         .Where(IsFittingToSwitchTo).ToList()
                         .ForEach(x => inquiryElementList.Add(new InquiryElement(x, x.Name.ToString(), new ImageIdentifier(CharacterCode.CreateFrom(x.Character)))));
 
-                    MBInformationManager.ShowMultiSelectionInquiry(new MultiSelectionInquiryData("{=}Available characters".ToLocalizedString(),
-                        "{=}Select a teammate to switch to".ToLocalizedString(), inquiryElementList, true, 1, 1, GameTexts.FindText("str_ok").ToString(), GameTexts.FindText("str_cancel").ToString(), inquiryElements =>
+                    MBInformationManager.ShowMultiSelectionInquiry(new MultiSelectionInquiryData("{=xRdn4pEme}Available characters".ToLocalizedString(),
+                        "{=jq2jXUcse}Select a teammate to switch to".ToLocalizedString(), inquiryElementList, true, 1, 1, GameTexts.FindText("str_ok").ToString(), GameTexts.FindText("str_cancel").ToString(), inquiryElements =>
                         {
                             if (inquiryElements is null || inquiryElements.Count <= 0 || inquiryElements.First().Identifier is not Agent agent)
                             {
@@ -74,12 +74,12 @@ namespace ArenaOverhaul.ArenaPractice
                 }
                 else
                 {
-                    MessageHelper.TechnicalMessage("{=}There are no available characters on your team to switch to!".ToLocalizedString());
+                    MessageHelper.TechnicalMessage("{=XZcFEonSW}There are no available characters on your team to switch to!".ToLocalizedString());
                 }
             }
             else
             {
-                MessageHelper.TechnicalMessage("{=}Currently you cannot switch to another character!".ToLocalizedString());
+                MessageHelper.TechnicalMessage("{=Iz2BWpesF}Currently you cannot switch to another character!".ToLocalizedString());
             }
         }
 

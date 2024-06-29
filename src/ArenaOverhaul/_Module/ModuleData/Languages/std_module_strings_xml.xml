@@ -15,19 +15,40 @@
 		||||||||||||||||||||| Game menus and dialogues ||||||||||||||||||||||
 		-->
 		<string id="a3uuVmMKR" text="Expansive practice fight" />
+		<string id="QI6a1mxh9" text="Parry practice fight" />
+		<string id="wWZ82hgqV" text="Team practice fight" />
 		<string id="aiDNBFQ4U" text="Nearby Tournaments" />
 		<string id="uBC62Jdh1" text="Next page..." />
 		<string id="De0boqLm0" text="Previous page..." />
 		<string id="fakGolQMf" text="Back to arena" />
 		<string id="ForHVzTkJ" text="Also, from time to time, so-called expansive practice fights are held. Basically, it's the same thing, but longer and much more intense. I would advise you to bring some of your men with you, it might be good practice for them. Just do not forget - no teams in there, otherwise you will be disqualified.[ib:closed][if:convo_bared_teeth]" />
 		<string id="nZVbLJnVn" text="And what about these expansive practice fights, are they rewarded too? How much are the prizes?" />
+		<string id="fpPMPCNp5" text="My men need training more than I do. I think I'll stay here and send someone instead." />
+		<string id="7ONiAo9q0" text="Alright, who will be the lucky one?[ib:closed][if:convo_bared_teeth]" />
+		<string id="cB4QnrtWM" text="Anything else?[ib:normal]" />
+		<string id="y9zNkuGg0" text="I'd like to choose the gear for my companion." />
+		<string id="0uFoXskRW" text="No, let's get the show started." />
+		<string id="BbpYVQSc6" text="I've changed my mind and will fight myself." />
+		<string id="VVjb1EG4d" text="Hold off, I have second thoughts about all that." />
 		<string id="MqTDJG0uG" text="I'd like to choose my gear." />
 		<string id="iDGR9F0Gn" text="Alright{?WEAPON_CHOICE_HAS_PRICE}, but it will cost you {WEAPON_CHOICE_PRICE}{GOLD_ICON}{?}{\?}! Which weapon set are you taking?[ib:closed][if:convo_bared_teeth]" />
 		<string id="DGsGeb4LA" text="I'd like to get better gear." />
 		<string id="lIBwkFipY" text="Actually, nevermind." />
 		<string id="7f21TSn5W" text="I'd like to participate in an expansive practice fight..." />
 		<string id="MnhLtl9Nn" text="Well, gather your men and go to it! Don't forget to grab a practice weapon on your way down.[if:convo_approving]" />
-		<string id="WRO1rFtQm" text="I'll do that with standard gear." />
+		<string id="jBqErWEjU" text="Can you arrange a special match for me?" />
+		<string id="EYXQnjEvK" text="It depends. What exactly are you thinking about?[ib:hip][if:convo_thinking]" />
+		<string id="h2Gv6NA8J" text="I'd like to practice parrying." />
+		<string id="9yIQ6Qd1E" text="This is a really important skill and practicing it will benefit others too... I think I can make this match happen{?PRACTICE_CHOICE_HAS_PRICE}, but it will cost you {PRACTICE_CHOICE_PRICE}{GOLD_ICON}{?}{\?}. Oh, and don't expect any winnings, since this type of exercise is unlikely to interest the crowd. If you're still up to it, don't forget to grab a practice weapon on your way down.[if:convo_calm_friendly][ib:confident]" />
+		<string id="iXwumAizJ" text="I want to fight alongside my comrades as a team. Any chane you will host a team practice session?" />
+		<string id="LTfWl2OPC" text="This will definitely shake things up! {?PRACTICE_CHOICE_HAS_PRICE}I like the idea, however, in order to properly organize such a competition, I will have to make a fair amount of fuss, so it will cost you {PRACTICE_CHOICE_PRICE}{GOLD_ICON}. On the bright side, {?}{\?}I think it will be great entertainment for the crowd, which will have a positive impact on the prizes. If you're still up for it, don't forget to grab a practice weapon on your way down.[ib:nervous2][if:convo_excited]" />
+		<string id="wuuxg3Lkg" text="So... Do you want to give it another go?[ib:normal]" />
+		<string id="6kW561DVB" text="I need to rest a little and my men need training. I think I'll stay here this time and send someone instead." />
+		<string id="RKNcniRPk" text="I want to send someone else this time." />
+		<string id="7NfBn2JvL" text="I'd like to warm up, this time I will take part in the fight myself." />
+		<string id="8k8br8lfq" text="{?COMPANION_GENDER}She{?}He{\?}'ll do that with standard gear." />
+		<string id="rPVHszLLs" text="Sure. Although I'd like to pick a new loadout for {COMPANION_NAME} to use." />
+        <string id="WRO1rFtQm" text="I'll do that with standard gear." />
 		<string id="uLNYivCXl" text="Sure. Although I'd like to take a new loadout." />
 		<string id="zvb5PZ5OA" text="Tournaments are currently being held in {TOURNAMENTS} {?TOURNAMENTS.PLURAL_FORM}towns{?}town{\?}.{NEW_LINE}{TORNAMENT_LIST.START}{?TORNAMENT_LIST.IS_PLURAL}{NEW_LINE}{?}{\?}{TORNAMENT_LIST.END}" />
 		<string id="sotK7sewA" text="nearby" />
@@ -35,9 +56,29 @@
 		<string id="ULKHRKsSV" text="reasonably far from here" />
 		<string id="2JXPNLOm3" text="very far from here" />
 		<string id="UOpsoG57t" text="tier {TIER} {TYPE}, {NAME}, worth {GOLD}{GOLD_ICON}" />
-		<string id="fpPMPCNp5" text="You don't have enough gold." />
-		<string id="EPjU6L6kg" text="You don't have enough gold to do another round with the current match settings." />
-		<string id="9REfw5FN6" text="Another round of practice with the current match settings will cost you {REMATCH_COST}{GOLD_ICON}" />
+		<string id="EPjU6L6kg" text="You don't have enough gold!{NEW_LINE}{NEW_LINE}{EXPENSES_BREAKDOWN}" />
+		<string id="9REfw5FN6" text="{EXPENSES_BREAKDOWN}{NEW_LINE}{NEW_LINE}Currently you can afford {AFFORDABLE_ROUNDS} {?AFFORDABLE_ROUNDS.PLURAL_FORM}practice rounds{?}practice round{\?} at this price." />
+		<string id="OXad58sEV" text="{?PRACTICE_CHOICE_HAS_PRICE}{NEW_LINE} - Fee for a special type of practice in the amount of {PRACTICE_CHOICE_PRICE}{GOLD_ICON}.{?}{\?}" />
+		<string id="bO70zCDVt" text="{?WEAPON_CHOICE_HAS_PRICE}{NEW_LINE} - Fee for using custom weapon set in the amount of {WEAPON_CHOICE_PRICE}{GOLD_ICON}.{?}{\?}" />
+		<string id="M8fIDW2lQ" text="{?COMPANION_WEAPON_CHOICES_HAVE_PRICE}{NEW_LINE} - Fee for the use of a custom set of weapons by your companions in the amount of {COMPANION_WEAPON_CHOICES_PRICE}{GOLD_ICON} for all of them.{?}{\?}" />
+		<string id="Oz5qSUyk9" text="Arranging a practice round based on the requested set of rules and preferences will cost you a total of {TOTAL_EXPENSES}{GOLD_ICON}.{NEW_LINE}{NEW_LINE}This consists of:{ARRANGEMENT_EXPENSES}{PLAYER_LOADOUT_EXPENSES}{COMPANION_LOADOUT_EXPENSES}" />
+		<!--
+		|||||||||||||||||||||||||||||| Messages |||||||||||||||||||||||||||||
+		-->
+		<string id="YxVkSN8sn" text="You are defeated, but your team is still fighting and you can switch to another hero if you like." />
+		<string id="xRdn4pEme" text="Available characters" />
+		<string id="jq2jXUcse" text="Select a teammate to switch to" />
+		<string id="XZcFEonSW" text="There are no available characters on your team to switch to!" />
+		<string id="Iz2BWpesF" text="Currently you cannot switch to another character!" />
+		<string id="UuAz2vxM3" text="Your team is still fighting. Do you want to leave the arena?" />
+		<!--
+		||||||||||||||||||||||||||| Practice Stats ||||||||||||||||||||||||||
+		-->
+		<string id="PumaUhrt2" text="Prepared blocks: {PREPARED_BLOCKS}" />
+		<string id="XiR0Srf50" text="Perfect blocks: {PERFECT_BLOCKS}" />
+		<string id="R0UCmq6Jn" text="Chamber blocks: {CHAMBER_BLOCKS}" />
+		<string id="CSGg2vSS3" text="Hits taken: {HITS_TAKEN}" />
+		<string id="l1z9vuw8B" text="Allies remaining: {ALLIES_REMAINING}" />
 		<!--
 		|||||||||||||||||||||||||| Item categories ||||||||||||||||||||||||||
 		-->
@@ -70,6 +111,7 @@
 		<!--
 		|||||||||||||||||||||||||||| Game Texts |||||||||||||||||||||||||||||
 		-->
+		<!-- Practice rewards explanation -->
 		<string id="gaJDVkvHa" text="{VALOR_PRIZES_DESCRIPTION}{CHAMPION_PRIZE_DESCRIPTION} Sounds good, eh?[if:convo_nonchalant]" />
 		<string id="hsDqRWEYr" text="If you can beat {OPPONENT_COUNT_1} opponents before going down, you'll earn {PRIZE_1}{GOLD_ICON}. " />
 		<string id="8qZeWlW2A" text="If you can beat {OPPONENT_COUNT_1} opponents before going down, you'll earn {PRIZE_1}{GOLD_ICON}. And you'll get {PRIZE_2}{GOLD_ICON} for striking down at least {OPPONENT_COUNT_2} opponents. " />
@@ -79,13 +121,56 @@
 		<string id="nwnxJV2rZ" text="If you can manage to be the last fighter standing, you'll earn the great prize of the fights, {PRIZE_CHAMP}{GOLD_ICON}. " />
 		<string id="AAPfCIEuZ" text="If you can manage to be the last fighter standing, on top of that you'll earn the great prize of the fights, {PRIZE_CHAMP}{GOLD_ICON}. " />
 		<string id="3UtRes0Un" text="But if you can manage to be the last fighter standing, you'll earn the great prize of the fights, {PRIZE_CHAMP}{GOLD_ICON}. Maybe even several times more if you show a really good fight and personally defeat many opponents. " />
+		<!-- Practice rewards post fight briefing -->
+		<string id="4uOu7an2u" text="Heh! That's quite the bruise your henchman here is sporting. But don't worry; everybody gets trounced once in a while. The important thing is to learn from one's mistakes and keep fighting. That's what champions do." />
+		<string id="s2B3i84HL" text="Ah, the experience, a welcome child of difficult mistakes! Now that your team has hopefully earned some, I suggest you all go back there and put it to good use. That's what champions do." />
+		<string id="bWSPsaDyt" text="Looks like your henchman managed to take down {OPPONENT_COUNT} opponents. Not bad. But that won't bring you any prize money. Now, if I were you, I would send {?COMPANION.GENDER}her{?}him{\?} right back there, or, better yet, go there myself and show everyone what I'm capable of..." />
+		<string id="0xwJY4TYS" text="Looks like your team managed to take down {OPPONENT_COUNT} opponents. Not bad. But that won't bring you any prize money. Now, if I were you, I would gather my men, give 'em a little speech, go right back there and show everyone what we're capable of..." />
+		<string id="tU4Oa8XN1" text="{COMPANION.LINK} put up quite a good fight there. Some very good moves. A few errors, sure, but {?COMPANION.GENDER}she{?}he{\?} definitely shows promise. And earned you a prize of {PRIZE}{GOLD_ICON} for knocking down {OPPONENT_COUNT} opponents." />
+		<string id="IMAm6VMLR" text="Your team put up quite a good fight there. Some very good moves. A few errors, sure, but you definitely show promise. And you earned a prize of {PRIZE}{GOLD_ICON} for knocking down {OPPONENT_COUNT} opponents." />
+		<string id="N5d76ElzV" text="Nice, {PLAYER.LINK}, nice. {?COMPANION.GENDER}Ms{?}Mr{\?} {COMPANION.LINK} here managed to take down no less than {OPPONENT_COUNT} opponents. {?COMPANION.GENDER}She{?}He{\?} was a crowd favorite, for {?COMPANION.GENDER}her{?}his{\?} pluck. And of course, earned you a prize money of {PRIZE}{GOLD_ICON}." />
+		<string id="injn095f0" text="Nice, {PLAYER.LINK}, nice. Your team managed to take down no less than {OPPONENT_COUNT} opponents. You were a crowd favorite, for your pluck. And of course, you earned a prize money of {PRIZE}{GOLD_ICON}." />
+		<string id="xe4cfXIBa" text="That was fine fighting, {PLAYER.LINK}. {COMPANION.LINK} took down {OPPONENT_COUNT} opponents. Of course {?COMPANION.GENDER}she{?}he{\?} deserves a prize with that performance: {PRIZE}{GOLD_ICON}. Nice, eh?" />
+		<string id="luDin5D4D" text="That was fine fighting, {PLAYER.LINK}. Your team took down {OPPONENT_COUNT} opponents. Of course you deserve a prize with that performance: {PRIZE}{GOLD_ICON}. Nice, eh?" />
+		<string id="ETDxIDLAf" text="A magisterial performance, {COMPANION.LINK}. Whack! Crack! You took down {OPPONENT_COUNT} of them. The crowd loved it. {PLAYER.LINK}, your your aspiring martial artist here just earned you a prize of {PRIZE}{GOLD ICON}." />
+		<string id="UUuKSdZ7b" text="A magisterial performance, {PLAYER.LINK}. Whack! Crack! Your team took down {OPPONENT_COUNT} of them. The crowd loved it. And you earned a prize of {PRIZE}{GOLD_ICON}." />
+		<string id="GLYFl5ImO" text="Now let me take a closer look at your prodigy, {PLAYER.LINK}. So someday I will be able to tell my children what a real grandmaster looks like... {COMPANION.LINK} was able to beat {OPPONENT_COUNT} in one sitting! Incredible! Oh, and of course that means I owe you a prize of {PRIZE}{GOLD_ICON}." />
 		<string id="aDC8zdCmt" text="Now let me take a closer look at you, {PLAYER.LINK}. So someday I will be able to tell my children what a real grandmaster looks like! You were able to beat {OPPONENT_COUNT} in one sitting! Incredible! Oh, and of course you've earned yourself a prize of {PRIZE}{GOLD_ICON}." />
+		<string id="b42weJbT2" text="Now that's what I call team play! Your team was able to beat {OPPONENT_COUNT} in one sitting! Incredible! You've earned a prize of {PRIZE}{GOLD_ICON}, and I mean every coin of it." />
+		<string id="YL3QBzHns" text="Congratulations, {PLAYER.LINK}, {COMPANION.LINK} is the champion! {?COMPANION.GENDER}Her{?}His{\?} fight there was something to remember! As the last one standing, {COMPANION.LINK} wins the top prize: {PRIZE}{GOLD_ICON}." />
+		<string id="DwOtDP6SQ" text="Congratulations {PLAYER.LINK}, your team is the champion! As the last ones standing, you win the top prize: {PRIZE}{GOLD_ICON}." />
+		<string id="dKWMj58Bq" text="Congratulations, {PLAYER.LINK}, {COMPANION.LINK} is the champion! {?COMPANION.GENDER}Her{?}His{\?} fight there was something to remember! As the last one standing, {COMPANION.LINK} of course wins the top prize: {PRIZE}{GOLD_ICON}, including {VALOR_PRIZE}{GOLD_ICON} for knocking down {OPPONENT_COUNT} opponents." />
 		<string id="nZ1Ar0MOd" text="Congratulations, champion! Your fight there was something to remember! As the last one standing, you of course win the top prize: {PRIZE}{GOLD_ICON}, including {VALOR_PRIZE}{GOLD_ICON} for knocking down {OPPONENT_COUNT} opponents." />
+		<string id="UISWBTRY2" text="Congratulations {PLAYER.LINK}, your team is the champion! This fight was something to remember! As the last ones standing, you of course win the top prize: {PRIZE}{GOLD_ICON}, including {VALOR_PRIZE}{GOLD_ICON} for knocking down {OPPONENT_COUNT} opponents." />
+		<string id="YZcU0ocKX" text="Congratulations, {PLAYER.LINK}, {COMPANION.LINK} is the champion! {?COMPANION.GENDER}Her{?}His{\?} fight there was something to remember for sure! As the last one standing, {COMPANION.LINK} wins the top prize: {PRIZE}{GOLD_ICON}, including {VALOR_PRIZE}{GOLD_ICON} for knocking down {OPPONENT_COUNT} opponents. I have to say, it was a great fight and the crowd really loved it, so your hero earned every coin here, my friend." />
 		<string id="oYDKCzkid" text="Congratulations, champion! Your fight there was something to remember! As the last one standing, you of course win the top prize: {PRIZE}{GOLD_ICON}, including {VALOR_PRIZE}{GOLD_ICON} for knocking down {OPPONENT_COUNT} opponents. I have to say, it was a great fight and the crowd really loved it, so you earned every coin here, my friend." />
+		<string id="TFRz8p0Z6" text="Congratulations {PLAYER.LINK}, your team is the champion! This fight was something to remember for sure! As the last ones standing, you win the top prize: {PRIZE}{GOLD_ICON}, including {VALOR_PRIZE}{GOLD_ICON} for knocking down {OPPONENT_COUNT} opponents. I have to say, it was a great fight and the crowd really loved it, so you and your men earned every coin here, my friend." />
+		<string id="6bnQLhQQB" text="Congratulations, {PLAYER.LINK}, {COMPANION.LINK} is the champion! {?COMPANION.GENDER}Her{?}His{\?} fight there was something to remember! Not only {COMPANION.LINK} was the last man standing, but also fought like a beast and thus won double the standard top prize: {PRIZE}{GOLD_ICON}." />
 		<string id="dKdBMUgOL" text="Congratulations, champion! Your fight there was something to remember! Not only you were the last man standing, but you also fought like a beast and thus won double the standard top prize: {PRIZE}{GOLD_ICON}." />
+		<string id="phgJ8tmZV" text="Congratulations {PLAYER.LINK}, your team is the champion! This fight was something to remember! Not only you were the last men standing, but also fought like a beasts and thus won double the standard top prize: {PRIZE}{GOLD_ICON}." />
+		<string id="41XqfyWOi" text="Congratulations, {PLAYER.LINK}, {COMPANION.LINK} is the champion! And {?COMPANION.GENDER}her{?}his{\?} fight there was something to remember! Not only {COMPANION.LINK} was the last man standing, but also fought like a true hero and thus won triple the standard top prize: {PRIZE}{GOLD_ICON}." />
 		<string id="BtSwRTvu9" text="Congratulations, champion! Your fight there was something to remember! Not only you were the last man standing, but you also fought like a true hero and thus won triple the standard top prize: {PRIZE}{GOLD_ICON}." />
+		<string id="PgMuEBsXX" text="Congratulations {PLAYER.LINK}, your team is the champion! This fight was something to remember! Not only you were the last men standing, but also fought like a true heroes and thus won triple the standard top prize: {PRIZE}{GOLD_ICON}." />
+		<string id="KPp4pG1Ky" text="Congratulations, {PLAYER.LINK}, {COMPANION.LINK} is the champion! And oh my, {?COMPANION.GENDER}her{?}his{\?} fight there was something to remember! {?COMPANION.GENDER}Ms{?}Mr{\?} {COMPANION.LINK} has personally dealt with a good half of the participants and thus earned four times more than the usual champion prize! Here you go, {PRIZE}{GOLD_ICON}.[if:convo_merry]" />
 		<string id="I2A8Heq2r" text="Congratulations, champion! Your fight there was something to remember! You have personally dealt with a good half of the participants and thus earned four times more than the usual champion prize! Here you go, {PRIZE}{GOLD_ICON}.[if:convo_merry]" />
+		<string id="gmzDTwOFX" text="Congratulations {PLAYER.LINK}, your team is the champion! This fight was something to remember for sure! Your men dealt with a good half of the participants and thus earned four times more than the usual champion prize! Here you go, {PRIZE}{GOLD_ICON}.[if:convo_merry]" />
+		<string id="XdkGt7jFa" text="Well, {PLAYER.LINK}, that down there was a deed of a true grandmaster! I am honored to host a fighter like {COMPANION.LINK} here. For this outstanding performance {?COMPANION.GENDER}she{?}he{\?} has earned a magestic prize of {PRIZE}{GOLD_ICON}.[if:convo_merry]" />
 		<string id="3yLYLKZYW" text="Congratulations, grandmaster! I am honored to host a fighter like you here. For this outstanding performance you have earned a magestic prize of {PRIZE}{GOLD_ICON}.[if:convo_merry]" />
+		<string id="uU3Ya5GfN" text="Well, {PLAYER.LINK}, that down there was an act worthy of a song! Or a legend. I am honored to host a fighters like that in my humble arena. For this outstanding performance you have earned a magestic prize of {PRIZE}{GOLD_ICON}.[if:convo_merry]" />
+		<!-- Parry Practice post fight briefing -->
+		<string id="k0kOwkWzO" text="You told me your men needed to practice their parry skills, but from what I saw down there, it seemed like {COMPANION.LINK} was more interested in beating the crap out of my fighters. I suggest you tell {?COMPANION.GENDER}her{?}him{\?} to start paying more attention to defense and counterattacks or just stop wasting my time with this nonsense.[ib:closed][if:convo_confused_annoyed]" />
+		<string id="6vlrvSbAY" text="You told me you needed to practice your parry skills, but from what I saw down there, it seemed like you were more interested in beating the crap out of my fighters. I suggest you start paying more attention to defense and counterattacks or just stop wasting my time with this nonsense.[ib:closed][if:convo_confused_annoyed]" />
+		<string id="VGOnRoQck" text="Given what I just saw, {COMPANION.LINK} really does need some parry practice. I suggest we keep on.[ib:weary][if:convo_confused_normal]" />
+		<string id="y508NVoOc" text="Given what I just saw, you really do need some parry practice. I suggest you keep on.[ib:weary][if:convo_confused_normal]" />
+		<string id="0taUkpCCP" text="Well, {COMPANION.LINK} almost succeeded down there, but {?COMPANION.GENDER}she{?}he{\?} needs to get used to maintaining concentration for a longer period of time.[if:convo_approving]" />
+		<string id="fdxZnnGSu" text="Well, you almost succeeded down there, but you need to get used to maintaining concentration for a longer period of time.[if:convo_approving]" />
+		<string id="wDLRbc8Mh" text="{COMPANION.LINK} did well enough down there. But if you want {?COMPANION.GENDER}her{?}him{\?} to truly master melee combat, {?COMPANION.GENDER}she{?}he{\?} needs to learn how to parry and counterattack in one motion and use this technique more often. This will make {?COMPANION.GENDER}her{?}him{\?} a fighter to be reckoned with.[ib:warrior][if:convo_thinking]" />
+		<string id="N0ok57asq" text="You did well enough down there. But if you want to truly master melee combat, you need to learn how to parry and counterattack in one motion and use this technique more often. This will make you a fighter to be reckoned with.[ib:warrior][if:convo_thinking]" />
+		<string id="cvThaH27b" text="I have to say it was a very impressive performance while it lasted, but in a real fight your trainee still would end up dead. {COMPANION.LINK} needs to condition {?COMPANION.GENDER}herself{?}himself{\?} to maintain concentration for a longer period of time.[ib:weary][if:convo_approving]" />
+		<string id="rJa1PaPJs" text="I have to say it was a very impressive performance while it lasted, but in a real fight you still would end up dead. You need to condition yourself to maintain concentration for a longer period of time.[ib:weary][if:convo_approving]" />
+		<string id="KvdHaGhag" text="{COMPANION.LINK} did really well down there. But, as I said earlier, there will be no rewards for this fight.[if:convo_approving]" />
+		<string id="rcLuSrtwD" text="You did well down there. But, as I said earlier, there will be no rewards for this fight.[if:convo_approving]" />
+		<!-- Tornaments menu and VM -->
 		<string id="PrOqJwABn" text="{INDEX}. {TOWN_LINK}. It's {DISTANCE_ESTIMATE} and the tournament started only {TOURNAMENT_AGE} {?TOURNAMENT_AGE.PLURAL_FORM}days{?}day{\?} ago, so you should be able to get there without any problems. The prize is currently a {ITEM_PRIZE}{?GOLD_PRIZES_ENABLED} and a monetary reward of {GOLD_PRIZE}{GOLD_ICON}{?}{\?}." />
 		<string id="4zJGmMNg6" text="{INDEX}. {TOWN_LINK}. It's {DISTANCE_ESTIMATE} and the tournament started {TOURNAMENT_AGE} {?TOURNAMENT_AGE.PLURAL_FORM}days{?}day{\?} ago, so you should be able to get there if you move quickly enough. The prize is currently a {ITEM_PRIZE}{?GOLD_PRIZES_ENABLED} and a monetary reward of {GOLD_PRIZE}{GOLD_ICON}{?}{\?}." />
 		<string id="w6WHaUt1z" text="{INDEX}. {TOWN_LINK}. It's {DISTANCE_ESTIMATE}, but the tournament started {TOURNAMENT_AGE} {?TOURNAMENT_AGE.PLURAL_FORM}days{?}day{\?} ago, so if you want to catch it you should hurry up. The prize is currently a {ITEM_PRIZE}{?GOLD_PRIZES_ENABLED} and a monetary reward of {GOLD_PRIZE}{GOLD_ICON}{?}{\?}." />
@@ -113,14 +198,23 @@
 		|||||||||||||||||||||||||||| Mod Options ||||||||||||||||||||||||||||
 		-->
 		<!-- Main or reused headings -->
+		<string id="EmP3OR1tW" text="Default Arena Practice settings for heroes" />
 		<string id="pJ3cqM8RV" text="Arena Practice settings" />
 		<string id="bPkF9slVr" text="Expansive Arena Practice settings" />
+		<string id="zbfho3vSj" text="Parry Practice settings" />
+		<string id="igoj9leYB" text="Team Arena Practice settings" />
+		<string id="08ifYu37H" text="Technical settings" />        
 		<string id="RRmGS7t6x" text="Tournament settings" />
 		<string id="C5nJgxepr" text="Rewards" />
 		<string id="oywDR1MSm" text="Experience" />
 		<string id="ZlvTL5D4T" text="Material rewards" />
 		<string id="BCzO2WGq9" text="Intangible rewards" />
 		<string id="h6sPrqfax" text="Team Tournaments" />
+		<string id="WnQ4qOI7d" text="Compatibility settings" />
+		<string id="awGzg6S1d" text="Logging settings" />
+		<!-- Presets -->
+		<string id="Awg6G0iNM" text="Optimized to save money" />
+		<string id="56nUSQP2R" text="Optimized to train heroes" />
 		<!-- Dropdown values - practice prize calculation -->
 		<string id="gknaSzMr6" text="Standard" />
 		<string id="aBVrVSioz" text="Additive" />
@@ -129,13 +223,29 @@
 		<string id="JHsRs730T" text="When prize tier can be improved" />
 		<string id="oVADnv9sb" text="When chances for better prize are improved" />
 		<string id="MwOn3n7yC" text="When situation changed" />
+		<!-- Dropdown values - defensive practice equipment -->
+		<string id="z6lpZ65aK" text="Practice clothes" />
+		<string id="o5AcCZgOn" text="Tournament armor" />
+		<string id="sBnb12g7c" text="Civilian equipment" />
+		<string id="kKvvYWhMH" text="Battle equipment" />
+		<!-- Dropdown values - culture restricted elite prizes -->
+		<string id="RYcQyTDa5" text="Non-unique items only" />
+		<string id="y1RxvGxxl" text="Always, except for unique mounts" />
+		<string id="NsbCj2rzB" text="Always" />
+		<!-- Hero loadout defaults: hints -->
+		<string id="MnVVPRkao" text="This is a default value that will be used to configure hero loadout options. When enabled, corresponding hero is allowed to choose weapons for arena practice matches, and you will have to pay the usual fee for this. Otherwise, they will use random weapons like everyone else. Default is True." />
+		<string id="XQY35WleC" text="This is a default value that will be used to configure hero loadout options. When enabled, corresponding hero will only choose practice weapons if any weapon preference is set and at least one matching weapon loadout is available in the arena. Otherwise, they will use random weapons like everyone else. Default is True." />
+		<string id="UO3idcKCw" text="This is a default value that will be used to configure hero loadout options. When enabled, corresponding hero will select weapons for arena practice matches, prioritizing better and more expensive equipment. Otherwise, the least expensive set of weapons that meets the given preferences will be selected. Default is False." />
 		<!-- Arena Practice settings -->
+		<string id="NvKLJBxsf" text="Enable playing as a companion hero" />
 		<string id="wtKB2udZJ" text="Total participants" />
 		<string id="gaGpV2GcX" text="Active participants" />
 		<string id="0IOg4Ureb" text="Active participants minimum" />
 		<string id="dAhEzcAlx" text="Initial participants" />
+		<string id="vZgGTs8Nw" text="AI teams" />
 		<string id="BVhryIKKF" text="Enable loadout choice" />
 		<string id="L73kYZTnf" text="Price for picking weapons" />
+		<string id="3HviduB7g" text="Defensive practice equipment" />
 		<string id="v7NfMok7L" text="Valor reward class I" />
 		<string id="AFzr1BhC4" text="Valor reward class II" />
 		<string id="wjlHVn6cG" text="Valor reward class III" />
@@ -146,12 +256,15 @@
 		<string id="zDfS2JtnA" text="Enable experience gain for viewers" />
 		<string id="9dP3VJpOG" text="Experience gain rate" />
 		<!-- Arena Practice hints -->
+		<string id="wFPnd1BNA" text="When this option is enabled, you will be allowed to send a companion to participate in the Arena Practice in your place and control that companion in the arena. Native is False. Default is True." />
 		<string id="89f5zrS7i" text="The total number of participants in the Arena Practice. It is recommended to be a multiple of 3. Default = 30." />
 		<string id="oqpocFdUs" text="Еstimated number of the active participants in the Arena Practice. It is recommended to be a multiple of 3. Default = 6." />
 		<string id="iFjrzKw9e" text="The minimum number of active participants in the Arena Practice. It is recommended to be a multiple of 2. Default = 2." />
 		<string id="UuSkcTQSd" text="Initial number of the active participants in the Arena Practice. Any number greater than 7 will result in multiple fighters spawning together. Default = 6." />
+		<string id="aVm0YWzg9" text="Number of AI teams in the Arena Practice match. Zero means it will be equal to the number of active participants, which minimizes the chances of encountering AI teammates working together. Setting it to 1 means that everyone will fight you. Default = 0." />
 		<string id="zGQrZqevv" text="When this option is enabled, you are alowed to choose weapons for the Arena Practice." />
 		<string id="rZH6qYOrT" text="You will have to pay this sum per a wepon stage (tier) when picking a weapon for the Arena Practice. Default = 10." />
+		<string id="WW4PZP2LH" text="Specify what armor or clothing should be worn by Arena Practice participants. Choosing [Tournament Armor] will give the same result as [Battle Equipment] unless changed by other mods. It's not recommended to change this setting unless you have a specific goal in mind. While it can be fun, wearing armor renders most ranged practice weapons ineffective. Native is [Practice clothes]. Default is [Practice Clothes]." />
 		<string id="GrjIc6hKr" text="Prize for defeating at least 3 fighters in the Arena Practice. Default = 5." />
 		<string id="j86zigBV7" text="Prize for defeating at least 6 fighters in the Arena Practice. Default = 10." />
 		<string id="0q32VAkkg" text="Prize for defeating at least 10 fighters in the Arena Practice. Default = 25." />
@@ -161,12 +274,15 @@
 		<string id="2ovQejh10" text="Base prize for being the last man standing in the Arena Practice. Default = 250." />
 		<string id="gGEXaGsKV" text="Experience gain rate in the Arena Practice fights. Native = 6%. Default = 16.5%." />
 		<!-- Expansive Arena Practice hints -->
+		<string id="3xV72YIYo" text="When this option is enabled, you will be allowed to send a companion to participate in the Expansive Arena Practice in your place and control that companion in the arena. Native is False. Default is True." />
 		<string id="65Ny4vNEE" text="The total number of participants in the Expansive Arena Practice. It is recommended to be a multiple of 3. Default = 90." />
 		<string id="sIQdRBwg9" text="Еstimated number of the active participants in the Expansive Arena Practice. It is recommended to be a multiple of 3. Default = 9." />
 		<string id="ZaLfvG7eX" text="The minimum number of active participants in the Expansive Arena Practice. It is recommended to be a multiple of 2. Default = 4." />
 		<string id="XwzmSDpAr" text="Initial number of the active participants in the Expansive Arena Practice. Any number greater than 7 will result in multiple fighters spawning together. Default = 7." />
+		<string id="VUnyu0h6n" text="Number of AI teams in the Expansive Arena Practice match. Zero means it will be equal to the number of active participants, which minimizes the chances of encountering AI teammates working together. Setting it to 1 means that everyone will fight you. Default = 0." />
 		<string id="9otxYlTUa" text="When this option is enabled, you are alowed to choose weapons for the Expansive Arena Practice." />
 		<string id="B9xXCFneS" text="You will have to pay this sum per a wepon stage (tier) when picking a weapon for the Expansive Arena Practice. Default = 10." />
+		<string id="sLGwAxSzA" text="Specify what armor or clothing should be worn by Expansive Arena Practice participants. Choosing [Tournament Armor] will give the same result as [Battle Equipment] unless changed by other mods. It's not recommended to change this setting unless you have a specific goal in mind. While it can be fun, wearing armor renders most ranged practice weapons ineffective. Default is [Practice Clothes]." />
 		<string id="M7utBJV6O" text="Prize for defeating at least 3 fighters in the Expansive Arena Practice. Default = 10." />
 		<string id="5Zkk4IRnM" text="Prize for defeating at least 6 fighters in the Expansive Arena Practice. Default = 20." />
 		<string id="ivrbCerwG" text="Prize for defeating at least 10 fighters in the Expansive Arena Practice. Default = 50." />
@@ -176,7 +292,51 @@
 		<string id="FP34ZZ1b0" text="Base prize for being the last man standing in the Expansive Arena Practice. Default = 500." />
 		<string id="YyniNTgz5" text="Only heroes and troops of rank 3 and up are allowed to enter Expansive Arena Practice. When this option is enabled, lower-ranking troops will gain some experience when their comrades successfully land hits and make takedowns in the arena." />
 		<string id="hTHzr3Q9U" text="Experience gain rate in the Expansive Arena Practice fights. Native = 6%. Default = 33.3%." />
-		<!-- Tournament settings and hints-->
+		<!-- Parry Practice settings and hints -->
+		<string id="8wUeKx5yg" text="Enable parry practice" />
+		<string id="a7I7iKCIg" text="When this option is enabled, Parry Practice mode is enabled in the Arena. Native is False. Default is True." />
+		<string id="W1eYm1Lse" text="Parry practice setup cost" />
+		<string id="Igd6YZwx4" text="The cost Arena Master charges for organizing a Parry Practice match. Default = 200." />
+		<string id="b1rJAny0j" text="When this option is enabled, you will be allowed to send a companion to practice parrying in your place and control that companion in the arena. Native is False. Default is True." />
+		<string id="ZTusmPG2b" text="The total number of participants in the Parry Practice. Default = 15." />
+		<string id="vSxY7fMyJ" text="Еstimated number of the active participants in the Parry Practice. Default = 1." />
+		<string id="7O4BbgHHd" text="The minimum number of active participants in the Parry Practice. Default = 1." />
+		<string id="FLOs28WoN" text="Initial number of the active participants in the Parry Practice. Default = 1." />
+		<string id="LHppRdTLa" text="Number of AI teams in the Parry Practice match. Zero means it will be equal to the number of active participants, which minimizes the chances of encountering AI teammates working together. Setting it to 1 means that everyone will fight you. Default = 1." />
+		<string id="PBdkpnVB9" text="When this option is enabled, you are alowed to choose weapons for the Parry Practice." />
+		<string id="vFzDsKyOM" text="You will have to pay this sum per a wepon stage (tier) when picking a weapon for the Parry Practice. Default = 10." />
+		<string id="yEovzkoTi" text="Specify what armor or clothing should be worn by Parry Practice participants. Choosing [Tournament Armor] will give the same result as [Battle Equipment] unless changed by other mods. Default is [Battle equipment]." />
+		<string id="B0LJRZfnh" text="Experience gain rate in the Parry Practice fights. Native = 6%. Default = 6%." />
+		<!-- Team Arena Practice settings and hints -->
+		<string id="DxJKCdxsV" text="Enable team practice" />
+		<string id="LHCCk34mQ" text="When this option is enabled, Team Practice mode is enabled in the Arena. Native is False. Default is True." />
+		<string id="6DKIRQm5C" text="Team practice setup cost" />
+		<string id="qt2gEppSr" text="The cost Arena Master charges for organizing a Team Practice match. Default = 200." />
+		<string id="S0i7VyEO8" text="When this option is enabled, you will be allowed to send a companion to participate in the Team Arena Practice in your place and control that companion in the arena. Native is False. Default is True." />
+		<string id="L6plpq9tN" text="The total number of participants in the Team Arena Practice. It is recommended to be a multiple of 3 and AI teams count. Default = 300." />
+		<string id="F5ltwpjLD" text="Еstimated number of the active participants in the Team Arena Practice. It is recommended to be a multiple of AI teams count. Default = 20." />
+		<string id="rLeEchCEv" text="The minimum number of active participants in the Team Arena Practice. It is recommended to be a multiple of 2 and AI teams count. Default = 12." />
+		<string id="t7SvV15zK" text="Initial number of the active participants in the Team Arena Practice. It is recommended to be a multiple of AI teams count. Default = 20." />
+		<string id="34SB5z6kv" text="Number of AI teams in the Team Arena Practice match. Setting it to 1 means that everyone will fight your team. Default = 4." />
+		<string id="yafmF17l3" text="When this option is enabled, you are alowed to choose weapons for the Team Arena Practice." />
+		<string id="HzpsY1I9V" text="You will have to pay this sum per a wepon stage (tier) when picking a weapon for the Team Arena Practice. Default = 50." />
+		<string id="cgjoawOu3" text="Specify what armor or clothing should be worn by Team Arena Practice participants. Choosing [Tournament Armor] will give the same result as [Battle Equipment] unless changed by other mods. It's not recommended to change this setting unless you have a specific goal in mind. While it can be fun, wearing armor renders most ranged practice weapons ineffective. Default is [Practice Clothes]." />
+		<string id="8LHBbug9w" text="Prize for your team defeating at least 30 fighters in the Team Arena Practice. Default = 30." />
+		<string id="EzSYzJjdR" text="Prize for your team defeating at least 50 fighters in the Team Arena Practice. Default = 60." />
+		<string id="Z7cfjTozo" text="Prize for your team defeating at least 75 fighters in the Team Arena Practice. Default = 150." />
+		<string id="rXdbJb3e8" text="Prize for your team defeating at least 100 fighters in the Team Arena Practice. Default = 350." />
+		<string id="Nhslz7s3n" text="Prize for your team defeating at least 135 fighters in the Team Arena Practice. Default = 800." />
+		<string id="Hmb8Ldjuq" text="Specify how last team standing in the Team Arena Practice should be rewarded. Standard - with a special prize. Additive - with a special prize and any valor reward earned. Multiplicative - with a special prize for each valor class earned above class I. Default is [Additive]." />
+		<string id="QItzcF4LK" text="Base prize for being the last team standing in the Team Arena Practice. Default = 1000." />
+		<string id="Qcap6qw2T" text="Only heroes and troops of rank 3 and up are allowed to enter Team Arena Practice. When this option is enabled, lower-ranking troops will gain some experience when their comrades successfully land hits and make takedowns in the arena." />
+		<string id="J0Okfl8Ey" text="Experience gain rate in the Team Arena Practice fights. Native = 6%. Default = 33.3%." />
+		<string id="qLyrVIJoy" text="AI Team 1 Color Index" />
+		<string id="KSjkzF8uD" text="AI Team 2 Color Index" />
+		<string id="WB6siZI93" text="AI Team 3 Color Index" />
+		<string id="MftQIDNf1" text="AI Team 4 Color Index" />
+		<string id="OKS7TtFM4" text="AI Team 5 Color Index" />
+		<string id="DkLWDatCO" text="AI Team 6 Color Index" />
+		<!-- Tournament settings and hints -->
 		<string id="hS7XbrLGG" text="Maximum bet" />
 		<string id="gQvJ8Vvsk" text="The maximum amount of gold that is usually allowed to be wagered in each round of a tournament. Native = 150. Default = 500." />
 		<string id="qPAga7DLd" text="Enable randomized betting odds" />
@@ -189,6 +349,10 @@
 		<string id="yVAG4f83d" text="When this option is enabled, there are also gold prizes in tournaments. This is in addition to the usual prize items and bet wins. Native is False. Default is True." />
 		<string id="fH4Ev0UoC" text="Enable prize scaling" />
 		<string id="1THMacQwa" text="When this option is enabled, tournament prizes are scaling with player's renown. Slightly unconventional, but helps keep tournaments useful in the mid and late game. Native is False. Default is True." />
+		<string id="lu9G6m85v" text="Enable high quality prizes" />
+		<string id="EQs8Z1eOO" text="When this option is enabled, high quality versions of items (masterwork, lordly, etc) can be awarded as tournament prizes. Native is False. Default is True." />
+		<string id="ZFv8WXbGE" text="Culture restricted elite prizes" />
+		<string id="ffwi4bAIs" text="Specify when and whether elite tournament prizes should be limited to match the culture of the hosting settlement in a same manner as basic prizes are. Native is [Never]. Default is [Always, except for unique mounts]." />
 		<string id="DyNe9qH4v" text="Reward for the won round" />
 		<string id="aAquVsgYJ" text="The amount of gold that participants receive for each round of the tournament they won. Native = 0. Default = 0." />
 		<string id="lkgaScPft" text="Renown reward for the champion" />
@@ -198,7 +362,7 @@
 		<string id="eLKi8Ptgm" text="Influence reward for the champion" />
 		<string id="uYmFPwO8z" text="The amount of influence that tournament campion receives, if he is a noble lord of any kingdom. Native = 1. Default = 10." />
 		<string id="C5fcetmfG" text="Experience gain rate in the tournament fights. Native = 33%. Default = 66.6%." />
-		<!-- Team Tournament settings and hints-->
+		<!-- Team Tournament settings and hints -->
 		<string id="PSnYupZhT" text="Enable Team Tournaments" />
 		<string id="qHyqXp9tK" text="Adds an option for joining and participating in the tournaments as a team." />
 		<string id="lDuOZkktY" text="Minimum team size" />
@@ -216,9 +380,51 @@
 		<string id="3r3TStZPU" text="Set Team's banner color by index value. Check https://bannerlord.party/banner-colors/ for the list of available colors." />
 		<string id="Ams5ccKzh" text="Roster can only be selected for team tournaments." />
 		<string id="xRkr497KP" text="Join as a team" />
-        <!-- Compatibility settings and hints-->
-        <string id="WnQ4qOI7d" text="Compatibility settings" />
-        <string id="Ndc21b2NO" text="Practice loadout stages" />
-        <string id="9SY3aAtv1" text="The amount of practice loadout stages that are searched for in ObjectManager. Do not alter this setting unless you have mods that change the stages of arena practice and add corresponding character models. Native = 3. Default = 3." />
-    </strings>
+		<!-- Compatibility settings and hints -->
+		<string id="Ndc21b2NO" text="Practice loadout stages" />
+		<string id="9SY3aAtv1" text="The amount of practice loadout stages that are searched for in ObjectManager. Do not alter this setting unless you have mods that change the stages of arena practice and add corresponding character models. Native = 3. Default = 3." />
+		<!-- Logging settings and hints -->
+		<string id="FOtSSoEAh" text="Log technical Transpiler info" />
+		<string id="37S9xfodK" text="When enabled, logs a lot of technical data about failed Harmony Transpiler calls." />
+		<!-- Hotkeys -->
+		<string id="DXiVYMIUL" text="Switch to other hero" />
+		<string id="morP28atv" text="Switches to another active hero of your choice in a Team Practice match in the arena." />
+		<!--
+		|||||||||||||||||||||||| Hero Loadout Options |||||||||||||||||||||||
+		-->
+		<!-- General setting groups. Because they only have subgroups, MCM cannot order them correctly programmatically, so I had to use (1.2.3.), as by default they are shown in alphabetical order. Consider this when translating so that this order is maintained. -->
+		<string id="NcXn6Ow7O" text="1. Clan Leader" />
+		<string id="NowOsng0A" text="2. Family Members" />
+		<string id="vTyduFjuF" text="3. Companions" />
+		<!-- Caption -->
+		<string id="fFlUJjUl0" text="AO Hero Practice Settings" />
+		<!-- Per hero settings -->
+		<string id="fL485YX24" text="Enable loadout choice" />
+		<string id="QLQYQTctQ" text="When this option is enabled, corresponding hero is allowed to choose weapons for arena practice matches, and you will have to pay the usual fee for this. Otherwise, they will use random weapons like everyone else. Default is set in global mod settings." />
+		<string id="kbL2QnpuF" text="Enable automatic loadout choice" />
+		<string id="vGIOM104P" text="When this option is enabled, the weapon loadout will be automatically selected for the player based on other preferences set here when entering any arena practice mode from the menu. Default is set in global mod settings." />
+		<string id="zC7CG8kwF" text="Only priority loadouts" />
+		<string id="ieRmdET16" text="When this option is enabled, corresponding hero will only choose practice weapons if any weapon preference is set and at least one matching weapon loadout is available in the arena. Otherwise, they will use random weapons like everyone else. Default is set in global mod settings." />
+		<string id="JidAUNLNo" text="When this option is enabled, automatic weapon loadout will only happen for player if any weapon preference is set and at least one matching weapon loadout is available in the arena. Otherwise, they will use random weapons as usual. Default is set in global mod settings." />
+		<string id="cWdhDpsOS" text="Prioritize expensive equipment" />
+		<string id="YwbIZExy1" text="When this option is enabled, corresponding hero will select weapons for arena practice matches, prioritizing better and more expensive equipment. Otherwise, the least expensive set of weapons that meets the given preferences will be selected. Default is set in global mod settings." />
+		<string id="Wse8QGJyQ" text="When this option is enabled, better and more expensive equipment will be prefered for automatic weapon loadout selection for player. Otherwise, the least expensive set of weapons that meets the given preferences will be selected. Default is set in global mod settings." />
+		<string id="G2IdbqB8p" text="First priority" />
+		<string id="ZWh07gP41" text="Specify the weapon skill that has the highest priority for the corresponding hero to train. This hero will always choose a weapon loadout containing a weapon based on that skill, if available. Default is [None]." />
+		<string id="DOGp7LBDe" text="Specify the weapon skill that has the highest priority for the player character to train. A weapon loadout containing a weapon based on that skill will always be chosen, if available. Default is [None]." />
+		<string id="bcgL8E4Ol" text="Second priority" />
+		<string id="Yideeiww5" text="Specify the weapon skill that has the second highest priority for the corresponding hero to train. This hero will choose a weapon loadout containing a weapon based on this skill if it is available and there are no higher priority alternatives. Default is [None]." />
+		<string id="bhSUfmKir" text="Specify the weapon skill that has the second highest priority for the player character to train. A weapon loadout containing a weapon based on this skill will be chosen if it is available and there are no higher priority alternatives. Default is [None]." />
+		<string id="t45rwWZc5" text="Third priority" />
+		<string id="lHiP6Z2Qo" text="Specify the weapon skill that has the third highest priority for the corresponding hero to train. This hero will choose a weapon loadout containing a weapon based on this skill if it is available and there are no higher priority alternatives. Default is [None]." />
+		<string id="IP7JZx9bb" text="Specify the weapon skill that has the third highest priority for the player character to train. A weapon loadout containing a weapon based on this skill will be chosen if it is available and there are no higher priority alternatives. Default is [None]." />
+		<!-- Dropdown values - priorities -->
+		<string id="6SD77Zo1C" text="None" />
+		<string id="7OL4eTdan" text="One handed weapons" />
+		<string id="rvCVOGi0s" text="Two handed weapons" />
+		<string id="bDnJRrfRH" text="Polearms" />
+		<string id="KZt7cDhKn" text="Bows" />
+		<string id="s0JLnYAxx" text="Crossbows" />
+		<string id="CvVDmEhou" text="Throwing weapons" />
+	</strings>
 </base>

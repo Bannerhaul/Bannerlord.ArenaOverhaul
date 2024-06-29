@@ -195,10 +195,10 @@ namespace ArenaOverhaul.ViewModelMixin
 
         private void UpdateParryPanelStats()
         {
-            var successfulBlocks = new TextObject("{=}Prepared blocks: {PREPARED_BLOCKS}", new() { ["PREPARED_BLOCKS"] = ParryPracticeStatsManager.PreparedBlocks });
-            var perfectBlocks = new TextObject("{=}Perfect blocks: {PERFECT_BLOCKS}", new() { ["PERFECT_BLOCKS"] = ParryPracticeStatsManager.PerfectBlocks });
-            var chamberBlocks = new TextObject("{=}Chamber blocks: {CHAMBER_BLOCKS}", new() { ["CHAMBER_BLOCKS"] = ParryPracticeStatsManager.ChamberBlocks });
-            var hitsTaken = new TextObject("{=}Hits taken: {HITS_TAKEN}", new() { ["HITS_TAKEN"] = ParryPracticeStatsManager.HitsTaken });
+            var successfulBlocks = new TextObject("{=PumaUhrt2}Prepared blocks: {PREPARED_BLOCKS}", new() { ["PREPARED_BLOCKS"] = ParryPracticeStatsManager.PreparedBlocks });
+            var perfectBlocks = new TextObject("{=XiR0Srf50}Perfect blocks: {PERFECT_BLOCKS}", new() { ["PERFECT_BLOCKS"] = ParryPracticeStatsManager.PerfectBlocks });
+            var chamberBlocks = new TextObject("{=R0UCmq6Jn}Chamber blocks: {CHAMBER_BLOCKS}", new() { ["CHAMBER_BLOCKS"] = ParryPracticeStatsManager.ChamberBlocks });
+            var hitsTaken = new TextObject("{=CSGg2vSS3}Hits taken: {HITS_TAKEN}", new() { ["HITS_TAKEN"] = ParryPracticeStatsManager.HitsTaken });
 
             SuccessfulBlocksText = successfulBlocks.ToString();
             PerfectBlocksText = perfectBlocks.ToString();
@@ -208,7 +208,7 @@ namespace ArenaOverhaul.ViewModelMixin
 
         private void UpdateTeamPanelStats()
         {
-            var alliesRemaining = new TextObject("{=}Allies remaining: {ALLIES_REMAINING}", new() { ["ALLIES_REMAINING"] = TeamPracticeStatsManager.RemainingAlliesCount });
+            var alliesRemaining = new TextObject("{=l1z9vuw8B}Allies remaining: {ALLIES_REMAINING}", new() { ["ALLIES_REMAINING"] = TeamPracticeStatsManager.RemainingAlliesCount });
             AlliesRemainingText = alliesRemaining.ToString();
 
             GameTexts.SetVariable("BEATEN_OPPONENT_COUNT", _practiceMissionController!.OpponentCountBeatenByPlayer);
