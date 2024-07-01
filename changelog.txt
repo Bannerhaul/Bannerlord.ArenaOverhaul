@@ -1,4 +1,8 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.5.2
+Game Versions: v1.2.x
+* Fixed a situational crash when calculating weapon score for some heroes.
+---------------------------------------------------------------------------------------------------
 Version: 1.5.1
 Game Versions: v1.2.x
 * Fixed a crash when entering Parry practice from the menu with pre-selected loadout.
