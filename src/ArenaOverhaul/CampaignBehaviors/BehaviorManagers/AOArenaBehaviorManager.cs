@@ -42,6 +42,7 @@ namespace ArenaOverhaul.CampaignBehaviors.BehaviorManagers
 
         public Dictionary<Hero, (int ChosenLoadoutStage, int ChosenLoadout)> CompanionLoadouts { get; private set; } = [];
         internal Dictionary<CultureObject, List<WeaponLoadoutInfo>> WeaponLoadoutInformation { get; private set; } = [];
+        internal Dictionary<CultureObject, List<WeaponLoadoutInfo>> ParryWeaponLoadoutInformation { get; private set; } = [];
 
         public static AOArenaBehaviorManager? Instance { get; internal set; }
 
@@ -190,10 +191,11 @@ namespace ArenaOverhaul.CampaignBehaviors.BehaviorManagers
             var settlementCulture = settlement?.MapFaction?.Culture ?? settlement?.Culture;
 
             GetAvailableLoadoutInfo(settlementCulture);
-            if (settlementCulture is null || _companionPracticeSettings is null || !WeaponLoadoutInformation.TryGetValue(settlementCulture, out var cultureLoadoutsInformation))
+            if (settlementCulture is null || _companionPracticeSettings is null || !WeaponLoadoutInformation.TryGetValue(settlementCulture, out var cultureGeneralLoadoutsInformation) || !ParryWeaponLoadoutInformation.TryGetValue(settlementCulture, out var cultureParryLoadoutsInformation))
             {
                 return;
             }
+            var cultureLoadoutsInformation = (practiceMode == ArenaPracticeMode.Parry) ? cultureParryLoadoutsInformation : cultureGeneralLoadoutsInformation;
 
             //Player
             if (isMenuCall && ChosenLoadout < 0)
@@ -252,6 +254,7 @@ namespace ArenaOverhaul.CampaignBehaviors.BehaviorManagers
             }
 
             List<WeaponLoadoutInfo> listOfExistingLoadouts = [];
+            List<WeaponLoadoutInfo> listOfExistingParryLoadouts = [];
             int practiceLoadoutStages = Settings.Instance!.PracticeLoadoutStages;
             for (int practiceStage = 1; practiceStage <= practiceLoadoutStages; practiceStage++)
             {
@@ -262,65 +265,72 @@ namespace ArenaOverhaul.CampaignBehaviors.BehaviorManagers
                 }
 
                 var battleEquipments = characterObject.BattleEquipments.ToList();
-                for (int i = 0; i < battleEquipments.Count; i++)
-                {
-                    string[] itemIdArr = new string[4];
-                    int loadout = i;
-                    int equipmentStage = practiceStage;
-
-                    int oneHandedScore = 0;
-                    int twoHandedScore = 0;
-                    int polearmScore = 0;
-                    int bowScore = 0;
-                    int crossbowScore = 0;
-                    int throwingScore = 0;
-
-                    for (int x = 0; x < 4; x++)
-                    {
-                        EquipmentElement equipmentFromSlot = battleEquipments[i].GetEquipmentFromSlot((EquipmentIndex) x);
-                        if (equipmentFromSlot.Item != null)
-                        {
-                            itemIdArr[x] = equipmentFromSlot.Item.StringId;
-                            if (equipmentFromSlot.Item.WeaponComponent.PrimaryWeapon is WeaponComponentData weaponData)
-                            {
-                                if (weaponData.RelevantSkill == DefaultSkills.OneHanded)
-                                {
-                                    oneHandedScore += weaponData.SwingDamage + weaponData.ThrustDamage / 2 + (weaponData.IsShield ? weaponData.MaxDataValue / 5 : 0);
-                                }
-                                else if (weaponData.RelevantSkill == DefaultSkills.TwoHanded)
-                                {
-                                    twoHandedScore += weaponData.SwingDamage + weaponData.ThrustDamage / 2;
-                                }
-                                else if (weaponData.RelevantSkill == DefaultSkills.Polearm)
-                                {
-                                    polearmScore += weaponData.SwingDamage + weaponData.ThrustDamage;
-                                }
-                                else if (weaponData.RelevantSkill == DefaultSkills.Bow)
-                                {
-                                    bowScore += weaponData.MissileDamage + (weaponData.IsAmmo ? weaponData.MaxDataValue : 0);
-                                }
-                                else if (weaponData.RelevantSkill == DefaultSkills.Crossbow)
-                                {
-                                    crossbowScore += weaponData.MissileDamage + (weaponData.IsAmmo ? weaponData.MaxDataValue : 0);
-                                }
-                                else if (weaponData.RelevantSkill == DefaultSkills.Throwing)
-                                {
-                                    throwingScore += (weaponData.MaxDataValue > 0 ? weaponData.MaxDataValue * weaponData.MissileDamage / 4 : weaponData.MissileDamage) + (weaponData.SwingDamage + weaponData.ThrustDamage) / 4;
-                                }
-                            }
-                        }
-                    }
-                    string itemIDs = string.Join("_", itemIdArr.Where(s => !string.IsNullOrEmpty(s)));
-                    var loadoutEntry = new WeaponLoadoutInfo(itemIDs, equipmentStage, loadout, oneHandedScore, twoHandedScore, polearmScore, bowScore, crossbowScore, throwingScore);
-
-                    if (!listOfExistingLoadouts.Any(x => x.ItemIDs == loadoutEntry.ItemIDs && x.LoadoutStage == loadoutEntry.LoadoutStage))
-                    {
-                        listOfExistingLoadouts.Add(loadoutEntry);
-                    }
-                }
+                UpdateStageLoadouts(practiceStage, battleEquipments, listOfExistingLoadouts);
+                UpdateStageLoadouts(practiceStage, FilterAvailableWeapons(battleEquipments, ArenaPracticeMode.Parry), listOfExistingParryLoadouts);
             }
 
             WeaponLoadoutInformation[settlementCulture] = listOfExistingLoadouts;
+            ParryWeaponLoadoutInformation[settlementCulture] = listOfExistingParryLoadouts;
+        }
+
+        private static void UpdateStageLoadouts(int practiceStage, List<Equipment> battleEquipments, List<WeaponLoadoutInfo> listOfExistingLoadouts)
+        {
+            for (int i = 0; i < battleEquipments.Count; i++)
+            {
+                string[] itemIdArr = new string[4];
+                int loadout = i;
+                int equipmentStage = practiceStage;
+
+                int oneHandedScore = 0;
+                int twoHandedScore = 0;
+                int polearmScore = 0;
+                int bowScore = 0;
+                int crossbowScore = 0;
+                int throwingScore = 0;
+
+                for (int x = 0; x < 4; x++)
+                {
+                    EquipmentElement equipmentFromSlot = battleEquipments[i].GetEquipmentFromSlot((EquipmentIndex) x);
+                    if (equipmentFromSlot.Item != null)
+                    {
+                        itemIdArr[x] = equipmentFromSlot.Item.StringId;
+                        if (equipmentFromSlot.Item.WeaponComponent.PrimaryWeapon is WeaponComponentData weaponData)
+                        {
+                            if (weaponData.RelevantSkill == DefaultSkills.OneHanded)
+                            {
+                                oneHandedScore += weaponData.SwingDamage + weaponData.ThrustDamage / 2 + (weaponData.IsShield ? weaponData.MaxDataValue / 5 : 0);
+                            }
+                            else if (weaponData.RelevantSkill == DefaultSkills.TwoHanded)
+                            {
+                                twoHandedScore += weaponData.SwingDamage + weaponData.ThrustDamage / 2;
+                            }
+                            else if (weaponData.RelevantSkill == DefaultSkills.Polearm)
+                            {
+                                polearmScore += weaponData.SwingDamage + weaponData.ThrustDamage;
+                            }
+                            else if (weaponData.RelevantSkill == DefaultSkills.Bow)
+                            {
+                                bowScore += weaponData.MissileDamage + (weaponData.IsAmmo ? weaponData.MaxDataValue : 0);
+                            }
+                            else if (weaponData.RelevantSkill == DefaultSkills.Crossbow)
+                            {
+                                crossbowScore += weaponData.MissileDamage + (weaponData.IsAmmo ? weaponData.MaxDataValue : 0);
+                            }
+                            else if (weaponData.RelevantSkill == DefaultSkills.Throwing)
+                            {
+                                throwingScore += (weaponData.MaxDataValue > 0 ? weaponData.MaxDataValue * weaponData.MissileDamage / 4 : weaponData.MissileDamage) + (weaponData.SwingDamage + weaponData.ThrustDamage) / 4;
+                            }
+                        }
+                    }
+                }
+                string itemIDs = string.Join("_", itemIdArr.Where(s => !string.IsNullOrEmpty(s)));
+                var loadoutEntry = new WeaponLoadoutInfo(itemIDs, equipmentStage, loadout, oneHandedScore, twoHandedScore, polearmScore, bowScore, crossbowScore, throwingScore);
+
+                if (!listOfExistingLoadouts.Any(x => x.ItemIDs == loadoutEntry.ItemIDs && x.LoadoutStage == loadoutEntry.LoadoutStage))
+                {
+                    listOfExistingLoadouts.Add(loadoutEntry);
+                }
+            }
         }
 
         private int GetCompanionLoadoutsPrice(ArenaPracticeMode practiceMode, int weaponLoadoutChoiceCost)
@@ -581,6 +591,7 @@ namespace ArenaOverhaul.CampaignBehaviors.BehaviorManagers
         {
             CompanionLoadouts ??= [];
             WeaponLoadoutInformation ??= [];
+            ParryWeaponLoadoutInformation ??= [];
         }
 
         internal record class WeaponLoadoutInfo(string ItemIDs, int LoadoutStage, int LoadoutIndex, int OneHandedScore, int TwoHandedScore, int PolearmScore, int BowScore, int CrossbowScore, int ThrowingScore)

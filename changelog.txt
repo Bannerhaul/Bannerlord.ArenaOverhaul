@@ -1,4 +1,8 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.5.1
+Game Versions: v1.2.x
+* Fixed a crash when entering Parry practice from the menu with pre-selected loadout.
+---------------------------------------------------------------------------------------------------
 Version: 1.5.0
 Game Versions: v1.2.x
 * Improvements to how Tournament prize pool is calculated both with and without scaling enabled.
@@ -10,7 +14,7 @@ Game Versions: v1.2.x
 * Added an option to use combat, civilian, or Tournament armor for the arena practice.
 * On high intensity arena practice settings, starting spawn points will be used in addition to the main ones to prevent overcrowding and some glitches associated with it.
 * Added customizable weapon preferences for companions. This will help them practice the skills they need in the arena. There will be a usual fee for selecting a loadout for each companion.
-* Added Parry training mode for the arena practice, designed to help practice parrying and chambler blocking.
+* Added Parry training mode for the arena practice, designed to help practice parrying and chamber blocking.
 * Added Team mode for the arena practice. It's basically even more intense Expansive practice with player fighting alongside his companions and troops.
 * Added an option to play as your companion in all the arena practice modes.
 * A bunch of other improvements and fixes to the arena practice.
