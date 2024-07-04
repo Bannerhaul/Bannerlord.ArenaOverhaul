@@ -67,7 +67,7 @@ namespace ArenaOverhaul.ArenaPractice
             {
                 var spawnedAllies = 0;
                 var mission = instance.Mission;
-                var spawnIndex = FieldAccessHelper.APFMCSpawnedOpponentAgentCountByRef(instance);
+                var spawnIndex = Math.Min(FieldAccessHelper.APFMCSpawnedOpponentAgentCountByRef(instance), AOArenaBehaviorManager.GetTotalParticipantsCount(ArenaPracticeMode.Team) - 1);
                 var team = mission.PlayerTeam;
                 var frame = GetBestFrameForTeam(instance, team);
                 //var frame = deGetSpawnFrame!(instance, true, UseInitialSpawnForDiversity(instance));
