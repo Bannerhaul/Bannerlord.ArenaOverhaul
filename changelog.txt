@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.5.4
+Game Versions: v1.2.x
+* Fixed a rare crash in team practice.
+* Fixed 'Practice loadout stages' compatibility setting not being fully applied.
+---------------------------------------------------------------------------------------------------
 Version: 1.5.3
 Game Versions: v1.2.x
 * Fixed an issue where experience gain for viewers was not being applied.

@@ -682,7 +682,8 @@ namespace ArenaOverhaul.Patches
 
         private static int GetCurrentStage(int spawnIndex)
         {
-            return 1 + spawnIndex * 3 / GetTotalParticipantsCount();
+            var maxStage = Settings.Instance!.PracticeLoadoutStages;
+            return Math.Min(1 + spawnIndex * maxStage / GetTotalParticipantsCount(), maxStage);
         }
 
         internal static int GetChosenEquipmentStage(ArenaPracticeFightMissionController instance, int spawnIndex)
