@@ -392,10 +392,9 @@
 		<!--
 		|||||||||||||||||||||||| Hero Loadout Options |||||||||||||||||||||||
 		-->
-		<!-- General setting groups. Because they only have subgroups, MCM cannot order them correctly programmatically, so I had to use (1.2.3.), as by default they are shown in alphabetical order. Consider this when translating so that this order is maintained. -->
-		<string id="NcXn6Ow7O" text="1. Clan Leader" />
-		<string id="NowOsng0A" text="2. Family Members" />
-		<string id="vTyduFjuF" text="3. Companions" />
+		<string id="NcXn6Ow7O" text="Clan Leader" />
+		<string id="NowOsng0A" text="Family Members" />
+		<string id="vTyduFjuF" text="Companions" />
 		<!-- Caption -->
 		<string id="fFlUJjUl0" text="AO Hero Practice Settings" />
 		<!-- Per hero settings -->

@@ -17,10 +17,9 @@ namespace ArenaOverhaul.ModSettings
 {
     internal static class CompanionPracticeSettings
     {
-        //Group order does not work if group does not have any properties
-        private const string HeadingClanLeader = "{=NcXn6Ow7O}1. Clan Leader";
-        private const string HeadingFamilyMembers = "{=NowOsng0A}2. Family Members";
-        private const string HeadingCompanions = "{=vTyduFjuF}3. Companions";
+        private const string HeadingClanLeader = "{=NcXn6Ow7O}Clan Leader";
+        private const string HeadingFamilyMembers = "{=NowOsng0A}Family Members";
+        private const string HeadingCompanions = "{=vTyduFjuF}Companions";
 
         private static Version? CurrentVersion => typeof(CompanionPracticeSettings).Assembly.GetName().Version;
 
@@ -36,7 +35,7 @@ namespace ArenaOverhaul.ModSettings
 
             var clanMembers = Hero.FindAll(x => x.IsAlive && !x.IsChild && x.Clan == Clan.PlayerClan && x != Hero.MainHero).OrderBy(x => x.Name.ToString()).ToList();
 
-            AddClanHeroes(builder, HeadingClanLeader, [Hero.MainHero], 2);
+            AddClanHeroes(builder, HeadingClanLeader, [Hero.MainHero], 1);
             AddClanHeroes(builder, HeadingFamilyMembers, clanMembers.Where(x => !x.IsWanderer).ToList(), 2);
             AddClanHeroes(builder, HeadingCompanions, clanMembers.Where(x => x.IsWanderer).ToList(), 3);
 

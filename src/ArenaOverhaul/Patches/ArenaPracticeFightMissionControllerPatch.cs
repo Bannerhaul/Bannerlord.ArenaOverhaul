@@ -586,7 +586,7 @@ namespace ArenaOverhaul.Patches
         {
             bool expansivePracticeExpGain = IsExpansivePractice(__instance) && Settings.Instance!.EnableViewerExperienceGain;
             bool teamPracticeExpGain = (IsTeamPractice(__instance) && Settings.Instance!.TeamEnableViewerExperienceGain);
-            if (affectedAgent?.Origin == null || affectorAgent == null || affectorAgent.Origin == null || !affectedAgent.IsEnemyOf(affectorAgent) || !expansivePracticeExpGain || !teamPracticeExpGain)
+            if (affectedAgent?.Origin == null || affectorAgent == null || affectorAgent.Origin == null || !affectedAgent.IsEnemyOf(affectorAgent) || !(expansivePracticeExpGain || teamPracticeExpGain))
             {
                 return;
             }
