@@ -377,8 +377,6 @@ namespace ArenaOverhaul.CampaignBehaviors
             return true;
         }
 
-
-
         private bool conversation_arena_return_to_default_choice_allowed_on_condition()
         {
             TextObject textObject = _AOArenaBehaviorManager.ChosenCharacter is null
