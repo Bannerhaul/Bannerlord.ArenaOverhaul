@@ -137,6 +137,36 @@ namespace ArenaOverhaul.CampaignBehaviors.BehaviorManagers
             return true;
         }
 
+        public bool CheckAvailabilityOfWeaponLoadouts(ArenaPracticeMode practiceMode, out TextObject? explanation)
+        {
+            if (practiceMode == ArenaPracticeMode.Parry)
+            {
+                var settlement = Settlement.CurrentSettlement;
+                var settlementCulture = settlement?.MapFaction?.Culture ?? settlement?.Culture;
+                if (settlementCulture is null || !ParryWeaponLoadoutInformation.TryGetValue(settlementCulture, out var cultureParryLoadoutsInformation) || !HasALoadoutForEachStage(cultureParryLoadoutsInformation))
+                {
+                    explanation = new TextObject("{=RyUSbmDhf}In this arena it is not customary to use weapon loadouts that would be suitable for Parry practice.");
+                    return false;
+                }
+            }
+            explanation = null;
+            return true;
+
+            /* local method */
+            static bool HasALoadoutForEachStage(List<WeaponLoadoutInfo> cultureParryLoadoutsInformation)
+            {
+                int practiceLoadoutStages = Settings.Instance!.PracticeLoadoutStages;
+                for (int practiceStage = 1; practiceStage <= practiceLoadoutStages; practiceStage++)
+                { 
+                    if (!cultureParryLoadoutsInformation.Any(info => info.LoadoutStage == practiceStage))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+
         public List<Equipment> FilterAvailableWeapons(List<Equipment> loadoutList)
         {
             return FilterAvailableWeapons(loadoutList, PracticeMode);

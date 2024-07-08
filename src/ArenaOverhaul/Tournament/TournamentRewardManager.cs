@@ -228,14 +228,11 @@ namespace ArenaOverhaul.Tournament
             PlannedTournamentPrizes[town] = itemObject != null ? new(itemObject, itemModifier) : null;
         }
 
-        internal static bool CurrentPrizeHasRegisteredModifier(TournamentGame tournamentGame)
-        {
-            return PlannedTournamentPrizes.TryGetValue(tournamentGame.Town, out var prizeItemInfo) && prizeItemInfo?.ItemObject.StringId == tournamentGame.Prize?.StringId;
-        }
+        internal static bool CurrentPrizeHasRegisteredModifier(TournamentGame tournamentGame) => CurrentPrizeHasRegisteredModifier(tournamentGame.Town, tournamentGame.Prize);
 
-        internal static bool CurrentPrizeHasRegisteredModifier(Town town, ItemObject? itemObject)
+        internal static bool CurrentPrizeHasRegisteredModifier(Town? town, ItemObject? itemObject)
         {
-            return PlannedTournamentPrizes.TryGetValue(town, out var prizeItemInfo) && prizeItemInfo?.ItemObject.StringId == itemObject?.StringId;
+            return town != null && PlannedTournamentPrizes.TryGetValue(town, out var prizeItemInfo) && prizeItemInfo?.ItemObject?.StringId == itemObject?.StringId;
         }
 
         public static string GetPrizeItemName(TournamentGame tournamentGame)

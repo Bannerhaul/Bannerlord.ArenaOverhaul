@@ -17,9 +17,9 @@ namespace ArenaOverhaul.ModSettings
 {
     internal static class CompanionPracticeSettings
     {
-        private const string HeadingClanLeader = "{=NcXn6Ow7O}Clan Leader";
-        private const string HeadingFamilyMembers = "{=NowOsng0A}Family Members";
-        private const string HeadingCompanions = "{=vTyduFjuF}Companions";
+        private const string HeadingClanLeader = "{=NcXn6Ow7O}1. Clan Leader";
+        private const string HeadingFamilyMembers = "{=NowOsng0A}2. Family Members";
+        private const string HeadingCompanions = "{=vTyduFjuF}3. Companions";
 
         private static Version? CurrentVersion => typeof(CompanionPracticeSettings).Assembly.GetName().Version;
 

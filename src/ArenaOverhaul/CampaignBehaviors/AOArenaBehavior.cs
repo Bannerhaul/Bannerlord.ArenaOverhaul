@@ -158,9 +158,10 @@ namespace ArenaOverhaul.CampaignBehaviors
             campaignGameStarter.AddPlayerLine("arena_master_ask_for_speacial_practice_fight_line", "arena_master_talk", "arena_master_request_speacial_practice_fight", "{=jBqErWEjU}Can you arrange a special match for me?", new ConversationSentence.OnConditionDelegate(conversation_arena_ask_for_speacial_practice_fight_on_condition), null, 100, new ConversationSentence.OnClickableConditionDelegate(conversation_town_arena_fight_join_check_on_condition), null);
             campaignGameStarter.AddDialogLine("arena_master_request_speacial_practice_fight_master_confirm_line", "arena_master_request_speacial_practice_fight", "arena_master_speacial_practice_fight_list", "{=EYXQnjEvK}It depends. What exactly are you thinking about?[ib:hip][if:convo_thinking]", new ConversationSentence.OnConditionDelegate(conversation_arena_can_join_practice_fight_on_condition), null, 100, null);
             campaignGameStarter.AddDialogLine("arena_master_request_speacial_practice_fight_master_decline_line", "arena_master_request_speacial_practice_fight", "close_window", "{=FguHzavX}You can't practice in the arena because there is a tournament going on right now.", null, null, 100, null);
+            campaignGameStarter.AddPlayerLine("arena_master_request_speacial_practice_fight_return_line", "arena_master_speacial_practice_fight_list", "arena_master_pre_talk", "{=lIBwkFipY}Actually, nevermind.", null, new ConversationSentence.OnConsequenceDelegate(_AOArenaBehaviorManager.ResetWeaponChoice), 10, null, null);
 
             //Parry practice request
-            campaignGameStarter.AddPlayerLine("arena_master_ask_for_parry_practice_fight_fight_line", "arena_master_speacial_practice_fight_list", "arena_master_enter_parry_practice_fight", "{=h2Gv6NA8J}I'd like to practice parrying.", null, new ConversationSentence.OnConsequenceDelegate(_AOArenaBehaviorManager.SetParryPracticeMode), 100, new ConversationSentence.OnClickableConditionDelegate(conversation_town_arena_fight_join_check_on_condition), null);
+            campaignGameStarter.AddPlayerLine("arena_master_ask_for_parry_practice_fight_fight_line", "arena_master_speacial_practice_fight_list", "arena_master_enter_parry_practice_fight", "{=h2Gv6NA8J}I'd like to practice parrying.", null, new ConversationSentence.OnConsequenceDelegate(_AOArenaBehaviorManager.SetParryPracticeMode), 100, new ConversationSentence.OnClickableConditionDelegate(conversation_town_arena_parry_fight_join_check_on_condition), null);
             campaignGameStarter.AddDialogLine("arena_master_enter_parry_practice_fight_master_confirm_line", "arena_master_enter_parry_practice_fight", "arena_master_enter_practice_fight_confirm", "{=9yIQ6Qd1E}This is a really important skill and practicing it will benefit others too... I think I can make this match happen{?PRACTICE_CHOICE_HAS_PRICE}, but it will cost you {PRACTICE_CHOICE_PRICE}{GOLD_ICON}{?}{\\?}. Oh, and don't expect any winnings, since this type of exercise is unlikely to interest the crowd. If you're still up to it, don't forget to grab a practice weapon on your way down.[if:convo_calm_friendly][ib:confident]", new ConversationSentence.OnConditionDelegate(conversation_arena_join_special_practice_fight_confirm_on_condition), null, 100, null);
             campaignGameStarter.AddDialogLine("arena_master_enter_parry_practice_fight_master_decline_line", "arena_master_enter_parry_practice_fight", "close_window", "{=FguHzavX}You can't practice in the arena because there is a tournament going on right now.", null, null, 100, null);
 
@@ -360,9 +361,23 @@ namespace ArenaOverhaul.CampaignBehaviors
                 explanation = new TextObject("{=jcEoUPCB}You are in disguise.", null);
                 return false;
             }
+
             explanation = null;
             return true;
         }
+
+        private bool conversation_town_arena_parry_fight_join_check_on_condition(out TextObject? explanation)
+        {
+            if (!conversation_town_arena_fight_join_check_on_condition(out explanation) || !_AOArenaBehaviorManager.CheckAvailabilityOfWeaponLoadouts(ArenaPracticeMode.Parry, out explanation))
+            {
+                return false;
+            }
+
+            explanation = null;
+            return true;
+        }
+
+
 
         private bool conversation_arena_return_to_default_choice_allowed_on_condition()
         {
@@ -620,6 +635,12 @@ namespace ArenaOverhaul.CampaignBehaviors
                 args.IsEnabled = false;
                 return true;
             }
+            if (!_AOArenaBehaviorManager.CheckAvailabilityOfWeaponLoadouts(practiceMode, out args.Tooltip))
+            {
+                args.IsEnabled = false;
+                return true;
+            }
+
             return true;
         }
 

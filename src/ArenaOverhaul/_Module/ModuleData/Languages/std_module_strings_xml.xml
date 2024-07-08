@@ -39,6 +39,7 @@
 		<string id="jBqErWEjU" text="Can you arrange a special match for me?" />
 		<string id="EYXQnjEvK" text="It depends. What exactly are you thinking about?[ib:hip][if:convo_thinking]" />
 		<string id="h2Gv6NA8J" text="I'd like to practice parrying." />
+		<string id="RyUSbmDhf" text="In this arena it is not customary to use weapon loadouts that would be suitable for Parry practice." />
 		<string id="9yIQ6Qd1E" text="This is a really important skill and practicing it will benefit others too... I think I can make this match happen{?PRACTICE_CHOICE_HAS_PRICE}, but it will cost you {PRACTICE_CHOICE_PRICE}{GOLD_ICON}{?}{\?}. Oh, and don't expect any winnings, since this type of exercise is unlikely to interest the crowd. If you're still up to it, don't forget to grab a practice weapon on your way down.[if:convo_calm_friendly][ib:confident]" />
 		<string id="iXwumAizJ" text="I want to fight alongside my comrades as a team. Any chane you will host a team practice session?" />
 		<string id="LTfWl2OPC" text="This will definitely shake things up! {?PRACTICE_CHOICE_HAS_PRICE}I like the idea, however, in order to properly organize such a competition, I will have to make a fair amount of fuss, so it will cost you {PRACTICE_CHOICE_PRICE}{GOLD_ICON}. On the bright side, {?}{\?}I think it will be great entertainment for the crowd, which will have a positive impact on the prizes. If you're still up for it, don't forget to grab a practice weapon on your way down.[ib:nervous2][if:convo_excited]" />
@@ -392,9 +393,10 @@
 		<!--
 		|||||||||||||||||||||||| Hero Loadout Options |||||||||||||||||||||||
 		-->
-		<string id="NcXn6Ow7O" text="Clan Leader" />
-		<string id="NowOsng0A" text="Family Members" />
-		<string id="vTyduFjuF" text="Companions" />
+		<!-- General setting groups. Because they only have subgroups, MCM cannot order them correctly programmatically, so I had to use (1.2.3.), as by default they are shown in alphabetical order. Consider this when translating so that this order is maintained. -->
+		<string id="NcXn6Ow7O" text="1. Clan Leader" />
+		<string id="NowOsng0A" text="2. Family Members" />
+		<string id="vTyduFjuF" text="3. Companions" />
 		<!-- Caption -->
 		<string id="fFlUJjUl0" text="AO Hero Practice Settings" />
 		<!-- Per hero settings -->

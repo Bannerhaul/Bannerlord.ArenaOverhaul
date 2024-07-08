@@ -677,7 +677,7 @@ namespace ArenaOverhaul.Patches
 
         internal static List<Equipment> FilterAvailableWeapons(List<Equipment> loadoutList)
         {
-            return AOArenaBehaviorManager.Instance?.FilterAvailableWeapons(loadoutList) ?? loadoutList;
+            return AOArenaBehaviorManager.FilterAvailableWeapons(loadoutList, GetPracticeMode());
         }
 
         private static int GetCurrentStage(int spawnIndex)
