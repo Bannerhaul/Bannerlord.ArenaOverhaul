@@ -3,7 +3,7 @@
 
     <!--Module Version-->
     <PropertyGroup>
-        <Version>1.5.4</Version>
+        <Version>1.5.5</Version>
     </PropertyGroup>
 
     <!-- Versions of Major Dependencies (for Package References & SubModule.xml Substitution) -->
@@ -15,7 +15,7 @@
         <!--UIExtenderEx Version-->
         <UIExtenderExVersion>2.11.0</UIExtenderExVersion>
         <!--MCM Version-->
-        <MCMVersion>5.10.2</MCMVersion>
+        <MCMVersion>5.10.1</MCMVersion>
         <!--BUTRShared Version-->
         <BUTRSharedVersion>3.0.0.142</BUTRSharedVersion>
         <!--BuildResources Version-->

@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.5.5
+Game Versions: v1.2.x
+* Rolled back to MCM v5.10.1.
+* Fixed several issues with the Parry practice.
+* Hopefully fixed a crash related to high quality Tournament prizes.
+---------------------------------------------------------------------------------------------------
 Version: 1.5.4
 Game Versions: v1.2.x
 * Fixed a rare crash in team practice.
