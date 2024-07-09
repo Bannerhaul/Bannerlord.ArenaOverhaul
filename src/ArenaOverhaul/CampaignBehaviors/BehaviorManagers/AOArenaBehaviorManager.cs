@@ -157,7 +157,7 @@ namespace ArenaOverhaul.CampaignBehaviors.BehaviorManagers
             {
                 int practiceLoadoutStages = Settings.Instance!.PracticeLoadoutStages;
                 for (int practiceStage = 1; practiceStage <= practiceLoadoutStages; practiceStage++)
-                { 
+                {
                     if (!cultureParryLoadoutsInformation.Any(info => info.LoadoutStage == practiceStage))
                     {
                         return false;
