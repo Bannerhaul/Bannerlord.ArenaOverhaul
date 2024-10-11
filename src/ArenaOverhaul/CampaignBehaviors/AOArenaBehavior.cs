@@ -161,12 +161,12 @@ namespace ArenaOverhaul.CampaignBehaviors
             campaignGameStarter.AddPlayerLine("arena_master_request_speacial_practice_fight_return_line", "arena_master_speacial_practice_fight_list", "arena_master_pre_talk", "{=lIBwkFipY}Actually, nevermind.", null, new ConversationSentence.OnConsequenceDelegate(_AOArenaBehaviorManager.ResetWeaponChoice), 10, null, null);
 
             //Parry practice request
-            campaignGameStarter.AddPlayerLine("arena_master_ask_for_parry_practice_fight_fight_line", "arena_master_speacial_practice_fight_list", "arena_master_enter_parry_practice_fight", "{=h2Gv6NA8J}I'd like to practice parrying.", null, new ConversationSentence.OnConsequenceDelegate(_AOArenaBehaviorManager.SetParryPracticeMode), 100, new ConversationSentence.OnClickableConditionDelegate(conversation_town_arena_parry_fight_join_check_on_condition), null);
+            campaignGameStarter.AddPlayerLine("arena_master_ask_for_parry_practice_fight_fight_line", "arena_master_speacial_practice_fight_list", "arena_master_enter_parry_practice_fight", "{=h2Gv6NA8J}I'd like to practice parrying.", new ConversationSentence.OnConditionDelegate(conversation_arena_parry_practice_enabled_on_condition), new ConversationSentence.OnConsequenceDelegate(_AOArenaBehaviorManager.SetParryPracticeMode), 100, new ConversationSentence.OnClickableConditionDelegate(conversation_town_arena_parry_fight_join_check_on_condition), null);
             campaignGameStarter.AddDialogLine("arena_master_enter_parry_practice_fight_master_confirm_line", "arena_master_enter_parry_practice_fight", "arena_master_enter_practice_fight_confirm", "{=9yIQ6Qd1E}This is a really important skill and practicing it will benefit others too... I think I can make this match happen{?PRACTICE_CHOICE_HAS_PRICE}, but it will cost you {PRACTICE_CHOICE_PRICE}{GOLD_ICON}{?}{\\?}. Oh, and don't expect any winnings, since this type of exercise is unlikely to interest the crowd. If you're still up to it, don't forget to grab a practice weapon on your way down.[if:convo_calm_friendly][ib:confident]", new ConversationSentence.OnConditionDelegate(conversation_arena_join_special_practice_fight_confirm_on_condition), null, 100, null);
             campaignGameStarter.AddDialogLine("arena_master_enter_parry_practice_fight_master_decline_line", "arena_master_enter_parry_practice_fight", "close_window", "{=FguHzavX}You can't practice in the arena because there is a tournament going on right now.", null, null, 100, null);
 
             //Team practice request
-            campaignGameStarter.AddPlayerLine("arena_master_ask_for_team_practice_fight_fight_line", "arena_master_speacial_practice_fight_list", "arena_master_enter_team_practice_fight", "{=iXwumAizJ}I want to fight alongside my comrades as a team. Any chane you will host a team practice session?", null, new ConversationSentence.OnConsequenceDelegate(_AOArenaBehaviorManager.SetTeamPracticeMode), 100, new ConversationSentence.OnClickableConditionDelegate(conversation_town_arena_fight_join_check_on_condition), null);
+            campaignGameStarter.AddPlayerLine("arena_master_ask_for_team_practice_fight_fight_line", "arena_master_speacial_practice_fight_list", "arena_master_enter_team_practice_fight", "{=iXwumAizJ}I want to fight alongside my comrades as a team. Any chane you will host a team practice session?", new ConversationSentence.OnConditionDelegate(conversation_arena_team_practice_enabled_on_condition), new ConversationSentence.OnConsequenceDelegate(_AOArenaBehaviorManager.SetTeamPracticeMode), 100, new ConversationSentence.OnClickableConditionDelegate(conversation_town_arena_fight_join_check_on_condition), null);
             campaignGameStarter.AddDialogLine("arena_master_enter_team_practice_fight_master_confirm_line", "arena_master_enter_team_practice_fight", "arena_master_enter_practice_fight_confirm", "{=LTfWl2OPC}This will definitely shake things up! {?PRACTICE_CHOICE_HAS_PRICE}I like the idea, however, in order to properly organize such a competition, I will have to make a fair amount of fuss, so it will cost you {PRACTICE_CHOICE_PRICE}{GOLD_ICON}. On the bright side, {?}{\\?}I think it will be great entertainment for the crowd, which will have a positive impact on the prizes. If you're still up for it, don't forget to grab a practice weapon on your way down.[ib:nervous2][if:convo_excited]", new ConversationSentence.OnConditionDelegate(conversation_arena_join_special_practice_fight_confirm_on_condition), null, 100, null);
             campaignGameStarter.AddDialogLine("arena_master_enter_team_practice_fight_master_decline_line", "arena_master_enter_team_practice_fight", "close_window", "{=FguHzavX}You can't practice in the arena because there is a tournament going on right now.", null, null, 100, null);
 
@@ -307,6 +307,9 @@ namespace ArenaOverhaul.CampaignBehaviors
 
         private bool conversation_arena_ask_for_speacial_practice_fight_on_condition() => Settings.Instance!.EnableParryPractice || Settings.Instance!.EnableTeamPractice;
 
+        private bool conversation_arena_parry_practice_enabled_on_condition() => AOArenaBehaviorManager.IsPracticeModeEnabled(ArenaPracticeMode.Parry);
+        private bool conversation_arena_team_practice_enabled_on_condition() => AOArenaBehaviorManager.IsPracticeModeEnabled(ArenaPracticeMode.Team);
+
         public bool conversation_arena_companion_choice_allowed_on_condition() => _AOArenaBehaviorManager.IsAgentSwitchingAllowed();
         public bool conversation_arena_companion_choice_post_fight_allowed_on_condition(bool isRepickLine) => _AOArenaBehaviorManager.IsAgentSwitchingAllowed() && (isRepickLine ? _AOArenaBehaviorManager.ChosenCharacter != null : _AOArenaBehaviorManager.ChosenCharacter is null);
 
@@ -407,7 +410,7 @@ namespace ArenaOverhaul.CampaignBehaviors
 
         private static bool conversation_arena_expansive_practice_fight_explain_reward_on_condition()
         {
-            PracticePrizeManager.ExplainPracticeReward(true);
+            PracticePrizeManager.ExplainPracticeReward(ArenaPracticeMode.Expansive);
             return true;
         }
 
@@ -596,6 +599,11 @@ namespace ArenaOverhaul.CampaignBehaviors
 
         private bool CheckCustomPracticeFightMenuAvailability(MenuCallbackArgs args, ArenaPracticeMode practiceMode)
         {
+            if (!AOArenaBehaviorManager.IsPracticeModeEnabled(practiceMode))
+            {
+                return false;
+            }
+
             Settlement currentSettlement = Settlement.CurrentSettlement;
             args.optionLeaveType = GameMenuOption.LeaveType.PracticeFight;
             if (!FieldAccessHelper.ArenaMasterKnowTournamentsByRef(_arenaMasterBehavior!))
@@ -628,12 +636,12 @@ namespace ArenaOverhaul.CampaignBehaviors
                 args.IsEnabled = false;
                 return true;
             }
-            if (!_AOArenaBehaviorManager.CheckAffordabilityForNextPracticeRound(practiceMode, 0, out args.Tooltip, true))
+            if (!_AOArenaBehaviorManager.CheckAvailabilityOfWeaponLoadouts(practiceMode, out args.Tooltip))
             {
                 args.IsEnabled = false;
                 return true;
             }
-            if (!_AOArenaBehaviorManager.CheckAvailabilityOfWeaponLoadouts(practiceMode, out args.Tooltip))
+            if (!_AOArenaBehaviorManager.CheckAffordabilityForNextPracticeRound(practiceMode, 0, out args.Tooltip, true))
             {
                 args.IsEnabled = false;
                 return true;

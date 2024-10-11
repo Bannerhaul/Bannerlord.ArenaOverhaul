@@ -141,7 +141,7 @@ namespace ArenaOverhaul.Patches
         [HarmonyPatch("conversation_arena_practice_fight_explain_reward_on_condition")]
         public static bool ExplainPracticeRewardPrefix(ref bool __result) //Bool prefixes compete with each other and skip others, as well as original, if return false
         {
-            PracticePrizeManager.ExplainPracticeReward();
+            PracticePrizeManager.ExplainPracticeReward(ArenaPracticeMode.Standard);
             __result = true;
             return false;
         }

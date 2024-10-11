@@ -58,7 +58,7 @@ namespace ArenaOverhaul.TeamTournament
 
             Hero heroObject = character.HeroObject;
             return
-                !heroObject.IsChild && !heroObject.IsNoncombatant && !heroObject.IsWounded
+                !heroObject.IsChild && !heroObject.IsNoncombatant && !heroObject.IsWounded && !heroObject.IsPrisoner
                 && (allowNotables || !heroObject.IsNotable)
                 && (!considerSkills || heroObject.GetSkillValue(DefaultSkills.OneHanded) >= 100 || heroObject.GetSkillValue(DefaultSkills.TwoHanded) >= 100 || heroObject.GetSkillValue(DefaultSkills.Polearm) >= 100);
         }
