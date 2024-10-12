@@ -157,7 +157,7 @@ namespace ArenaOverhaul.CampaignBehaviors.BehaviorManagers
             {
                 int practiceLoadoutStages = Settings.Instance!.PracticeLoadoutStages;
                 for (int practiceStage = 1; practiceStage <= practiceLoadoutStages; practiceStage++)
-                { 
+                {
                     if (!cultureParryLoadoutsInformation.Any(info => info.LoadoutStage == practiceStage))
                     {
                         return false;
@@ -389,52 +389,108 @@ namespace ArenaOverhaul.CampaignBehaviors.BehaviorManagers
         internal static List<CharacterObject> GetPlayerRelatedParticipantCharacters(ArenaPracticeMode practiceMode, int maxParticipantCount)
         {
             List<CharacterObject> characterObjectList = [];
-            if (practiceMode is not ArenaPracticeMode.Expansive and not ArenaPracticeMode.Team)
+            switch (practiceMode)
             {
-                _lastPlayerRelatedCharacterList = [];
-                return characterObjectList;
+                case ArenaPracticeMode.Expansive:
+                {
+                    FillParticipantsForExpansivePractice(maxParticipantCount, characterObjectList);
+                    _lastPlayerRelatedCharacterList = new(characterObjectList);
+                    return characterObjectList;
+                }
+                case ArenaPracticeMode.Team:
+                {
+                    FillParticipantsForTeamPractice(maxParticipantCount, characterObjectList);
+                    _lastPlayerRelatedCharacterList = new(characterObjectList);
+                    return [];
+                }
+                default:
+                {
+                    _lastPlayerRelatedCharacterList = [];
+                    return characterObjectList;
+                }
             }
 
-            int num1 = 0;
-            int num2 = 0;
-            int num3 = 0;
-            maxParticipantCount = practiceMode != ArenaPracticeMode.Team ? maxParticipantCount * 2 / 3 : maxParticipantCount / GetAITeamsCount(practiceMode);
-            if (characterObjectList.Count < maxParticipantCount)
+            /* Local functions */
+            static void FillParticipantsForExpansivePractice(int maxParticipantCount, List<CharacterObject> characterObjectList)
             {
-                int num4 = maxParticipantCount - characterObjectList.Count;
+                maxParticipantCount = maxParticipantCount * 2 / 3;
+                if (characterObjectList.Count >= maxParticipantCount)
+                {
+                    return;
+                }
+
+                int requiredParticipantsCount = maxParticipantCount - characterObjectList.Count;
+                Dictionary<int, int> troopTierCounter = [];
                 foreach (TroopRosterElement troopRosterElement in Hero.MainHero.PartyBelongedTo.Party.MemberRoster.GetTroopRoster())
                 {
                     if (troopRosterElement.Character == Hero.MainHero.CharacterObject || (Instance?.ChosenCharacter is not null && troopRosterElement.Character == Instance.ChosenCharacter))
                     {
                         continue;
                     }
-                    else if (!characterObjectList.Contains(troopRosterElement.Character) && troopRosterElement.Character.IsHero && !troopRosterElement.Character.HeroObject.IsWounded)
+                    if (!characterObjectList.Contains(troopRosterElement.Character) && troopRosterElement.Character.IsHero && !troopRosterElement.Character.HeroObject.IsWounded)
                     {
                         characterObjectList.Add(troopRosterElement.Character);
                     }
-                    else if (!characterObjectList.Contains(troopRosterElement.Character) && troopRosterElement.Character.Tier == 3 && num4 * 0.400000005960464 > num1)
+                    else if (!characterObjectList.Contains(troopRosterElement.Character) && troopRosterElement.Character.Tier >= 3)
                     {
-                        characterObjectList.Add(troopRosterElement.Character);
-                        ++num1;
-                    }
-                    else if (!characterObjectList.Contains(troopRosterElement.Character) && troopRosterElement.Character.Tier == 4 && num4 * 0.400000005960464 > num2)
-                    {
-                        characterObjectList.Add(troopRosterElement.Character);
-                        ++num2;
-                    }
-                    else if (!characterObjectList.Contains(troopRosterElement.Character) && troopRosterElement.Character.Tier == 5 && num4 * 0.200000002980232 > num3)
-                    {
-                        characterObjectList.Add(troopRosterElement.Character);
-                        ++num3;
+                        troopTierCounter.TryGetValue(troopRosterElement.Character.Tier, out var currentCount);
+                        if (requiredParticipantsCount * Math.Max(0.5 - 0.1 * (troopRosterElement.Character.Tier - 3), 0.1) > currentCount)
+                        {
+                            characterObjectList.Add(troopRosterElement.Character);
+                            troopTierCounter[troopRosterElement.Character.Tier] = ++currentCount;
+                        }
                     }
                     if (characterObjectList.Count >= maxParticipantCount)
                     {
-                        break;
+                        return;
                     }
                 }
             }
-            _lastPlayerRelatedCharacterList = new(characterObjectList);
-            return practiceMode == ArenaPracticeMode.Expansive ? characterObjectList : [];
+
+            static void FillParticipantsForTeamPractice(int maxParticipantCount, List<CharacterObject> characterObjectList)
+            {
+                maxParticipantCount = maxParticipantCount / GetAITeamsCount(ArenaPracticeMode.Team);
+                if (characterObjectList.Count >= maxParticipantCount)
+                {
+                    return;
+                }
+
+                var troopRosterFull = Hero.MainHero.PartyBelongedTo.Party.MemberRoster.GetTroopRoster();
+                foreach (var troopRosterElement in troopRosterFull.Where(x => x.Character.IsHero).ToList())
+                {
+                    if (troopRosterElement.Character == Hero.MainHero.CharacterObject || (Instance?.ChosenCharacter is not null && troopRosterElement.Character == Instance.ChosenCharacter))
+                    {
+                        continue;
+                    }
+                    if (!characterObjectList.Contains(troopRosterElement.Character) && !troopRosterElement.Character.HeroObject.IsWounded)
+                    {
+                        characterObjectList.Add(troopRosterElement.Character);
+                    }
+                    if (characterObjectList.Count >= maxParticipantCount)
+                    {
+                        return;
+                    }
+                }
+
+                var iterationAddCount = 1;
+                var troopRoster = troopRosterFull.Where(x => !x.Character.IsHero && x.Character.Tier >= 3 && x.WoundedNumber < x.Number).OrderByDescending(x => x.Character.Tier).ToList();
+                while (iterationAddCount > 0)
+                {
+                    iterationAddCount = 0;
+                    foreach (var troopRosterElement in troopRoster)
+                    {
+                        if (characterObjectList.Count(x => x == troopRosterElement.Character) <= troopRosterElement.Number - troopRosterElement.WoundedNumber)
+                        {
+                            iterationAddCount++;
+                            characterObjectList.Add(troopRosterElement.Character);
+                        }
+                        if (characterObjectList.Count >= maxParticipantCount)
+                        {
+                            return;
+                        }
+                    }
+                }
+            }
         }
 
         #region Settings by Practice Mode
@@ -532,6 +588,20 @@ namespace ArenaOverhaul.CampaignBehaviors.BehaviorManagers
             };
 
             return colorIndex >= 0 ? BannerManager.GetColor(colorIndex) : uint.MaxValue;
+        }
+
+        internal bool IsPracticeModeEnabled() => IsPracticeModeEnabled(PracticeMode);
+
+        internal static bool IsPracticeModeEnabled(ArenaPracticeMode practiceMode)
+        {
+            return practiceMode switch
+            {
+                ArenaPracticeMode.Standard => true,
+                ArenaPracticeMode.Expansive => true,
+                ArenaPracticeMode.Parry => Settings.Instance!.EnableParryPractice,
+                ArenaPracticeMode.Team => Settings.Instance!.EnableTeamPractice,
+                _ => throw new NotImplementedException(),
+            };
         }
 
         internal bool IsAgentSwitchingAllowed() => IsAgentSwitchingAllowed(PracticeMode);

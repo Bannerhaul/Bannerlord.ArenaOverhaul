@@ -1,6 +1,5 @@
 ﻿using ArenaOverhaul.ModSettings;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -38,7 +37,7 @@ namespace ArenaOverhaul.Tournament
         }
 
         public static bool IsRightTypeOfHero(Hero hero, bool allowNotables = false) =>
-            hero != null && !hero.IsWounded && !hero.IsNoncombatant && !hero.IsChild && (hero.IsLord || hero.IsWanderer || (allowNotables && hero.IsNotable));
+            hero != null && !hero.IsDead && !hero.IsWounded && !hero.IsPrisoner && !hero.IsNoncombatant && !hero.IsChild && (hero.IsLord || hero.IsWanderer || (allowNotables && hero.IsNotable));
 
         protected static void GetUpgradeTargets(CharacterObject troop, List<CharacterObject> list)
         {
