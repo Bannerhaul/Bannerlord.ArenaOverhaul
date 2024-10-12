@@ -117,7 +117,7 @@ namespace ArenaOverhaul.ArenaPractice
             {
                 ArenaPracticeMode.Team => valorCategory switch
                 {
-                    5 => Math.Max(135, RoundWithModulus((int)(totalParticipantsCount / 2.25), 5)),
+                    5 => Math.Max(135, RoundWithModulus((int) (totalParticipantsCount / 2.25), 5)),
                     4 => Math.Max(100, RoundWithModulus(totalParticipantsCount / 3, 5)),
                     3 => Math.Max(75, RoundWithModulus(totalParticipantsCount / 4, 5)),
                     2 => Math.Max(50, RoundWithModulus(totalParticipantsCount / 6, 5)),
