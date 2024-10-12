@@ -250,13 +250,16 @@ namespace ArenaOverhaul.CampaignBehaviors
             }
 
             var settlementCulture = settlement.MapFaction?.Culture ?? settlement.Culture;
+            var defaultCulture = Game.Current.ObjectManager.GetObject<CultureObject>("empire") ?? Game.Current.ObjectManager.GetObject<CultureObject>(x => x.IsMainCulture);
 
             if (!_visitedCultures.Contains(settlementCulture) && settlementCulture != null)
             {
                 int practiceLoadoutStages = Settings.Instance!.PracticeLoadoutStages;
                 for (int practiceStage = 1; practiceStage <= practiceLoadoutStages; practiceStage++)
                 {
-                    CharacterObject? characterObject = Game.Current.ObjectManager.GetObject<CharacterObject>("weapon_practice_stage_" + practiceStage.ToString() + "_" + settlementCulture.StringId.ToLower());
+                    CharacterObject? characterObject =
+                        Game.Current.ObjectManager.GetObject<CharacterObject>("weapon_practice_stage_" + practiceStage.ToString() + "_" + settlementCulture.StringId.ToLower())
+                        ?? Game.Current.ObjectManager.GetObject<CharacterObject>("weapon_practice_stage_" + practiceStage.ToString() + "_" + defaultCulture.StringId.ToLower());
                     if (characterObject is null)
                     {
                         continue;
