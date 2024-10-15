@@ -400,6 +400,7 @@ namespace ArenaOverhaul.CampaignBehaviors.BehaviorManagers
                 case ArenaPracticeMode.Team:
                 {
                     FillParticipantsForTeamPractice(maxParticipantCount, characterObjectList);
+                    characterObjectList.Shuffle();
                     _lastPlayerRelatedCharacterList = new(characterObjectList);
                     return [];
                 }

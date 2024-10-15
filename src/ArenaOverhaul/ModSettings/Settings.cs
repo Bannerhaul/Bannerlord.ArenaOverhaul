@@ -282,7 +282,7 @@ namespace ArenaOverhaul.ModSettings
 
         //Team Arena Practice settings
         [SettingPropertyBool("{=DxJKCdxsV}Enable team practice", Order = 0, RequireRestart = false, HintText = "{=LHCCk34mQ}When this option is enabled, Team Practice mode is enabled in the Arena. Native is False. Default is True.")]
-        [SettingPropertyGroup(HeadingTeamPractice, GroupOrder = 3)]
+        [SettingPropertyGroup(HeadingTeamPractice, GroupOrder = 13)]
         public bool EnableTeamPractice { get; set; } = true;
 
         [SettingPropertyInteger("{=6DKIRQm5C}Team practice setup cost", 0, 1000, Order = 1, RequireRestart = false, HintText = "{=qt2gEppSr}The cost Arena Master charges for organizing a Team Practice match. Default = 200.")]
@@ -317,9 +317,9 @@ namespace ArenaOverhaul.ModSettings
         [SettingPropertyGroup(HeadingTeamPractice, GroupOrder = 13)]
         public bool TeamPracticeEnableLoadoutChoice { get; set; } = true;
 
-        [SettingPropertyInteger("{=L73kYZTnf}Price for picking weapons", 0, 100, Order = 21, RequireRestart = false, HintText = "{=HzpsY1I9V}You will have to pay this sum per a wepon stage (tier) when picking a weapon for the Team Arena Practice. Default = 50.")]
+        [SettingPropertyInteger("{=L73kYZTnf}Price for picking weapons", 0, 100, Order = 21, RequireRestart = false, HintText = "{=HzpsY1I9V}You will have to pay this sum per a wepon stage (tier) when picking a weapon for the Team Arena Practice. Default = 20.")]
         [SettingPropertyGroup(HeadingTeamPractice, GroupOrder = 13)]
-        public int TeamPracticeLoadoutChoiceCost { get; set; } = 50;
+        public int TeamPracticeLoadoutChoiceCost { get; set; } = 20;
 
         [SettingPropertyDropdown("{=3HviduB7g}Defensive practice equipment", Order = 22, RequireRestart = false, HintText = "{=cgjoawOu3}Specify what armor or clothing should be worn by Team Arena Practice participants. Choosing [Tournament Armor] will give the same result as [Battle Equipment] unless changed by other mods. It's not recommended to change this setting unless you have a specific goal in mind. While it can be fun, wearing armor renders most ranged practice weapons ineffective. Default is [Practice Clothes].")]
         [SettingPropertyGroup(HeadingTeamPractice, GroupOrder = 13)]

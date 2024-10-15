@@ -1,4 +1,14 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.5.7
+Game Versions: v1.2.x
+* Fixed chosen companion info not being used in post-practice briefings.
+* Moved Team Practice settings to a more appropriate location.
+* Reduced the default cost of choosing a loadout in Team Practice.
+* Slowed down a bit party troops XP gain from watching practice matches.
+* Randomized the order in which teams are spawned each wave in Team Practice. Should make fights a bit more fair.
+* Randomized the order in which participants are spawned for the player team in Team Practice.
+* Added the ability to select a hero that hasn't spawned yet when switching characters in Team Practice.
+---------------------------------------------------------------------------------------------------
 Version: 1.5.6
 Game Versions: v1.2.x
 * Fixed Team and Parry practice enability settings not working properly.
