@@ -32,17 +32,28 @@ namespace ArenaOverhaul.ArenaPractice
         private static readonly AddRandomClothesDelegate? deAddRandomClothes = AccessTools2.GetDelegate<AddRandomClothesDelegate>(typeof(ArenaPracticeFightMissionController), "AddRandomClothes");
 
         internal static CharacterObject? SpawningCharacterObject { get; private set; } = null;
+        internal static CharacterObject? CharacterObjectToSwitchTo { get; set; } = null;
 
         public static void SpawnArenaAgentsForTeamPractice(ArenaPracticeFightMissionController instance, int countToAddAtOnce)
         {
-            var aiTeamCount = FieldAccessHelper.APFMCAIParticipantTeamsByRef(instance).Count;
-            if (GetTotalParticipantsCount() >= FieldAccessHelper.APFMCSpawnedOpponentAgentCountByRef(instance) + countToAddAtOnce * GetAITeamsCount())
+            var aiTeamList = FieldAccessHelper.APFMCAIParticipantTeamsByRef(instance).ToList();
+            aiTeamList.Shuffle();
+            
+            var aiTeamCount = aiTeamList.Count;
+            var playerTeamSpawnIndex = MBRandom.RandomInt(aiTeamCount);
+            bool playerTeamSpawned = false;
+            if (GetTotalParticipantsCount() >= FieldAccessHelper.APFMCSpawnedOpponentAgentCountByRef(instance) + countToAddAtOnce * aiTeamCount)
             {
                 for (int teamIndex = 0; teamIndex < aiTeamCount; ++teamIndex)
                 {
-                    var team = FieldAccessHelper.APFMCAIParticipantTeamsByRef(instance)[teamIndex];
+                    if (playerTeamSpawnIndex == teamIndex && !playerTeamSpawned)
+                    {
+                        SpawnPlayerTeam(instance, countToAddAtOnce);
+                        playerTeamSpawned = true;
+                    }
+
+                    var team = aiTeamList[teamIndex];
                     var frame = GetBestFrameForTeam(instance, team);
-                    //var frame = deGetSpawnFrame!(instance, true, UseInitialSpawnForDiversity(instance));
                     for (int i = 0; i < countToAddAtOnce; ++i)
                     {
                         FieldAccessHelper.APFMCParticipantAgentsByRef(instance).Add(deSpawnArenaAgent!(instance, team, frame));
@@ -52,29 +63,40 @@ namespace ArenaOverhaul.ArenaPractice
             else
             {
                 int localSpwanIndex = 0;
-                int teamCount = FieldAccessHelper.APFMCAIParticipantTeamsByRef(instance).Count;
                 while (FieldAccessHelper.APFMCSpawnedOpponentAgentCountByRef(instance) < GetTotalParticipantsCount())
                 {
-                    var team = FieldAccessHelper.APFMCAIParticipantTeamsByRef(instance)[localSpwanIndex % teamCount];
+                    if (playerTeamSpawnIndex == localSpwanIndex && !playerTeamSpawned)
+                    {
+                        SpawnPlayerTeam(instance, countToAddAtOnce);
+                        playerTeamSpawned = true;
+                    }
+
+                    var team = aiTeamList[localSpwanIndex % aiTeamCount];
                     var frame = GetBestFrameForTeam(instance, team);
-                    //var frame = deGetSpawnFrame!(instance, true, UseInitialSpawnForDiversity(instance));
                     FieldAccessHelper.APFMCParticipantAgentsByRef(instance).Add(deSpawnArenaAgent!(instance, team, frame));
                     ++localSpwanIndex;
                 }
             }
 
-            if (AOArenaBehaviorManager._lastPlayerRelatedCharacterList != null && AOArenaBehaviorManager._lastPlayerRelatedCharacterList.Count > 0)
+            if (!playerTeamSpawned)
             {
-                var spawnedAllies = 0;
-                var mission = instance.Mission;
-                var spawnIndex = Math.Min(FieldAccessHelper.APFMCSpawnedOpponentAgentCountByRef(instance), AOArenaBehaviorManager.GetTotalParticipantsCount(ArenaPracticeMode.Team) - 1);
-                var team = mission.PlayerTeam;
-                var frame = GetBestFrameForTeam(instance, team);
-                //var frame = deGetSpawnFrame!(instance, true, UseInitialSpawnForDiversity(instance));
-                while (spawnedAllies < countToAddAtOnce && TeamPracticeStatsManager.SpawnedAliedAgentCount < AOArenaBehaviorManager._lastPlayerRelatedCharacterList.Count)
+                SpawnPlayerTeam(instance, countToAddAtOnce);
+            }
+
+            static void SpawnPlayerTeam(ArenaPracticeFightMissionController instance, int countToAddAtOnce)
+            {
+                if (AOArenaBehaviorManager._lastPlayerRelatedCharacterList != null && AOArenaBehaviorManager._lastPlayerRelatedCharacterList.Count > 0)
                 {
-                    SpwanAllyAgent(instance, mission, spawnIndex, team, frame);
-                    ++spawnedAllies;
+                    var spawnedAllies = 0;
+                    var mission = instance.Mission;
+                    var spawnIndex = Math.Min(FieldAccessHelper.APFMCSpawnedOpponentAgentCountByRef(instance), AOArenaBehaviorManager.GetTotalParticipantsCount(ArenaPracticeMode.Team) - 1);
+                    var team = mission.PlayerTeam;
+                    var frame = GetBestFrameForTeam(instance, team);
+                    while (spawnedAllies < countToAddAtOnce && TeamPracticeStatsManager.SpawnedAliedAgentCount < AOArenaBehaviorManager._lastPlayerRelatedCharacterList.Count)
+                    {
+                        SpwanAllyAgent(instance, mission, spawnIndex, team, frame);
+                        ++spawnedAllies;
+                    }
                 }
             }
         }
@@ -143,6 +165,12 @@ namespace ArenaOverhaul.ArenaPractice
             Equipment equipment = new();
 
             SpawningCharacterObject = characterObject;
+            bool isNewPlayerCharacter = false;
+            if (characterObject == CharacterObjectToSwitchTo && team == mission.PlayerTeam)
+            {
+                isNewPlayerCharacter = mission.MainAgent is null;
+                CharacterObjectToSwitchTo = null;
+            }
             deAddRandomWeapons!(instance, equipment, spawnIndex);
             deAddRandomClothes!(instance, characterObject, equipment);
             AgentBuildData agentBuildData1 = new AgentBuildData(characterObject).Team(team).InitialPosition(in frame.origin);
@@ -156,9 +184,13 @@ namespace ArenaOverhaul.ArenaPractice
                 .ClothingColor1(team.Color)
                 .ClothingColor2(team.Color)
                 .Banner(team.Banner)
-                .Controller(characterObject == GetPlayerCharacter() ? Agent.ControllerType.Player : Agent.ControllerType.AI);
+                .Controller((isNewPlayerCharacter || characterObject == GetPlayerCharacter()) ? Agent.ControllerType.Player : Agent.ControllerType.AI);
             Agent agent = mission.SpawnAgent(agentBuildData2);
             agent.FadeIn();
+            if (isNewPlayerCharacter)
+            {
+                agent.WieldInitialWeapons();
+            }
             return agent;
         }
 

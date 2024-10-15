@@ -600,11 +600,11 @@ namespace ArenaOverhaul.Patches
                 return;
             }
 
-            float xpAmount = affectedAgent.Health < 1.0 ? 10f : 2f;
+            float xpAmount = affectedAgent.Health < 1.0 ? 10f : 2f * (IsTeamPractice(__instance) ? 0.5f : 1f);
             SkillObject? relevantSkill = attackerWeapon?.RelevantSkill;
             foreach (TroopRosterElement troopRosterElement in party.MemberRoster.GetTroopRoster())
             {
-                if (!troopRosterElement.Character.IsHero && troopRosterElement.Character != GetPlayerCharacter())
+                if (!troopRosterElement.Character.IsHero && troopRosterElement.Character != GetPlayerCharacter() && affectorCharacter.HeroObject.GetSkillValue(relevantSkill) > troopRosterElement.Character.GetSkillValue(relevantSkill))
                 {
                     party.MemberRoster.AddXpToTroop((int) xpAmount, troopRosterElement.Character);
                 }

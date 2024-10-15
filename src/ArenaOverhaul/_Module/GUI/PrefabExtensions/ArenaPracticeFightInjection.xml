@@ -18,5 +18,11 @@
                 <RichTextWidget WidthSizePolicy = "StretchToParent" HeightSizePolicy = "CoverChildren" MarginLeft="5" MarginRight="5" MarginTop="20" MarginBottom="20" Text="@PrizeText" Brush="ArenaPracticeFight.Text" />
             </Children>
         </ListPanel>
+
+        <ListPanel Id="TeamSpawnPanel" WidthSizePolicy = "Fixed" HeightSizePolicy = "CoverChildren" SuggestedWidth = "440" HorizontalAlignment = "Left" VerticalAlignment="Top" IsVisible="@IsTeamSpawnPanelVisible" StackLayout.LayoutMethod="VerticalBottomToTop">
+            <Children>
+                <RichTextWidget WidthSizePolicy = "StretchToParent" HeightSizePolicy = "CoverChildren" MarginLeft="5" MarginRight="5" MarginTop="20" MarginBottom="20" Text="@AwaitingText" Brush="ArenaPracticeFight.Text" />
+            </Children>
+        </ListPanel>
     </Children>
 </ListPanel>

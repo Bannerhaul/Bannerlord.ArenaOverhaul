@@ -2,6 +2,7 @@
 using ArenaOverhaul.Extensions;
 using ArenaOverhaul.Helpers;
 
+using Bannerlord.ButterLib.Common.Helpers;
 using Bannerlord.ButterLib.HotKeys;
 
 using SandBox.Missions.MissionLogics.Arena;
@@ -9,8 +10,13 @@ using SandBox.Missions.MissionLogics.Arena;
 using System.Collections.Generic;
 using System.Linq;
 
+using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.CharacterDevelopment;
+using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Core;
+using TaleWorlds.Core.ViewModelCollection.Information;
 using TaleWorlds.InputSystem;
+using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 
 using HotKeyManager = Bannerlord.ButterLib.HotKeys.HotKeyManager;
@@ -47,33 +53,54 @@ namespace ArenaOverhaul.ArenaPractice
             var mainAgent = mission.MainAgent;
             if (GetSwitchingAvailability(mainAgent))
             {
-                if (mission.PlayerTeam.ActiveAgents.Any(IsFittingToSwitchTo))
+                _isInquiryActive = true;
+
+                var inquiryElementList = new List<InquiryElement>();
+                mission.PlayerTeam.ActiveAgents
+                    .Where(IsFittingToSwitchTo).ToList()
+                    .ForEach(x => inquiryElementList.Add(new InquiryElement(x, x.Name.ToString(), new ImageIdentifier(CharacterCode.CreateFrom(x.Character)))));
+
+                for (var i = TeamPracticeStatsManager.SpawnedAliedAgentCount; i < AOArenaBehaviorManager._lastPlayerRelatedCharacterList!.Count; i++)
                 {
-                    _isInquiryActive = true;
+                    var characterObject = AOArenaBehaviorManager._lastPlayerRelatedCharacterList![i];
+                    if (characterObject.IsHero)
+                    {
+                        TextObject hint = new("{=}This hero is not yet in the fight and is {QUEUE_NUMBER} in line to enter the arena.");
+                        LocalizationHelper.SetNumericVariable(hint, "QUEUE_NUMBER", i - TeamPracticeStatsManager.SpawnedAliedAgentCount + 1);
+                        inquiryElementList.Add(new InquiryElement(characterObject, characterObject.Name.ToString(), new ImageIdentifier(CharacterCode.CreateFrom(characterObject)), true, hint.ToString()));
+                    }
+                }
 
-                    var inquiryElementList = new List<InquiryElement>();
-                    mission.PlayerTeam.ActiveAgents
-                        .Where(IsFittingToSwitchTo).ToList()
-                        .ForEach(x => inquiryElementList.Add(new InquiryElement(x, x.Name.ToString(), new ImageIdentifier(CharacterCode.CreateFrom(x.Character)))));
-
+                if (inquiryElementList.Count > 0)
+                {
                     MBInformationManager.ShowMultiSelectionInquiry(new MultiSelectionInquiryData("{=xRdn4pEme}Available characters".ToLocalizedString(),
                         "{=jq2jXUcse}Select a teammate to switch to".ToLocalizedString(), inquiryElementList, true, 1, 1, GameTexts.FindText("str_ok").ToString(), GameTexts.FindText("str_cancel").ToString(), inquiryElements =>
                         {
-                            if (inquiryElements is null || inquiryElements.Count <= 0 || inquiryElements.First().Identifier is not Agent agent)
+                            if (inquiryElements is not null && inquiryElements.Count > 0)
                             {
-                                return;
+                                switch (inquiryElements.First().Identifier)
+                                {
+                                    case CharacterObject character:
+                                        TeamPracticeController.CharacterObjectToSwitchTo = character;
+                                        break;
+                                    case Agent agent:
+                                        if (mainAgent != null)
+                                        {
+                                            mainAgent.Controller = Agent.ControllerType.AI;
+                                            mainAgent.SetWatchState(Agent.WatchState.Alarmed);
+                                        }
+                                        agent.Controller = Agent.ControllerType.Player;
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
-                            if (mainAgent != null)
-                            {
-                                mainAgent.Controller = Agent.ControllerType.AI;
-                                mainAgent.SetWatchState(Agent.WatchState.Alarmed);
-                            }
-                            agent.Controller = Agent.ControllerType.Player;
                             _isInquiryActive = false;
                         }, inquiryElements => _isInquiryActive = false, ""), true);
                 }
                 else
                 {
+                    _isInquiryActive = false;
                     MessageHelper.TechnicalMessage("{=XZcFEonSW}There are no available characters on your team to switch to!".ToLocalizedString());
                 }
             }

@@ -3,6 +3,7 @@ using ArenaOverhaul.CampaignBehaviors.BehaviorManagers;
 using ArenaOverhaul.Extensions;
 using ArenaOverhaul.Helpers;
 
+using Bannerlord.ButterLib.Common.Helpers;
 using Bannerlord.UIExtenderEx.Attributes;
 using Bannerlord.UIExtenderEx.ViewModels;
 
@@ -23,6 +24,7 @@ namespace ArenaOverhaul.ViewModelMixin
         private bool _isStandardPanelVisible;
         private bool _isParryPanelVisible;
         private bool _isTeamPanelVisible;
+        private bool _isTeamSpawnPanelVisible;
 
         private bool _isSpecialPanelVisible;
 
@@ -31,6 +33,7 @@ namespace ArenaOverhaul.ViewModelMixin
         private string _chamberBlocksText = "";
         private string _hitsTakenText = "";
         private string _alliesRemainingText = "";
+        private string _awaitingText;
 
         private readonly MissionArenaPracticeFightVM baseVM = vm;
         private readonly ArenaPracticeFightMissionController? _practiceMissionController = FieldAccessHelper.MAPFVMPracticeMissionControllerByRef(vm);
@@ -87,6 +90,20 @@ namespace ArenaOverhaul.ViewModelMixin
                 {
                     _isTeamPanelVisible = value;
                     OnPropertyChangedWithValue(value, nameof(IsTeamPanelVisible));
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public bool IsTeamSpawnPanelVisible
+        {
+            get => _isTeamSpawnPanelVisible;
+            set
+            {
+                if (value != _isTeamSpawnPanelVisible)
+                {
+                    _isTeamSpawnPanelVisible = value;
+                    OnPropertyChangedWithValue(value, nameof(IsTeamSpawnPanelVisible));
                 }
             }
         }
@@ -161,6 +178,20 @@ namespace ArenaOverhaul.ViewModelMixin
             }
         }
 
+        [DataSourceProperty]
+        public string AwaitingText
+        {
+            get => _awaitingText;
+            set
+            {
+                if (value != _awaitingText)
+                {
+                    _awaitingText = value;
+                    OnPropertyChangedWithValue(value, nameof(AwaitingText));
+                }
+            }
+        }
+
         public override void OnRefresh()
         {
             UpdatePanelsVisibility();
@@ -189,6 +220,7 @@ namespace ArenaOverhaul.ViewModelMixin
             IsStandardPanelVisible = baseVM.IsPlayerPracticing && !isParryPractice && !isTeamPractice;
             IsParryPanelVisible = baseVM.IsPlayerPracticing && isParryPractice;
             IsTeamPanelVisible = baseVM.IsPlayerPracticing && isTeamPractice;
+            IsTeamSpawnPanelVisible = IsTeamPanelVisible && TeamPracticeController.CharacterObjectToSwitchTo != null;
 
             IsSpecialPanelVisible = IsParryPanelVisible || IsTeamPanelVisible;
         }
@@ -213,6 +245,15 @@ namespace ArenaOverhaul.ViewModelMixin
 
             GameTexts.SetVariable("BEATEN_OPPONENT_COUNT", _practiceMissionController!.OpponentCountBeatenByPlayer);
             baseVM.OpponentsBeatenText = GameTexts.FindText("str_beaten_opponent").ToString();
+
+            if (IsTeamSpawnPanelVisible)
+            {
+                var characterToSwitchTo = TeamPracticeController.CharacterObjectToSwitchTo;
+                var positionInLine = AOArenaBehaviorManager._lastPlayerRelatedCharacterList!.IndexOf(characterToSwitchTo!) - TeamPracticeStatsManager.SpawnedAliedAgentCount + 1;
+                var awaitingTextObject = new TextObject("{=}Awaiting for {HERO.NAME} to enter arena. {?HERO.GENDER}She{?}He{\\?} is {POSITION_IN_LINE} in the line.", new() { ["POSITION_IN_LINE"] = positionInLine });
+                LocalizationHelper.SetEntityProperties(awaitingTextObject, "HERO", characterToSwitchTo!.HeroObject);
+                AwaitingText = awaitingTextObject.ToString();
+            }
         }
 
         private void UpdatePrizeText()

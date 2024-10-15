@@ -1,6 +1,8 @@
 ﻿using ArenaOverhaul.CampaignBehaviors.BehaviorManagers;
 using ArenaOverhaul.ModSettings;
 
+using Bannerlord.ButterLib.Common.Helpers;
+
 using System;
 
 using TaleWorlds.Core;
@@ -46,6 +48,11 @@ namespace ArenaOverhaul.ArenaPractice
         private static TextObject GetTextExplanation(int remainingOpponentCount, int countBeatenByPlayer)
         {
             var briefingAddressee = AOArenaBehaviorManager.Instance?.ChosenCharacter;
+            if (briefingAddressee != null)
+            {
+                LocalizationHelper.SetEntityProperties(null, "COMPANION", briefingAddressee!.HeroObject);
+            }
+
             var wasTeamPractice = (AOArenaBehaviorManager.Instance?.PracticeMode ?? ArenaPracticeMode.Standard) == ArenaPracticeMode.Team;
             var textVariationAddressee = wasTeamPractice
                 ? 't'

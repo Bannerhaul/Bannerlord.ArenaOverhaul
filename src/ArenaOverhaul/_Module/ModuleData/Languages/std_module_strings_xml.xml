@@ -320,7 +320,7 @@
 		<string id="t7SvV15zK" text="Initial number of the active participants in the Team Arena Practice. It is recommended to be a multiple of AI teams count. Default = 20." />
 		<string id="34SB5z6kv" text="Number of AI teams in the Team Arena Practice match. Setting it to 1 means that everyone will fight your team. Default = 4." />
 		<string id="yafmF17l3" text="When this option is enabled, you are alowed to choose weapons for the Team Arena Practice." />
-		<string id="HzpsY1I9V" text="You will have to pay this sum per a wepon stage (tier) when picking a weapon for the Team Arena Practice. Default = 50." />
+		<string id="HzpsY1I9V" text="You will have to pay this sum per a wepon stage (tier) when picking a weapon for the Team Arena Practice. Default = 20." />
 		<string id="cgjoawOu3" text="Specify what armor or clothing should be worn by Team Arena Practice participants. Choosing [Tournament Armor] will give the same result as [Battle Equipment] unless changed by other mods. It's not recommended to change this setting unless you have a specific goal in mind. While it can be fun, wearing armor renders most ranged practice weapons ineffective. Default is [Practice Clothes]." />
 		<string id="8LHBbug9w" text="Prize for your team defeating at least 30 fighters in the Team Arena Practice. Default = 30." />
 		<string id="EzSYzJjdR" text="Prize for your team defeating at least 50 fighters in the Team Arena Practice. Default = 60." />
