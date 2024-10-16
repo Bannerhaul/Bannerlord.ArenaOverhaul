@@ -38,7 +38,7 @@ namespace ArenaOverhaul.ArenaPractice
         {
             var aiTeamList = FieldAccessHelper.APFMCAIParticipantTeamsByRef(instance).ToList();
             aiTeamList.Shuffle();
-            
+
             var aiTeamCount = aiTeamList.Count;
             var playerTeamSpawnIndex = MBRandom.RandomInt(aiTeamCount);
             bool playerTeamSpawned = false;
