@@ -194,7 +194,9 @@ namespace ArenaOverhaul.TeamTournament
             frame.Advance((float) MBRandom.RandomInt(0, 2) * 1f);
             var character = member.Character;
             var agentBuildData = new AgentBuildData(new SimpleAgentOrigin(character, -1, null, member.Descriptor)).Team(team).InitialPosition(frame.origin);
-            agentBuildData = agentBuildData.InitialDirection(frame.rotation.f.AsVec2.Normalized()).Equipment(member.MatchEquipment).ClothingColor1(team.Color).Banner(team.Banner).Controller(character.IsPlayerCharacter ? Agent.ControllerType.Player : Agent.ControllerType.AI);
+            agentBuildData = agentBuildData.InitialDirection(frame.rotation.f.AsVec2.Normalized())
+                .Equipment(member.MatchEquipment).ClothingColor1(team.Color).ClothingColor2(team.Color).Banner(team.Banner)
+                .Controller(character.IsPlayerCharacter ? Agent.ControllerType.Player : Agent.ControllerType.AI);
             var agent = Mission.SpawnAgent(agentBuildData, false);
 
             if (character.IsPlayerCharacter)
