@@ -96,7 +96,7 @@ jobs:
         echo "::set-output name=mod_description::$desc"
 
     - name: Upload bannerlord folder
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: ArenaOverhaul
         path: ./bannerlord/
