@@ -184,7 +184,7 @@ namespace ArenaOverhaul.ArenaPractice
                 .ClothingColor1(team.Color)
                 .ClothingColor2(team.Color)
                 .Banner(team.Banner)
-                .Controller((isNewPlayerCharacter || characterObject == GetPlayerCharacter()) ? Agent.ControllerType.Player : Agent.ControllerType.AI);
+                .Controller((isNewPlayerCharacter || characterObject == GetPlayerCharacter()) ? AgentControllerType.Player : AgentControllerType.AI);
             Agent agent = mission.SpawnAgent(agentBuildData2);
             agent.FadeIn();
             if (isNewPlayerCharacter)

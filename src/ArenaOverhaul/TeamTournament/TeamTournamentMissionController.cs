@@ -196,7 +196,7 @@ namespace ArenaOverhaul.TeamTournament
             var agentBuildData = new AgentBuildData(new SimpleAgentOrigin(character, -1, null, member.Descriptor)).Team(team).InitialPosition(frame.origin);
             agentBuildData = agentBuildData.InitialDirection(frame.rotation.f.AsVec2.Normalized())
                 .Equipment(member.MatchEquipment).ClothingColor1(team.Color).ClothingColor2(team.Color).Banner(team.Banner)
-                .Controller(character.IsPlayerCharacter ? Agent.ControllerType.Player : Agent.ControllerType.AI);
+                .Controller(character.IsPlayerCharacter ? AgentControllerType.Player : AgentControllerType.AI);
             var agent = Mission.SpawnAgent(agentBuildData, false);
 
             if (character.IsPlayerCharacter)
@@ -305,7 +305,7 @@ namespace ArenaOverhaul.TeamTournament
                     lastSpeedBonus, lastShotDifficulty, lastAttackerWeapon,
                     hitpointRatio, CombatXpModel.MissionTypeEnum.Tournament,
                     affectorAgent.MountAgent != null, affectorAgent.Team == affectedAgent.Team,
-                    false, damageAmount, affectedAgent.Health < 1f, false, isHorseCharge);
+                    false, damageAmount, affectedAgent.Health < 1f, false, isHorseCharge, isSneakAttack: false);
             }
             //NoticableTakedowns for renown reward
             if (affectedAgent.Origin == null || affectorAgent == null || affectorAgent.Origin == null)

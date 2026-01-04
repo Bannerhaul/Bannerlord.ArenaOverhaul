@@ -84,19 +84,18 @@ namespace ArenaOverhaul.TeamTournament
               .GetCombatantHeroesInSettlement()
               .Where(x => CanBeSelected(x));
 
-            var flattenTroopRoster = new FlattenedTroopRoster(0);
-
             // add the main hero at the top
-            flattenTroopRoster.Add(Hero.MainHero.CharacterObject, 1, 0);
+            availableRoster.AddToCounts(Hero.MainHero.CharacterObject, 1);
 
             // add every other hero afterwards
             foreach (var character in selectableChars)
-                flattenTroopRoster.Add(character, 1, 0);
-
-            availableRoster.Add(flattenTroopRoster);
+                availableRoster.AddToCounts(character, 1);
 
             // now also add own troops in party roster
-            availableRoster.Add(MobileParty.MainParty.MemberRoster.ToFlattenedRoster().Where(x => (!x.Troop.IsHero || !availableRoster.Contains(x.Troop)) && !x.IsWounded && x.Troop.CanBeAParticipant(false, false)));
+            foreach (var element in MobileParty.MainParty.MemberRoster.ToFlattenedRoster().Where(x => (!x.Troop.IsHero || !availableRoster.Contains(x.Troop)) && !x.IsWounded && x.Troop.CanBeAParticipant(false, false)))
+            {
+                availableRoster.AddToCounts(element.Troop, 1, false, element.IsWounded ? 1 : 0);
+            }
             return availableRoster;
         }
 
