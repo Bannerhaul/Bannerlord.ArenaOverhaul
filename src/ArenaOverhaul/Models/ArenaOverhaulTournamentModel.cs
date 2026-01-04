@@ -8,6 +8,7 @@ using TaleWorlds.CampaignSystem.ComponentInterfaces;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Core;
+using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
 namespace ArenaOverhaul.Models
@@ -51,6 +52,10 @@ namespace ArenaOverhaul.Models
         public override float GetTournamentSimulationScore(CharacterObject character) => _previouslyAssignedModel.GetTournamentSimulationScore(character);
 
         public override float GetTournamentStartChance(Town town) => _previouslyAssignedModel.GetTournamentStartChance(town);
+
+        public override MBList<ItemObject> GetRegularRewardItems(Town town, int regularRewardMinValue, int regularRewardMaxValue) => _previouslyAssignedModel.GetRegularRewardItems(town, regularRewardMinValue, regularRewardMaxValue);
+
+        public override MBList<ItemObject> GetEliteRewardItems(Town town, int eliteRewardMinValue, int eliteRewardMaxValue) => _previouslyAssignedModel.GetEliteRewardItems(town, eliteRewardMinValue, eliteRewardMaxValue);
 
         /* service methods */
 
