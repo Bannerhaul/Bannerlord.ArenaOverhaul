@@ -186,7 +186,7 @@ namespace ArenaOverhaul.CampaignBehaviors
                 return;
             }
 
-            AOArenaBehaviorManager.Instance!.PayForPracticeMatch();
+            AOArenaBehaviorManager.Instance?.PayForPracticeMatch();
             Mission.Current.SetMissionMode(_AOArenaBehaviorManager.GetArenaPracticeMissionMode(), true);
             Mission.Current.GetMissionBehavior<ArenaPracticeFightMissionController>().StartPlayerPractice();
             _AOArenaBehaviorManager._enteredPracticeFightFromMenu = false;
@@ -462,15 +462,15 @@ namespace ArenaOverhaul.CampaignBehaviors
 
         private static void StartPlayerPracticeAfterConversationEnd()
         {
-            AOArenaBehaviorManager.Instance!.PayForPracticeMatch();
-            Mission.Current.SetMissionMode(AOArenaBehaviorManager.Instance!.GetArenaPracticeMissionMode(), false);
+            AOArenaBehaviorManager.Instance?.PayForPracticeMatch();
+            Mission.Current.SetMissionMode(AOArenaBehaviorManager.Instance?.GetArenaPracticeMissionMode() ?? MissionMode.Battle, false);
             Mission.Current.GetMissionBehavior<ArenaPracticeFightMissionController>().StartPlayerPractice();
         }
 
         private void game_menu_nearby_tournaments_list_on_init(MenuCallbackArgs args)
         {
             List<Town> nearbyTournamentTowns = GetNearbyTournaments();
-            List<float> nearbyTownDistances = Town.AllTowns.Where(x => x != Settlement.CurrentSettlement.Town).Select(town => town.Settlement.Position2D.DistanceSquared(Settlement.CurrentSettlement.Position2D)).OrderBy(dist => dist).ToList();
+            List<float> nearbyTownDistances = Town.AllTowns.Where(x => x != Settlement.CurrentSettlement.Town).Select(town => town.Settlement.GetPosition2D.DistanceSquared(Settlement.CurrentSettlement.GetPosition2D)).OrderBy(dist => dist).ToList();
             _tournamentListTotalCount = nearbyTournamentTowns.Count;
 
             TextObject tournamentList = new("{=zvb5PZ5OA}Tournaments are currently being held in {TOURNAMENTS} {?TOURNAMENTS.PLURAL_FORM}towns{?}town{\\?}.{NEW_LINE}{TORNAMENT_LIST.START}{?TORNAMENT_LIST.IS_PLURAL}{NEW_LINE}{?}{\\?}{TORNAMENT_LIST.END}");
@@ -484,7 +484,7 @@ namespace ArenaOverhaul.CampaignBehaviors
             //local methods
             static List<Town> GetNearbyTournaments()
             {
-                return Town.AllTowns.Where(x => Campaign.Current.TournamentManager.GetTournamentGame(x) != null && x != Settlement.CurrentSettlement.Town).OrderBy(x => x.Settlement.Position2D.DistanceSquared(Settlement.CurrentSettlement.Position2D)).ToList();
+                return Town.AllTowns.Where(x => Campaign.Current.TournamentManager.GetTournamentGame(x) != null && x != Settlement.CurrentSettlement.Town).OrderBy(x => x.Settlement.GetPosition2D.DistanceSquared(Settlement.CurrentSettlement.GetPosition2D)).ToList();
             }
 
             static string GetDistanceEstimate(Town town, List<float> nearbyTownDistances, out bool isCloseBy)
@@ -496,7 +496,7 @@ namespace ArenaOverhaul.CampaignBehaviors
                 float twoFourthDistance = nearbyTownDistances[twoFourthIdx];
                 float threeFourthDistance = nearbyTownDistances[threeFourthIdx];
 
-                float distanceInQuestion = town.Settlement.Position2D.DistanceSquared(Settlement.CurrentSettlement.Position2D);
+                float distanceInQuestion = town.Settlement.GetPosition2D.DistanceSquared(Settlement.CurrentSettlement.GetPosition2D);
                 if (distanceInQuestion < twoFourthDistance)
                 {
                     isCloseBy = true;
@@ -583,9 +583,9 @@ namespace ArenaOverhaul.CampaignBehaviors
 
         private void StartPlayerPracticeFromMenu(ArenaPracticeMode practiceMode)
         {
-            if (!FieldAccessHelper.ArenaMasterHasMetInSettlementsByRef(_arenaMasterBehavior!).Contains(Settlement.CurrentSettlement))
+            if (_arenaMasterBehavior != null && !FieldAccessHelper.ArenaMasterHasMetInSettlementsByRef(_arenaMasterBehavior).Contains(Settlement.CurrentSettlement))
             {
-                FieldAccessHelper.ArenaMasterHasMetInSettlementsByRef(_arenaMasterBehavior!).Add(Settlement.CurrentSettlement);
+                FieldAccessHelper.ArenaMasterHasMetInSettlementsByRef(_arenaMasterBehavior).Add(Settlement.CurrentSettlement);
             }
             _AOArenaBehaviorManager.IsPlayerPrePractice = true;
             _AOArenaBehaviorManager.SetPracticeMode(practiceMode);
@@ -608,7 +608,7 @@ namespace ArenaOverhaul.CampaignBehaviors
 
             Settlement currentSettlement = Settlement.CurrentSettlement;
             args.optionLeaveType = GameMenuOption.LeaveType.PracticeFight;
-            if (!FieldAccessHelper.ArenaMasterKnowTournamentsByRef(_arenaMasterBehavior!))
+            if (_arenaMasterBehavior == null || !FieldAccessHelper.ArenaMasterKnowTournamentsByRef(_arenaMasterBehavior))
             {
                 args.Tooltip = new TextObject("{=Sph9Nliz}You need to learn more about the arena by talking with the arena master.", null);
                 args.IsEnabled = false;
@@ -668,11 +668,15 @@ namespace ArenaOverhaul.CampaignBehaviors
 
             args.optionLeaveType = GameMenuOption.LeaveType.TroopSelection;
 
-            // if this town has a tournament, activate
-            shouldBeDisabled &= TeamTournamentHelpers.IsTournamentActive;
-            canPlayerDo &= TeamTournamentHelpers.IsTournamentActive;
+            // Only enable if there's an active tournament
+            bool hasTournament = TeamTournamentHelpers.IsTournamentActive;
+            if (!hasTournament)
+            {
+                shouldBeDisabled = true;
+                canPlayerDo = false;
+            }
 
-            if (shouldBeDisabled || string.IsNullOrEmpty(disabledText.ToString()))
+            if (shouldBeDisabled && string.IsNullOrEmpty(disabledText?.ToString()))
                 disabledText = new TextObject("{=Ams5ccKzh}Roster can only be selected for team tournaments.");
 
             return TWHelpers.MenuHelper.SetOptionProperties(args, canPlayerDo, shouldBeDisabled, disabledText);
