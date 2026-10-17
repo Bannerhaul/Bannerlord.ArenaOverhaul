@@ -19,7 +19,7 @@ namespace ArenaOverhaul.TeamTournament
         private Camera? _customCamera;
         private bool _viewEnabled = true;
 #pragma warning disable IDE0052 // Remove unread private members
-        private IGauntletMovie? _gauntletMovie;
+        private GauntletMovieIdentifier? _gauntletMovie;
 #pragma warning restore IDE0052 // Remove unread private members
         private GauntletLayer? _gauntletLayer;
         private TeamTournamentVM? _dataSource;
@@ -33,7 +33,7 @@ namespace ArenaOverhaul.TeamTournament
         {
             base.OnMissionScreenInitialize();
             _dataSource = new TeamTournamentVM(DisableUi, _behavior!);
-            _gauntletLayer = new GauntletLayer(ViewOrderPriority, "GauntletLayer");
+            _gauntletLayer = new GauntletLayer("GauntletLayer", ViewOrderPriority, false);
             _gauntletMovie = _gauntletLayer.LoadMovie("Tournament", _dataSource);
             MissionScreen.CustomCamera = _customCamera;
             _gauntletLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
@@ -121,7 +121,7 @@ namespace ArenaOverhaul.TeamTournament
         public override void OnPhotoModeActivated()
         {
             base.OnPhotoModeActivated();
-#if v125 || v126 || v127 || v128 || v129 || v1210 || v1211 || v1212
+#if v125 || v126 || v127 || v128 || v129 || v1210 || v1211 || v1212 || v1313
             _gauntletLayer!.UIContext.ContextAlpha = 0f;
 #else
             _gauntletLayer!._gauntletUIContext.ContextAlpha = 0f;
@@ -131,7 +131,7 @@ namespace ArenaOverhaul.TeamTournament
         public override void OnPhotoModeDeactivated()
         {
             base.OnPhotoModeDeactivated();
-#if v125 || v126 || v127 || v128 || v129 || v1210 || v1211 || v1212
+#if v125 || v126 || v127 || v128 || v129 || v1210 || v1211 || v1212 || v1313
             _gauntletLayer!.UIContext.ContextAlpha = 1f;
 #else
             _gauntletLayer!._gauntletUIContext.ContextAlpha = 1f;

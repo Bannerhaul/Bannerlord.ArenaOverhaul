@@ -606,7 +606,7 @@ namespace ArenaOverhaul.Patches
             {
                 if (!troopRosterElement.Character.IsHero && troopRosterElement.Character != GetPlayerCharacter() && affectorCharacter.HeroObject.GetSkillValue(relevantSkill) > troopRosterElement.Character.GetSkillValue(relevantSkill))
                 {
-                    party.MemberRoster.AddXpToTroop((int) xpAmount, troopRosterElement.Character);
+                    party.MemberRoster.AddXpToTroop(troopRosterElement.Character, (int) xpAmount);
                 }
                 else if (relevantSkill is not null && troopRosterElement.Character.IsHero && troopRosterElement.Character != GetPlayerCharacter() && !FieldAccessHelper.APFMCParticipantAgentsByRef(__instance).Select(a => a.Character).Contains(troopRosterElement.Character))
                 {

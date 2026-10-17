@@ -20,23 +20,23 @@ namespace ArenaOverhaul.Patches
         private static readonly MethodInfo? miGetPracticeFightXPRate = AccessTools.Method(typeof(DefaultCombatXpModelPatch), "GetPracticeFightXPRate");
 
         [HarmonyTranspiler]
-        [HarmonyPatch("GetXpFromHit")]
-        public static IEnumerable<CodeInstruction> GetXpFromHitTranspiler(IEnumerable<CodeInstruction> instructions, MethodBase __originalMethod)
+        [HarmonyPatch("GetXpfMultiplierForMissionType")]
+        public static IEnumerable<CodeInstruction> GetXpfMultiplierForMissionTypeTranspiler(IEnumerable<CodeInstruction> instructions, MethodBase __originalMethod)
         {
             List<CodeInstruction> codes = new(instructions);
             int numberOfEdits = 0;
             for (int i = 0; i < codes.Count; ++i)
             {
-                if (numberOfEdits == 0 && codes[i].LoadsConstant(0.33f))
-                {
-                    codes[i].opcode = OpCodes.Call;
-                    codes[i].operand = miGetTournamentXPRate;
-                    ++numberOfEdits;
-                }
-                else if (numberOfEdits == 1 && codes[i].LoadsConstant(1.0 / 16.0))
+                if (numberOfEdits == 0 && codes[i].LoadsConstant(0.0625f)) // PracticeFight: 1/16
                 {
                     codes[i].opcode = OpCodes.Call;
                     codes[i].operand = miGetPracticeFightXPRate;
+                    ++numberOfEdits;
+                }
+                else if (numberOfEdits == 1 && codes[i].LoadsConstant(0.33f)) // Tournament
+                {
+                    codes[i].opcode = OpCodes.Call;
+                    codes[i].operand = miGetTournamentXPRate;
                     ++numberOfEdits;
                     break;
                 }
@@ -51,14 +51,14 @@ namespace ArenaOverhaul.Patches
             return codes.AsEnumerable();
         }
 
-        internal static double GetTournamentXPRate()
+        internal static float GetTournamentXPRate()
         {
-            return Settings.Instance!.TournamentExperienceRate;
+            return (float) Settings.Instance!.TournamentExperienceRate;
         }
 
-        internal static double GetPracticeFightXPRate()
+        internal static float GetPracticeFightXPRate()
         {
-            return AOArenaBehaviorManager.Instance!.GetPracticeExperienceRate();
+            return (float) AOArenaBehaviorManager.Instance!.GetPracticeExperienceRate();
         }
     }
 }

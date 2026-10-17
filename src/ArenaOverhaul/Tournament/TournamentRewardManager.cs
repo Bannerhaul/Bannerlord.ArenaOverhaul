@@ -28,10 +28,9 @@ namespace ArenaOverhaul.Tournament
         private static readonly Dictionary<Town, List<(Hero AffectorHero, Hero AffectedHero)>> _noticableTakedowns = new();
         private static readonly Dictionary<Town, List<(Hero Awardee, int RenownAward)>> _renownAwardees = new();
         private static readonly Dictionary<Town, PrizeItemInfo?> _tournamentPrizeAwards = new();
-
         public static Dictionary<Town, List<(Hero Participant, int Winnings)>> RoundPrizeWinners => _roundPrizeWinners;
         public static Dictionary<Town, List<(Hero Participant, int Winnings)>> RenownAwardees => _renownAwardees;
-        public static Dictionary<Town, PrizeItemInfo?> PlannedTournamentPrizes => AOArenaBehaviorManager.Instance!.TournamentPrizes;
+        public static Dictionary<Town, PrizeItemInfo?> PlannedTournamentPrizes => AOArenaBehaviorManager.Instance?.TournamentPrizes ?? [];
         public static Dictionary<Town, PrizeItemInfo?> TournamentPrizeAwards => _tournamentPrizeAwards;
 
         internal static void Initialize()

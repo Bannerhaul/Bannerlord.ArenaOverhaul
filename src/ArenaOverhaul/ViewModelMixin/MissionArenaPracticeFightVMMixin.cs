@@ -33,7 +33,7 @@ namespace ArenaOverhaul.ViewModelMixin
         private string _chamberBlocksText = "";
         private string _hitsTakenText = "";
         private string _alliesRemainingText = "";
-        private string _awaitingText;
+        private string _awaitingText = "";
 
         private readonly MissionArenaPracticeFightVM baseVM = vm;
         private readonly ArenaPracticeFightMissionController? _practiceMissionController = FieldAccessHelper.MAPFVMPracticeMissionControllerByRef(vm);

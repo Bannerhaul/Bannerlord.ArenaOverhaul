@@ -8,6 +8,7 @@ using SandBox.Tournaments;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.TournamentGames;
+using TaleWorlds.Engine;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.Source.Missions;
 
@@ -20,7 +21,7 @@ namespace ArenaOverhaul.TeamTournament.Patches
         {
             if (TeamTournamentInfo.Current != null && TeamTournamentInfo.Current.IsStarted)
             {
-                __result = MissionState.OpenNew("TournamentFight", SandBoxMissions.CreateSandBoxMissionInitializerRecord(scene, "", false), delegate (Mission missionController)
+                __result = MissionState.OpenNew("TournamentFight", SandBoxMissions.CreateSandBoxMissionInitializerRecord(scene, "", false, DecalAtlasGroup.Town), delegate (Mission missionController)
                 {
                     var tournamentMissionController = new TeamTournamentMissionController();
                     return new MissionBehavior[]

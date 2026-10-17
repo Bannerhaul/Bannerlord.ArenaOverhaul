@@ -11,6 +11,8 @@ namespace ArenaOverhaul.TeamTournament
     {
         /// <summary>
         /// Returns all found characters which are heroes inside a settlement.
+        /// Note: Unlike vanilla tournament which uses settlement.Parties/HeroesWithoutParty,
+        /// this uses LocationComplex.GetListOfCharacters() which gets visual NPCs in the location.
         /// </summary>
         /// <param name="settlement">Settlement to find the heroes in</param>
         /// <returns>List of all found hero characters inside the settlement</returns>
@@ -20,14 +22,20 @@ namespace ArenaOverhaul.TeamTournament
               .GetListOfCharacters()
               .Where(x =>
                   x != null
-                  && x.Character.IsHero
-                  && !x.IsHidden)
+                  && x.Character.IsHero)
               .Select(sel => sel.Character);
         }
 
         public static IEnumerable<CharacterObject> GetCombatantHeroesInSettlement(this Settlement settlement)
         {
-            return settlement.GetHeroesInSettlement().Where(x => x.CanBeAParticipant(true, false));
+            // Filter similar to vanilla's CanNpcJoinTournament:
+            // wounded, noncombatant, age, and CanBeAParticipant
+            return settlement.GetHeroesInSettlement()
+                .Where(x => x.IsHero
+                    && !x.HeroObject.IsWounded
+                    && !x.HeroObject.IsNoncombatant
+                    && x.HeroObject.Age >= Campaign.Current.Models.AgeModel.HeroComesOfAge
+                    && x.CanBeAParticipant(true, false));
         }
 
         public static IEnumerable<Hero> AllLivingRelatedHeroes(this Hero inHero)
@@ -63,8 +71,8 @@ namespace ArenaOverhaul.TeamTournament
                 && (!considerSkills || heroObject.GetSkillValue(DefaultSkills.OneHanded) >= 100 || heroObject.GetSkillValue(DefaultSkills.TwoHanded) >= 100 || heroObject.GetSkillValue(DefaultSkills.Polearm) >= 100);
         }
 
-        public static Town GetCurrentTown() => Settlement.CurrentSettlement.Town;
+        public static Town? GetCurrentTown() => Settlement.CurrentSettlement?.Town;
 
-        public static bool IsTournamentActive => GetCurrentTown().HasTournament;
+        public static bool IsTournamentActive => GetCurrentTown()?.HasTournament ?? false;
     }
 }

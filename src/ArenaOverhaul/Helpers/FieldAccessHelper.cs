@@ -8,7 +8,6 @@ using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.CampaignSystem.Settlements;
-using TaleWorlds.CampaignSystem.TournamentGames;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -34,10 +33,6 @@ namespace ArenaOverhaul.Helpers
         public static readonly FieldRef<ArenaPracticeFightMissionController, List<MatrixFrame>> APFMCSpawnFramesByRef = FieldRefAccess<ArenaPracticeFightMissionController, List<MatrixFrame>>("_spawnFrames");
 
         public static readonly FieldRef<MissionArenaPracticeFightVM, ArenaPracticeFightMissionController> MAPFVMPracticeMissionControllerByRef = FieldRefAccess<MissionArenaPracticeFightVM, ArenaPracticeFightMissionController>("_practiceMissionController");
-
-        public static readonly FieldRef<FightTournamentGame, List<ItemObject>> FTGPossibleRegularRewardItemObjectsCacheByRef = FieldRefAccess<FightTournamentGame, List<ItemObject>>("_possibleRegularRewardItemObjectsCache");
-        public static readonly FieldRef<FightTournamentGame, List<ItemObject>> FTGPossibleEliteRewardItemObjectsCacheByRef = FieldRefAccess<FightTournamentGame, List<ItemObject>>("_possibleEliteRewardItemObjectsCache");
-        public static readonly FieldRef<FightTournamentGame, List<ItemObject>> FTGPossibleBannerRewardItemObjectsCacheByRef = FieldRefAccess<FightTournamentGame, List<ItemObject>>("_possibleBannerRewardItemObjectsCache");
 
         public static readonly FieldRef<int[]> DCTMTierLowerRenownLimitsByRef = StaticFieldRefAccess<int[]>(fiTierLowerRenownLimits);
     }
